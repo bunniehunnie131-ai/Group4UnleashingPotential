@@ -151,7 +151,8 @@
         <p><strong>Group 4 — Unleashing Potential</strong></p>
         <p>© <%: DateTime.Now.Year %> All rights reserved.</p>
         <p>
-            <i class="bi bi-envelope"></i> unleashingpotential@gmail.com
+            <i class="bi bi-envelope"></i> kasiservices@unleashingpotential.co.za
+
             <i class="bi bi-telephone"></i> +27 73 123 4567
         </p>
     </footer>
