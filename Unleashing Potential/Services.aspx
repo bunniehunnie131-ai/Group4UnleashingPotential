@@ -53,13 +53,16 @@
 
     .service-card-top {
         background: linear-gradient(135deg, #e0f2fe, var(--sky-light));
-        padding: 1.6rem 1rem 1.2rem;
+        padding: 0;
         text-align: center;
+        overflow: hidden;
+        border-radius: 16px 16px 0 0;
     }
 
-    .service-icon {
-        font-size: 42px;
-        margin-bottom: 0.5rem;
+    .service-img {
+        width: 100%;
+        height: 160px;
+        object-fit: cover;
         display: block;
     }
 
@@ -117,7 +120,7 @@
             <div class="col-sm-6 col-md-3">
                 <div class="service-card">
                     <div class="service-card-top">
-                        <span class="service-icon">💇</span>
+                        <img src="images/hairdressing.png" alt="Hairdressing" class="service-img" />
                     </div>
                     <div class="service-card-body">
                         <h5>Hairdressing</h5>
@@ -130,7 +133,7 @@
             <div class="col-sm-6 col-md-3">
                 <div class="service-card">
                     <div class="service-card-top">
-                        <span class="service-icon">🧵</span>
+                        <img src="images/tailoring.png" alt="Tailoring" class="service-img" />
                     </div>
                     <div class="service-card-body">
                         <h5>Tailoring</h5>
@@ -143,7 +146,7 @@
             <div class="col-sm-6 col-md-3">
                 <div class="service-card">
                     <div class="service-card-top">
-                        <span class="service-icon">🔧</span>
+                        <img src="images/plumbing.png" alt="Plumbing" class="service-img" />
                     </div>
                     <div class="service-card-body">
                         <h5>Plumbing</h5>
@@ -156,7 +159,7 @@
             <div class="col-sm-6 col-md-3">
                 <div class="service-card">
                     <div class="service-card-top">
-                        <span class="service-icon">🎨</span>
+                        <img src="images/painting.png" alt="Painting" class="service-img" />
                     </div>
                     <div class="service-card-body">
                         <h5>Painting</h5>
@@ -169,7 +172,5 @@
         </div>
 
     </div>
-
-
 
 </asp:Content>

@@ -70,6 +70,22 @@
             transition: transform 0.2s;
         }
 
+        .service-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 8px;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .service-card span {
+            display: block;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
         .service-card:hover {
             transform: translateY(-5px);
         }
@@ -118,15 +134,32 @@
     </section>
 
     
-    <section class="services">
-        <h2>Our Services</h2>
-        <div class="service-grid">
-            <a href="Services.aspx?cat=plumbing" class="service-card">Plumbing</a>
-            <a href="Services.aspx?cat=painting" class="service-card">Painting</a>
-            <a href="Services.aspx?cat=haircare" class="service-card">Hairdressing</a>
-            <a href="Services.aspx?cat=tailoring" class="service-card">Tailoring</a>
-        </div>
-    </section>
+   <section class="services">
+    <h2>Our Services</h2>
+    <div class="service-grid">
+
+        <a href="Services.aspx?cat=plumbing" class="service-card">
+            <img src="images/plumbing.png" alt="Plumbing" />
+            <span>Plumbing</span>
+        </a>
+
+        <a href="Services.aspx?cat=painting" class="service-card">
+            <img src="images/painting.png" alt="Painting" />
+            <span>Painting</span>
+        </a>
+
+        <a href="Services.aspx?cat=haircare" class="service-card">
+            <img src="images/hairdressing.png" alt="Hairdressing" />
+            <span>Hairdressing</span>
+        </a>
+
+        <a href="Services.aspx?cat=tailoring" class="service-card">
+            <img src="images/tailoring.png" alt="Tailoring" />
+            <span>Tailoring</span>
+        </a>
+
+    </div>
+</section>
 
    
     <section class="cta">
