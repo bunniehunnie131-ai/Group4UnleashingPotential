@@ -17,7 +17,7 @@
 
         .hero p {
             max-width: 600px;
-            margin: 20px auto;
+            margin: 20px auto;                                             
             color: #bae6fd;
         }
 
