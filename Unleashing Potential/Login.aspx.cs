@@ -20,14 +20,16 @@ namespace Unleashing_Potential
             string password = txtPassword.Text;
 
             
-            if (email == "admin@test.com" && password == "Admin@123")
+            if (email == "admin@test.com" && password == "." +
+                "" +
+                "")
             {
                 Session["UserEmail"] = email;
                 Response.Redirect("Default.aspx");
             }
             else
             {
-                lblLoginMessage.Text = "Invalid email or password. Please try again.";
+                lblLoginMessage.Text = "Invalid email or password.";
                 lblLoginMessage.CssClass = "alert alert-danger d-block mt-2";
             }
         }
