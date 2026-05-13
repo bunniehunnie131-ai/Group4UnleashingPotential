@@ -122,7 +122,7 @@
     <Content Include="Images\Hairdressing.png" />
     <Content Include="Images\Painting.png" />
     <Content Include="Images\Plumbing.png" />
-    <Content Include="Images\Registration Background.png" />
+    <Content Include="Images\Background.png" />
     <Content Include="Images\Tailoring.png" />
     <Content Include="Images\Unleashing Potential Logo.jpeg" />
     <Content Include="Scripts\bootstrap.bundle.js" />
@@ -157,6 +157,16 @@
     <Content Include="Login.aspx" />
     <Content Include="Services.aspx" />
     <Content Include="Admin.aspx" />
+    <Content Include="ServiceCategories.aspx" />
+    <Content Include="ServiceProviders.aspx" />
+    <Content Include="ProviderProfile.aspx" />
+    <Content Include="Basket.aspx" />
+    <Content Include="Checkout.aspx" />
+    <Content Include="BookingConfirmation.aspx" />
+    <Content Include="BookingStatus.aspx" />
+    <Content Include="LeaveReview.aspx" />
+    <Content Include="ForgotPassword.aspx" />
+    <Content Include="RegisterServiceProvider.aspx" />
     <None Include="Scripts\jquery-3.7.0.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.0.js" />
     <Content Include="Scripts\jquery-3.7.0.min.js" />
@@ -200,6 +210,7 @@
       <DependentUpon>About.aspx</DependentUpon>
     </Compile>
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="BookingModels.cs" />
     <Compile Include="Contact.aspx.cs">
       <DependentUpon>Contact.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -266,6 +277,76 @@
     </Compile>
     <Compile Include="Admin.aspx.designer.cs">
       <DependentUpon>Admin.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ServiceCategories.aspx.cs">
+      <DependentUpon>ServiceCategories.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ServiceCategories.aspx.designer.cs">
+      <DependentUpon>ServiceCategories.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ServiceProviders.aspx.cs">
+      <DependentUpon>ServiceProviders.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ServiceProviders.aspx.designer.cs">
+      <DependentUpon>ServiceProviders.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ProviderProfile.aspx.cs">
+      <DependentUpon>ProviderProfile.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ProviderProfile.aspx.designer.cs">
+      <DependentUpon>ProviderProfile.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Basket.aspx.cs">
+      <DependentUpon>Basket.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Basket.aspx.designer.cs">
+      <DependentUpon>Basket.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Checkout.aspx.cs">
+      <DependentUpon>Checkout.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Checkout.aspx.designer.cs">
+      <DependentUpon>Checkout.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="BookingConfirmation.aspx.cs">
+      <DependentUpon>BookingConfirmation.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BookingConfirmation.aspx.designer.cs">
+      <DependentUpon>BookingConfirmation.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="BookingStatus.aspx.cs">
+      <DependentUpon>BookingStatus.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BookingStatus.aspx.designer.cs">
+      <DependentUpon>BookingStatus.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="LeaveReview.aspx.cs">
+      <DependentUpon>LeaveReview.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="LeaveReview.aspx.designer.cs">
+      <DependentUpon>LeaveReview.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ForgotPassword.aspx.cs">
+      <DependentUpon>ForgotPassword.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ForgotPassword.aspx.designer.cs">
+      <DependentUpon>ForgotPassword.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="RegisterServiceProvider.aspx.cs">
+      <DependentUpon>RegisterServiceProvider.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="RegisterServiceProvider.aspx.designer.cs">
+      <DependentUpon>RegisterServiceProvider.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

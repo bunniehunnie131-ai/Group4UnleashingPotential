@@ -1,6 +1,6 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Register.aspx.cs" Inherits="Unleashing_Potential.WebForm1" %>
-<asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="RegisterServiceProvider.aspx.cs" Inherits="Unleashing_Potential.WebForm14" %>
 
+<asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
     <style>
         :root {
             --sky: #0ea5e9;
@@ -14,7 +14,7 @@
         }
 
         .register-wrap {
-            max-width: 560px;
+            max-width: 640px;
             margin: 0 auto;
         }
 
@@ -126,42 +126,6 @@
                 color: var(--sky-deeper);
             }
 
-        .terms-box {
-            background: var(--sky-pale);
-            border: 1.5px solid var(--sky-light);
-            border-radius: 8px;
-            padding: 0.85rem 1rem;
-            display: flex;
-            align-items: flex-start;
-            gap: 0.6rem;
-        }
-
-            .terms-box .form-check-input {
-                margin-top: 3px;
-                width: 1.1em;
-                height: 1.1em;
-                flex-shrink: 0;
-                border-color: var(--sky-light);
-            }
-
-                .terms-box .form-check-input:checked {
-                    background-color: var(--sky-dark);
-                    border-color: var(--sky-dark);
-                }
-
-        .terms-label {
-            font-size: 0.88rem;
-            color: var(--muted);
-            line-height: 1.5;
-        }
-
-            .terms-label a {
-                color: var(--sky-dark);
-                font-weight: 600;
-                text-decoration: underline;
-                cursor: pointer;
-            }
-
         .password-wrap {
             position: relative;
         }
@@ -196,8 +160,11 @@
                 display: block;
             }
 
-        #lblMessage {
-            font-size: 0.9rem;
+        .field-error {
+            color: #dc2626;
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+            display: block;
         }
 
         .login-prompt {
@@ -211,36 +178,6 @@
                 color: var(--sky-dark);
                 font-weight: 600;
                 text-decoration: underline;
-            }
-
-        .field-error {
-            color: #dc2626;
-            font-size: 0.8rem;
-            margin-top: 0.25rem;
-            display: block;
-        }
-
-        .modal-header {
-            background: linear-gradient(135deg, var(--sky-dark), var(--sky-deeper));
-            color: #f0f9ff;
-        }
-
-            .modal-header .btn-close {
-                filter: invert(1);
-            }
-
-        .modal-body {
-            max-height: 60vh;
-            overflow-y: auto;
-            font-size: 0.92rem;
-            color: var(--text);
-            line-height: 1.7;
-        }
-
-            .modal-body h6 {
-                color: var(--sky-dark);
-                font-weight: 700;
-                margin-top: 1rem;
             }
 
         .role-selector {
@@ -265,58 +202,12 @@
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
 
-    <%-- ===== TERMS AND CONDITIONS MODAL ===== --%>
-    <div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="termsModalLabel">Terms and Conditions</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Last updated: January 2025. Please read these Terms and Conditions carefully before registering.</p>
-
-                    <h6>1. Acceptance of Terms</h6>
-                    <p>By creating an account on the Unleashing Potential platform, you confirm that you have read, understood, and agree to be bound by these Terms and Conditions. If you do not agree, please do not register.</p>
-
-                    <h6>2. Eligibility</h6>
-                    <p>You must be at least 18 years of age to register. By registering, you confirm that the information you provide is accurate, current, and complete.</p>
-
-                    <h6>3. Account Responsibilities</h6>
-                    <p>You are responsible for maintaining the confidentiality of your login credentials. You agree not to share your account with any third party and to notify us immediately of any unauthorised use of your account.</p>
-
-                    <h6>4. Use of the Platform</h6>
-                    <p>You agree to use this platform solely for lawful purposes. You must not engage in any conduct that restricts or inhibits the use of the platform by others, or that could damage, disable, or overburden platform infrastructure.</p>
-
-                    <h6>5. Personal Information</h6>
-                    <p>Your personal information will be collected, stored, and processed in accordance with our Privacy Policy. We will not sell or share your personal data with third parties without your consent, except where required by law.</p>
-
-                    <h6>6. Intellectual Property</h6>
-                    <p>All content on this platform, including text, graphics, and software, is the property of Unleashing Potential and is protected by applicable intellectual property laws.</p>
-
-                    <h6>7. Termination</h6>
-                    <p>We reserve the right to suspend or terminate your account at any time if you violate these Terms and Conditions or engage in conduct we deem harmful to the platform or its users.</p>
-
-                    <h6>8. Changes to Terms</h6>
-                    <p>We may update these Terms and Conditions from time to time. Continued use of the platform following any changes constitutes your acceptance of the updated terms.</p>
-
-                    <h6>9. Contact</h6>
-                    <p>For any questions regarding these Terms and Conditions, please contact us at <strong>support@unleashinpotential.co.za</strong>.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-register" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <%-- ===== REGISTRATION FORM ===== --%>
     <div class="register-wrap">
         <div class="register-card">
 
             <div class="register-card-header">
-                <h4>Create your account</h4>
-                <p>Fill in your details to get started</p>
+                <h4>Register as a Service Provider</h4>
+                <p>Fill in your details to list your services on the platform</p>
             </div>
 
             <div class="role-selector text-center py-3">
@@ -325,7 +216,6 @@
                     runat="server"
                     GroupName="UserType"
                     Text=" Customer"
-                    Checked="true"
                     AutoPostBack="false"
                     onclick="window.location.href='Register.aspx';" />
 
@@ -336,18 +226,22 @@
         runat="server"
         GroupName="UserType"
         Text=" Service Provider"
+        Checked="true"
         AutoPostBack="false"
         onclick="window.location.href='RegisterServiceProvider.aspx';" />
+
             </div>
+
             <div class="register-card-body">
 
-                <p class="section-label">Personal Information</p>
+                <%-- ===== ACCOUNT DETAILS ===== --%>
+                <p class="section-label">Account Details</p>
 
                 <%-- Full Name --%>
                 <div class="field-group">
                     <label for="txtFullName" class="form-label">Full Name</label>
                     <asp:TextBox ID="txtFullName" runat="server" CssClass="form-control"
-                        placeholder="Enter your full name"></asp:TextBox>
+                        placeholder="Enter your full name" />
                     <asp:RequiredFieldValidator ID="rfvFullName" runat="server"
                         ControlToValidate="txtFullName"
                         ErrorMessage="Full name is required."
@@ -365,7 +259,7 @@
                 <div class="field-group">
                     <label for="txtEmail" class="form-label">Email Address</label>
                     <asp:TextBox ID="txtEmail" runat="server" CssClass="form-control"
-                        placeholder="Enter your email"></asp:TextBox>
+                        placeholder="Enter your email address" />
                     <asp:RequiredFieldValidator ID="rfvEmail" runat="server"
                         ControlToValidate="txtEmail"
                         ErrorMessage="Email address is required."
@@ -383,7 +277,7 @@
                 <div class="field-group">
                     <label for="txtPhone" class="form-label">Phone Number</label>
                     <asp:TextBox ID="txtPhone" runat="server" CssClass="form-control"
-                        placeholder="Enter your phone number"></asp:TextBox>
+                        placeholder="Enter your phone number" />
                     <asp:RequiredFieldValidator ID="rfvPhone" runat="server"
                         ControlToValidate="txtPhone"
                         ErrorMessage="Phone number is required."
@@ -397,53 +291,13 @@
                     Please enter a valid phone number (7–15 digits).</asp:RegularExpressionValidator>
                 </div>
 
-                <div class="row">
-                    <%-- Date of Birth --%>
-                    <div class="col-sm-6">
-                        <div class="field-group">
-                            <label for="txtDOB" class="form-label">Date of Birth</label>
-                            <asp:TextBox ID="txtDOB" runat="server" CssClass="form-control"
-                                TextMode="Date"></asp:TextBox>
-                            <asp:RequiredFieldValidator ID="rfvDOB" runat="server"
-                                ControlToValidate="txtDOB"
-                                ErrorMessage="Date of birth is required."
-                                Display="Dynamic" CssClass="field-error" ForeColor="">
-                            Date of birth is required.</asp:RequiredFieldValidator>
-                        </div>
-                    </div>
-
-                    <%-- Township --%>
-                    <div class="col-sm-6">
-                        <div class="field-group">
-                            <label for="ddlTownship" class="form-label">Township</label>
-                            <asp:DropDownList ID="ddlTownship" runat="server" CssClass="form-select">
-                                <asp:ListItem Text="-- Select --" Value="" Selected="True"></asp:ListItem>
-                                <asp:ListItem Text="Quigney" Value="QG"></asp:ListItem>
-                                <asp:ListItem Text="Southernwood" Value="SW"></asp:ListItem>
-                                <asp:ListItem Text="Beacon Bay" Value="BB"></asp:ListItem>
-                                <asp:ListItem Text="Mdantsane" Value="Ntsane"></asp:ListItem>
-                            </asp:DropDownList>
-                            <asp:RequiredFieldValidator ID="rfvTownship" runat="server"
-                                ControlToValidate="ddlTownship"
-                                InitialValue=""
-                                ErrorMessage="Please select a township."
-                                Display="Dynamic" CssClass="field-error" ForeColor="">
-                            Please select a township.</asp:RequiredFieldValidator>
-                        </div>
-                    </div>
-                </div>
-
-                <hr class="divider" />
-
-                <p class="section-label">Security</p>
-
                 <%-- Password --%>
                 <div class="field-group">
                     <label for="txtPassword" class="form-label">Password</label>
                     <div class="password-wrap">
                         <asp:TextBox ID="txtPassword" runat="server" CssClass="form-control"
                             TextMode="Password" placeholder="Choose a strong password"
-                            Style="padding-right: 3rem;"></asp:TextBox>
+                            Style="padding-right: 3rem;" />
                         <button type="button" class="toggle-pw" onclick="togglePassword('pw', this)">
                             <svg class="eye-on" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -473,7 +327,7 @@
                     <div class="password-wrap">
                         <asp:TextBox ID="txtConfirmPassword" runat="server" CssClass="form-control"
                             TextMode="Password" placeholder="Repeat your password"
-                            Style="padding-right: 3rem;"></asp:TextBox>
+                            Style="padding-right: 3rem;" />
                         <button type="button" class="toggle-pw" onclick="togglePassword('cpw', this)">
                             <svg class="eye-on" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -492,82 +346,164 @@
                     <asp:CompareValidator ID="cvPasswordMatch" runat="server"
                         ControlToValidate="txtConfirmPassword"
                         ControlToCompare="txtPassword"
+                        Operator="Equal" Type="String"
                         ErrorMessage="Passwords do not match."
                         Display="Dynamic" CssClass="field-error" ForeColor="">
                     Passwords do not match.</asp:CompareValidator>
                 </div>
 
-                <%-- Security Question --%>
+                <hr class="divider" />
+
+                <%-- ===== SERVICE PROVIDER PROFILE ===== --%>
+                <p class="section-label">Service Provider Profile</p>
+
+                <%-- Business / Display Name --%>
                 <div class="field-group">
-                    <label for="ddlSecurityQuestion" class="form-label">Security Question</label>
-                    <asp:DropDownList ID="ddlSecurityQuestion" runat="server" CssClass="form-select">
-                        <asp:ListItem Text="-- Select a question --" Value="" Selected="True"></asp:ListItem>
-                        <asp:ListItem Text="What is your mother's maiden name?" Value="Q1"></asp:ListItem>
-                        <asp:ListItem Text="What was the name of your first pet?" Value="Q2"></asp:ListItem>
-                        <asp:ListItem Text="What city were you born in?" Value="Q3"></asp:ListItem>
-                        <asp:ListItem Text="What is the name of your primary school?" Value="Q4"></asp:ListItem>
-                        <asp:ListItem Text="What was your childhood nickname?" Value="Q5"></asp:ListItem>
-                    </asp:DropDownList>
-                    <asp:RequiredFieldValidator ID="rfvSecurityQuestion" runat="server"
-                        ControlToValidate="ddlSecurityQuestion"
-                        InitialValue=""
-                        ErrorMessage="Please select a security question."
+                    <label for="txtProviderName" class="form-label">Business / Display Name</label>
+                    <asp:TextBox ID="txtProviderName" runat="server" CssClass="form-control"
+                        placeholder="Enter your business or display name" />
+                    <asp:RequiredFieldValidator ID="rfvProviderName" runat="server"
+                        ControlToValidate="txtProviderName"
+                        ErrorMessage="Provider name is required."
                         Display="Dynamic" CssClass="field-error" ForeColor="">
-                    Please select a security question.</asp:RequiredFieldValidator>
+                    Provider name is required.</asp:RequiredFieldValidator>
                 </div>
 
-                <%-- Security Answer --%>
+                <div class="row">
+                    <%-- Category --%>
+                    <div class="col-sm-6">
+                        <div class="field-group">
+                            <label for="ddlCategory" class="form-label">Category</label>
+                            <asp:DropDownList ID="ddlCategory" runat="server" CssClass="form-select">
+                                <asp:ListItem Text="-- Select Category --" Value="" Selected="True" />
+                                <asp:ListItem Text="Tailoring" Value="Tailoring" />
+                                <asp:ListItem Text="Plumbing" Value="Plumbing" />
+                                <asp:ListItem Text="Painting" Value="Painting" />
+                                <asp:ListItem Text="Hairdressing" Value="Hairdressing" />
+                            </asp:DropDownList>
+                            <asp:RequiredFieldValidator ID="rfvCategory" runat="server"
+                                ControlToValidate="ddlCategory"
+                                InitialValue=""
+                                ErrorMessage="Please select a category."
+                                Display="Dynamic" CssClass="field-error" ForeColor="">
+                            Please select a category.</asp:RequiredFieldValidator>
+                        </div>
+                    </div>
+
+                    <%-- Specialty --%>
+                    <div class="col-sm-6">
+                        <div class="field-group">
+                            <label for="txtSpecialty" class="form-label">Specialty</label>
+                            <asp:TextBox ID="txtSpecialty" runat="server" CssClass="form-control"
+                                placeholder="e.g. Wedding dresses" />
+                            <asp:RequiredFieldValidator ID="rfvSpecialty" runat="server"
+                                ControlToValidate="txtSpecialty"
+                                ErrorMessage="Specialty is required."
+                                Display="Dynamic" CssClass="field-error" ForeColor="">
+                            Specialty is required.</asp:RequiredFieldValidator>
+                        </div>
+                    </div>
+                </div>
+
+                <%-- Description --%>
                 <div class="field-group">
-                    <label for="txtSecurityAnswer" class="form-label">Your Answer</label>
-                    <asp:TextBox ID="txtSecurityAnswer" runat="server" CssClass="form-control"
-                        placeholder="Enter your answer"></asp:TextBox>
-                    <asp:RequiredFieldValidator ID="rfvSecurityAnswer" runat="server"
-                        ControlToValidate="txtSecurityAnswer"
-                        ErrorMessage="Please provide an answer to your security question."
+                    <label for="txtDescription" class="form-label">Description</label>
+                    <asp:TextBox ID="txtDescription" runat="server" CssClass="form-control"
+                        TextMode="MultiLine" Rows="4"
+                        placeholder="Describe your services and experience" />
+                    <asp:RequiredFieldValidator ID="rfvDescription" runat="server"
+                        ControlToValidate="txtDescription"
+                        ErrorMessage="Description is required."
                         Display="Dynamic" CssClass="field-error" ForeColor="">
-                    Please provide an answer to your security question.</asp:RequiredFieldValidator>
-                    <asp:RegularExpressionValidator ID="revSecurityAnswer" runat="server"
-                        ControlToValidate="txtSecurityAnswer"
-                        ValidationExpression="^.{2,100}$"
-                        ErrorMessage="Answer must be between 2 and 100 characters."
-                        Display="Dynamic" CssClass="field-error" ForeColor="">
-                    Answer must be between 2 and 100 characters.</asp:RegularExpressionValidator>
+                    Description is required.</asp:RequiredFieldValidator>
+                </div>
+
+                <div class="row">
+                    <%-- Price --%>
+                    <div class="col-sm-6">
+                        <div class="field-group">
+                            <label for="txtPrice" class="form-label">Price (R)</label>
+                            <asp:TextBox ID="txtPrice" runat="server" CssClass="form-control"
+                                placeholder="e.g. 250.00" />
+                            <asp:RequiredFieldValidator ID="rfvPrice" runat="server"
+                                ControlToValidate="txtPrice"
+                                ErrorMessage="Price is required."
+                                Display="Dynamic" CssClass="field-error" ForeColor="">
+                            Price is required.</asp:RequiredFieldValidator>
+                            <asp:RegularExpressionValidator ID="revPrice" runat="server"
+                                ControlToValidate="txtPrice"
+                                ValidationExpression="^\d+(\.\d{1,2})?$"
+                                ErrorMessage="Enter a valid price (e.g. 250.00)."
+                                Display="Dynamic" CssClass="field-error" ForeColor="">
+                            Enter a valid price (e.g. 250.00).</asp:RegularExpressionValidator>
+                        </div>
+                    </div>
+
+                    <%-- Price Unit --%>
+                    <div class="col-sm-6">
+                        <div class="field-group">
+                            <label for="ddlPriceUnit" class="form-label">Price Unit</label>
+                            <asp:DropDownList ID="ddlPriceUnit" runat="server" CssClass="form-select">
+                                <asp:ListItem Text="per hour" Value="per hour" />
+                                <asp:ListItem Text="per session" Value="per session" />
+                                <asp:ListItem Text="per day" Value="per day" />
+                                <asp:ListItem Text="per month" Value="per month" />
+                            </asp:DropDownList>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <%-- Location --%>
+                    <div class="col-sm-6">
+                        <div class="field-group">
+                            <label for="txtLocation" class="form-label">Location</label>
+                            <asp:TextBox ID="txtLocation" runat="server" CssClass="form-control"
+                                placeholder="e.g. East London" />
+                            <asp:RequiredFieldValidator ID="rfvLocation" runat="server"
+                                ControlToValidate="txtLocation"
+                                ErrorMessage="Location is required."
+                                Display="Dynamic" CssClass="field-error" ForeColor="">
+                            Location is required.</asp:RequiredFieldValidator>
+                        </div>
+                    </div>
+
+                    <%-- Years of Experience --%>
+                    <div class="col-sm-6">
+                        <div class="field-group">
+                            <label for="txtYearsExperience" class="form-label">Years of Experience</label>
+                            <asp:TextBox ID="txtYearsExperience" runat="server" CssClass="form-control"
+                                placeholder="e.g. 5" />
+                            <asp:RequiredFieldValidator ID="rfvYearsExperience" runat="server"
+                                ControlToValidate="txtYearsExperience"
+                                ErrorMessage="Years of experience is required."
+                                Display="Dynamic" CssClass="field-error" ForeColor="">
+                            Years of experience is required.</asp:RequiredFieldValidator>
+                            <asp:RangeValidator ID="rvYearsExperience" runat="server"
+                                ControlToValidate="txtYearsExperience"
+                                MinimumValue="0" MaximumValue="50" Type="Integer"
+                                ErrorMessage="Enter a valid number of years (0–50)."
+                                Display="Dynamic" CssClass="field-error" ForeColor="">
+                            Enter a valid number of years (0–50).</asp:RangeValidator>
+                        </div>
+                    </div>
                 </div>
 
                 <hr class="divider" />
-
-                <%-- Terms Checkbox --%>
-                <div class="field-group">
-                    <div class="terms-box">
-                        <asp:CheckBox ID="chkTerms" runat="server" CssClass="form-check-input" />
-                        <label class="terms-label" for="chkTerms">
-                            I agree to the
-                        <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal"
-                            onclick="return false;">Terms and Conditions</a>
-                            and confirm that all information provided is accurate.
-                        </label>
-                    </div>
-                    <asp:CustomValidator ID="cvTerms" runat="server"
-                        ErrorMessage="You must accept the Terms and Conditions."
-                        Display="Dynamic" CssClass="field-error" ForeColor=""
-                        ClientValidationFunction="validateTerms"
-                        OnServerValidate="cvTerms_ServerValidate">
-                    You must accept the Terms and Conditions.</asp:CustomValidator>
-                </div>
 
                 <%-- Buttons --%>
                 <div class="d-flex gap-2 mt-3">
                     <asp:Button ID="btnRegister" runat="server" Text="Create Account"
                         CssClass="btn btn-register"
                         OnClick="btnRegister_Click" />
-                    <asp:Button ID="btnClear" runat="server" Text="Clear"
+                    <asp:Button ID="btnCancel" runat="server" Text="Cancel"
                         CssClass="btn btn-clear"
                         CausesValidation="False"
-                        OnClick="btnClear_Click" />
+                        OnClick="btnCancel_Click" />
                 </div>
 
                 <div class="mt-3">
-                    <asp:Label ID="lblMessage" runat="server"></asp:Label>
+                    <asp:Label ID="lblMessage" runat="server" />
                 </div>
 
                 <asp:ValidationSummary ID="ValidationSummary1" runat="server"
@@ -602,10 +538,6 @@
                 btn.classList.remove('active');
             }
         }
-
-        function validateTerms(source, args) {
-            var chk = document.getElementById('<%= chkTerms.ClientID %>');
-            args.IsValid = chk !== null && chk.checked;
-        }
     </script>
+
 </asp:Content>

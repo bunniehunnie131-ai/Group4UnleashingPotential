@@ -165,7 +165,7 @@
     <section class="cta">
         <h2>Are You a Service Provider?</h2>
         <p>Register today and grow your business in your community.</p>
-        <a href="Register.aspx" class="btn btn-warning">Get Started</a>
+       <a href="~/RegisterServiceProvider.aspx" runat="server" class="btn btn-warning">Get Started</a>
     </section>
 
 </asp:Content>

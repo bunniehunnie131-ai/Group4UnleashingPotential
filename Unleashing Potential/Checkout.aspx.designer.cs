@@ -11,223 +11,187 @@ namespace Unleashing_Potential
 {
 
 
-    public partial class WebForm4
+    public partial class WebForm9
     {
 
         /// <summary>
-        /// lblAdminMsg control.
+        /// wzCheckout control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblAdminMsg;
+        protected global::System.Web.UI.WebControls.Wizard wzCheckout;
 
         /// <summary>
-        /// lblPendingBadge control.
+        /// step1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblPendingBadge;
+        protected global::System.Web.UI.WebControls.WizardStep step1;
 
         /// <summary>
-        /// lblTotalBookings control.
+        /// txtName control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblTotalBookings;
+        protected global::System.Web.UI.WebControls.TextBox txtName;
 
         /// <summary>
-        /// lblRevenue control.
+        /// txtPhone control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblRevenue;
+        protected global::System.Web.UI.WebControls.TextBox txtPhone;
 
         /// <summary>
-        /// lblActiveProviders control.
+        /// txtAddress control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblActiveProviders;
+        protected global::System.Web.UI.WebControls.TextBox txtAddress;
 
         /// <summary>
-        /// lblCompletionRate control.
+        /// calAppointment control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblCompletionRate;
+        protected global::System.Web.UI.WebControls.Calendar calAppointment;
 
         /// <summary>
-        /// gvRecentBookings control.
+        /// lblDateError control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvRecentBookings;
+        protected global::System.Web.UI.WebControls.Label lblDateError;
 
         /// <summary>
-        /// lblPendingCount control.
+        /// txtNotes control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblPendingCount;
+        protected global::System.Web.UI.WebControls.TextBox txtNotes;
 
         /// <summary>
-        /// rptPending control.
+        /// step2 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater rptPending;
+        protected global::System.Web.UI.WebControls.WizardStep step2;
 
         /// <summary>
-        /// lblActiveCount control.
+        /// rblPayment control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblActiveCount;
+        protected global::System.Web.UI.WebControls.RadioButtonList rblPayment;
 
         /// <summary>
-        /// rptActive control.
+        /// fuEFT control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater rptActive;
+        protected global::System.Web.UI.WebControls.FileUpload fuEFT;
 
         /// <summary>
-        /// lblVerifiedCount control.
+        /// lblPaymentError control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblVerifiedCount;
+        protected global::System.Web.UI.WebControls.Label lblPaymentError;
 
         /// <summary>
-        /// rptVerified control.
+        /// rblAmount control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater rptVerified;
+        protected global::System.Web.UI.WebControls.RadioButtonList rblAmount;
 
         /// <summary>
-        /// gvBookings control.
+        /// lblDepositAmt control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvBookings;
+        protected global::System.Web.UI.WebControls.Label lblDepositAmt;
 
         /// <summary>
-        /// gvUsers control.
+        /// lblFullAmt control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvUsers;
+        protected global::System.Web.UI.WebControls.Label lblFullAmt;
 
         /// <summary>
-        /// txtCatName control.
+        /// step3 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtCatName;
+        protected global::System.Web.UI.WebControls.WizardStep step3;
 
         /// <summary>
-        /// txtCatDesc control.
+        /// lblConfirmDetails control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtCatDesc;
+        protected global::System.Web.UI.WebControls.Label lblConfirmDetails;
 
         /// <summary>
-        /// btnAddCategory control.
+        /// rptConfirmItems control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnAddCategory;
+        protected global::System.Web.UI.WebControls.Repeater rptConfirmItems;
 
         /// <summary>
-        /// gvCategories control.
+        /// lblConfirmTotal control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvCategories;
+        protected global::System.Web.UI.WebControls.Label lblConfirmTotal;
 
         /// <summary>
-        /// btnRptBookings control.
+        /// lblConfirmPayNow control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnRptBookings;
-
-        /// <summary>
-        /// btnRptProviders control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnRptProviders;
-
-        /// <summary>
-        /// btnRptRevenue control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnRptRevenue;
-
-        /// <summary>
-        /// gvReport control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvReport;
-
-        /// <summary>
-        /// gvAudit control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvAudit;
+        protected global::System.Web.UI.WebControls.Label lblConfirmPayNow;
     }
 }

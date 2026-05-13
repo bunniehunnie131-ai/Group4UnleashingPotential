@@ -7,7 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600&family=Nunito:wght@400;500;600&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    
+
     <style>
         :root {
             --sky:        #0ea5e9;
@@ -26,7 +26,6 @@
             color: var(--text);
         }
 
-        
         .navbar {
             background-color: var(--sky-deeper) !important;
             border-bottom: 3px solid var(--accent);
@@ -55,7 +54,35 @@
             color: var(--accent) !important;
         }
 
-       
+        /* Greeting text in navbar */
+        .nav-greeting {
+            color: var(--sky-light);
+            font-size: 0.88rem;
+            font-weight: 500;
+            padding: 0.5rem 0.75rem;
+            white-space: nowrap;
+        }
+
+        /* Logout button styled as a nav link */
+        .btn-nav-logout {
+            background: none;
+            border: 1.5px solid rgba(186, 230, 253, 0.4);
+            color: var(--sky-light) !important;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 0.35rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+            margin-left: 0.5rem;
+        }
+
+        .btn-nav-logout:hover {
+            background: rgba(186, 230, 253, 0.15);
+            color: #ffffff !important;
+        }
+
         .site-header {
             background: linear-gradient(135deg, var(--sky-dark), var(--sky-deeper));
             padding: 1.5rem 0;
@@ -106,33 +133,83 @@
 <body>
 <form id="form1" runat="server">
 
-    
     <nav class="navbar navbar-expand-lg">
         <div class="container">
             <a class="navbar-brand" href="Default.aspx">
                 <img src="~/Images/Unleashing Potential Logo.jpeg" runat="server" class="nav-logo" />
-               Unleashing Potential
+                Unleashing Potential
             </a>
 
-            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler border-0" type="button"
+                data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="Default.aspx">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="Register.aspx">Register</a></li>
-                    <li class="nav-item"><a class="nav-link" href="Login.aspx">Login</a></li>
-                    <li class="nav-item"><a class="nav-link" href="Admin.aspx">Admin</a></li>
-                    <li class="nav-item"><a class="nav-link" href="Services.aspx">Services</a></li>
-                    <li class="nav-item"><a class="nav-link" href="About.aspx">About</a></li>
-                    <li class="nav-item"><a class="nav-link" href="Contact.aspx">Contact Us</a></li>
+                <ul class="navbar-nav ms-auto align-items-lg-center">
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="Default.aspx">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="Services.aspx">Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="About.aspx">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="Contact.aspx">Contact Us</a>
+                    </li>
+
+                    <%-- Shown only when the user is NOT logged in --%>
+                    <asp:Panel ID="pnlGuest" runat="server">
+                        <li class="nav-item">
+                            <a class="nav-link" href="Register.aspx">Register</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="Login.aspx">Login</a>
+                        </li>
+                    </asp:Panel>
+
+                    <%-- Shown only when the user IS logged in --%>
+                    <asp:Panel ID="pnlUser" runat="server" Visible="false">
+                        <li class="nav-item">
+                            <a class="nav-link" href="ServiceCategories.aspx">
+                                <i class="bi bi-grid-fill me-1"></i>Browse Services
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="Basket.aspx">
+                                <i class="bi bi-basket2-fill me-1"></i>My Basket
+                            </a>
+                        </li>
+                        <li class="nav-item d-flex align-items-center">
+                            <span class="nav-greeting">
+                                <i class="bi bi-person-circle me-1"></i>
+                                <asp:Label ID="lblNavName" runat="server" />
+                            </span>
+                        </li>
+                        <li class="nav-item">
+                            <asp:Button ID="btnLogout" runat="server"
+                                Text="Sign Out"
+                                CssClass="btn-nav-logout"
+                                CausesValidation="false"
+                                OnClick="btnLogout_Click" />
+                        </li>
+                    </asp:Panel>
+
+                    <%-- Admin link — always visible so admin can reach the panel --%>
+                    <li class="nav-item">
+                        <a class="nav-link" href="Admin.aspx">
+                            <i class="bi bi-shield-lock me-1"></i>Admin
+                        </a>
+                    </li>
+
                 </ul>
             </div>
         </div>
     </nav>
 
-  
     <header class="site-header">
         <div class="header-inner">
             <img src="~/Images/Unleashing Potential Logo.jpeg" runat="server" class="header-logo" />
@@ -152,7 +229,7 @@
         <p>© <%: DateTime.Now.Year %> All rights reserved.</p>
         <p>
             <i class="bi bi-envelope"></i> kasiservices@unleashingpotential.co.za
-
+            &nbsp;&nbsp;
             <i class="bi bi-telephone"></i> +27 73 123 4567
         </p>
     </footer>

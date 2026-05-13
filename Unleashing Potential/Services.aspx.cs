@@ -13,5 +13,10 @@ namespace Unleashing_Potential
         {
 
         }
+
+        protected void btnRequestService_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("~/Login.aspx");
+        }
     }
 }

@@ -11,70 +11,70 @@ namespace Unleashing_Potential
 {
 
 
-    public partial class SiteMaster
+    public partial class WebForm12
     {
 
         /// <summary>
-        /// HeadContent control.
+        /// pnlForm control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ContentPlaceHolder HeadContent;
+        protected global::System.Web.UI.WebControls.Panel pnlForm;
 
         /// <summary>
-        /// form1 control.
+        /// rptProviderChips control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlForm form1;
+        protected global::System.Web.UI.WebControls.Repeater rptProviderChips;
 
         /// <summary>
-        /// pnlGuest control.
+        /// hdnRating control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlGuest;
+        protected global::System.Web.UI.WebControls.HiddenField hdnRating;
 
         /// <summary>
-        /// pnlUser control.
+        /// lblRatingErr control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlUser;
+        protected global::System.Web.UI.WebControls.Label lblRatingErr;
 
         /// <summary>
-        /// lblNavName control.
+        /// txtComment control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblNavName;
+        protected global::System.Web.UI.WebControls.TextBox txtComment;
 
         /// <summary>
-        /// btnLogout control.
+        /// btnSubmit control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnLogout;
+        protected global::System.Web.UI.WebControls.Button btnSubmit;
 
         /// <summary>
-        /// MainContent control.
+        /// pnlSuccess control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ContentPlaceHolder MainContent;
+        protected global::System.Web.UI.WebControls.Panel pnlSuccess;
     }
 }

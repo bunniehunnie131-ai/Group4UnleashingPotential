@@ -1,171 +1,329 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Services.aspx.cs" Inherits="Unleashing_Potential.WebForm3" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
 
-        <style>
-    :root {
-        --sky:        #0ea5e9;
-        --sky-dark:   #0369a1;
-        --sky-deeper: #0c4a6e;
-        --sky-light:  #bae6fd;
-        --sky-pale:   #f0f9ff;
-        --muted:      #64748b;
-    }
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 
-    .services-wrap {
-        max-width: 960px;
-        margin: 0 auto;
-    }
+    <style>
+        :root {
+            --sky:         #0ea5e9;
+            --sky-dark:    #0369a1;
+            --sky-deeper:  #0c4a6e;
+            --sky-light:   #bae6fd;
+            --sky-pale:    #f0f9ff;
+            --sky-mid:     #e0f2fe;
+            --muted:       #64748b;
+            --muted-light: #94a3b8;
+            --white:       #ffffff;
+            --card-shadow: 0 2px 12px rgba(12,74,110,0.07);
+            --card-shadow-hover: 0 12px 32px rgba(12,74,110,0.16);
+        }
 
-    .services-header {
-        background: linear-gradient(135deg, var(--sky-dark), var(--sky-deeper));
-        border-radius: 16px;
-        padding: 2rem 2.5rem 1.8rem;
-        margin-bottom: 2rem;
-        box-shadow: 0 4px 24px rgba(12, 74, 110, 0.10);
-    }
+        body, .services-wrap * {
+            font-family: 'DM Sans', sans-serif;
+        }
 
-    .services-header h2 {
-        font-family: 'Lora', serif;
-        color: #f0f9ff;
-        font-size: 1.7rem;
-        margin: 0 0 0.3rem;
-    }
+        /* ── Page wrapper ── */
+        .services-wrap {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 0 3rem;
+        }
 
-    .services-header p {
-        color: var(--sky-light);
-        font-size: 0.9rem;
-        margin: 0;
-    }
+        /* ── Header ── */
+        .services-header {
+            position: relative;
+            background: linear-gradient(135deg, var(--sky-deeper) 0%, var(--sky-dark) 100%);
+            border-radius: 20px;
+            padding: 2.6rem 2.8rem 2.4rem;
+            margin-bottom: 2.4rem;
+            overflow: hidden;
+        }
 
-    .service-card {
-        background: #ffffff;
-        border: none;
-        border-radius: 16px;
-        box-shadow: 0 4px 18px rgba(12, 74, 110, 0.08);
-        transition: transform 0.25s ease, box-shadow 0.25s ease;
-        overflow: hidden;
-    }
+        /* decorative circles */
+        .services-header::before,
+        .services-header::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.06);
+            pointer-events: none;
+        }
+        .services-header::before {
+            width: 260px; height: 260px;
+            top: -80px; right: -60px;
+        }
+        .services-header::after {
+            width: 140px; height: 140px;
+            bottom: -50px; right: 160px;
+        }
 
-    .service-card:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 10px 28px rgba(12, 74, 110, 0.16);
-    }
+        .services-header-inner {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
 
-    .service-card-top {
-        background: linear-gradient(135deg, #e0f2fe, var(--sky-light));
-        padding: 0;
-        text-align: center;
-        overflow: hidden;
-        border-radius: 16px 16px 0 0;
-    }
+        .services-header h2 {
+            font-family: 'Lora', serif;
+            color: #f0f9ff;
+            font-size: 1.85rem;
+            font-weight: 700;
+            margin: 0 0 0.3rem;
+            letter-spacing: -0.01em;
+        }
 
-    .service-img {
-        width: 100%;
-        height: 160px;
-        object-fit: cover;
-        display: block;
-    }
+        .services-header p {
+            color: var(--sky-light);
+            font-size: 0.92rem;
+            margin: 0;
+            opacity: 0.88;
+        }
 
-    .service-card-body {
-        padding: 1.2rem 1.3rem 1.5rem;
-        text-align: center;
-    }
+        .services-badge {
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #e0f2fe;
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 0.4rem 0.9rem;
+            border-radius: 999px;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
 
-    .service-card-body h5 {
-        font-family: 'Lora', serif;
-        color: var(--sky-deeper);
-        font-size: 1.05rem;
-        font-weight: 700;
-        margin-bottom: 0.5rem;
-    }
+        /* ── Grid ── */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 1.5rem;
+        }
 
-    .service-card-body p {
-        font-size: 0.88rem;
-        color: var(--muted);
-        margin-bottom: 1.1rem;
-        line-height: 1.55;
-    }
+        /* ── Card ── */
+        .service-card {
+            background: var(--white);
+            border-radius: 18px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(14,165,233,0.10);
+            transition: transform 0.28s cubic-bezier(.22,.68,0,1.2),
+                        box-shadow 0.28s ease,
+                        border-color 0.28s ease;
 
-    .btn-service {
-        background: linear-gradient(135deg, var(--sky), var(--sky-dark));
-        border: none;
-        color: white;
-        font-weight: 600;
-        padding: 0.55rem 1.4rem;
-        border-radius: 8px;
-        font-size: 0.88rem;
-        transition: opacity 0.2s, transform 0.1s;
-        cursor: pointer;
-    }
+            /* staggered entrance */
+            opacity: 0;
+            animation: cardIn 0.5s ease forwards;
+        }
+        .service-card:nth-child(1) { animation-delay: 0.05s; }
+        .service-card:nth-child(2) { animation-delay: 0.14s; }
+        .service-card:nth-child(3) { animation-delay: 0.23s; }
+        .service-card:nth-child(4) { animation-delay: 0.32s; }
 
-    .btn-service:hover {
-        opacity: 0.88;
-        transform: translateY(-1px);
-        color: white;
-    }
+        @keyframes cardIn {
+            from { opacity: 0; transform: translateY(18px); }
+            to   { opacity: 1; transform: translateY(0);    }
+        }
+
+        .service-card:hover {
+            transform: translateY(-7px);
+            box-shadow: var(--card-shadow-hover);
+            border-color: rgba(14,165,233,0.30);
+        }
+
+        /* ── Card image area ── */
+        .service-card-img {
+            position: relative;
+            overflow: hidden;
+            height: 168px;
+            background: var(--sky-mid);
+        }
+
+        .service-card-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.4s ease;
+        }
+
+        .service-card:hover .service-card-img img {
+            transform: scale(1.06);
+        }
+
+        /* category pill overlay */
+        .service-pill {
+            position: absolute;
+            top: 10px;
+            left: 12px;
+            background: rgba(12,74,110,0.72);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            color: #e0f2fe;
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 0.28rem 0.7rem;
+            border-radius: 999px;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        /* ── Card body ── */
+        .service-card-body {
+            padding: 1.25rem 1.3rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            gap: 0.55rem;
+        }
+
+        /* accent line */
+        .service-accent {
+            width: 36px;
+            height: 3px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, var(--sky), var(--sky-dark));
+            margin-bottom: 0.1rem;
+        }
+
+        .service-card-body h5 {
+            font-family: 'Lora', serif;
+            color: var(--sky-deeper);
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: -0.01em;
+        }
+
+        .service-card-body p {
+            font-size: 0.84rem;
+            color: var(--muted);
+            margin: 0;
+            line-height: 1.6;
+            flex: 1;
+        }
+
+        /* ── Button ── */
+        .btn-service {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            background: linear-gradient(135deg, var(--sky), var(--sky-dark));
+            border: none;
+            color: white !important;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 600;
+            font-size: 0.83rem;
+            padding: 0.58rem 1.3rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.15s;
+            align-self: flex-start;
+            margin-top: 0.3rem;
+        }
+
+        .btn-service::after {
+            content: '→';
+            font-size: 0.9rem;
+            transition: transform 0.2s;
+            display: inline-block;
+        }
+
+        .btn-service:hover {
+            opacity: 0.88;
+            transform: translateY(-1px);
+        }
+
+        .btn-service:hover::after {
+            transform: translateX(3px);
+        }
+
+        .btn-service:active {
+            transform: scale(0.97);
+        }
     </style>
 
 </asp:Content>
+
 <asp:Content ID="Content3" ContentPlaceHolderID="MainContent" runat="server">
 
     <div class="services-wrap">
 
         <div class="services-header">
-            <h2>Our Services</h2>
-            <p>Connecting communities with trusted local skills.</p>
+            <div class="services-header-inner">
+                <div>
+                    <h2>Our Services</h2>
+                    <p>Connecting communities with trusted local skills.</p>
+                </div>
+                <span class="services-badge">4 Services Available</span>
+            </div>
         </div>
 
-        <div class="row g-4">
+        <div class="services-grid">
 
-            <div class="col-sm-6 col-md-3">
-                <div class="service-card">
-                    <div class="service-card-top">
-                        <img src="images/hairdressing.png" alt="Hairdressing" class="service-img" />
-                    </div>
-                    <div class="service-card-body">
-                        <h5>Hairdressing</h5>
-                        <p>Professional braiding, styling and grooming services.</p>
-                        <button class="btn btn-service">Request Service</button>
-                    </div>
+            <div class="service-card">
+                <div class="service-card-img">
+                    <img src="images/hairdressing.png" alt="Hairdressing" />
+                    <span class="service-pill">Beauty</span>
+                </div>
+                <div class="service-card-body">
+                    <div class="service-accent"></div>
+                    <h5>Hairdressing</h5>
+                    <p>Professional braiding, styling and grooming services.</p>
+                    <asp:Button runat="server" ID="btnHairdressing" Text="Request Service"
+                        CssClass="btn-service" CausesValidation="false"
+                        OnClick="btnRequestService_Click" />
                 </div>
             </div>
 
-            <div class="col-sm-6 col-md-3">
-                <div class="service-card">
-                    <div class="service-card-top">
-                        <img src="images/tailoring.png" alt="Tailoring" class="service-img" />
-                    </div>
-                    <div class="service-card-body">
-                        <h5>Tailoring</h5>
-                        <p>Clothing design, alterations and fashion repairs.</p>
-                        <button class="btn btn-service">Request Service</button>
-                    </div>
+            <div class="service-card">
+                <div class="service-card-img">
+                    <img src="images/tailoring.png" alt="Tailoring" />
+                    <span class="service-pill">Fashion</span>
+                </div>
+                <div class="service-card-body">
+                    <div class="service-accent"></div>
+                    <h5>Tailoring</h5>
+                    <p>Clothing design, alterations and fashion repairs.</p>
+                    <asp:Button runat="server" ID="btnTailoring" Text="Request Service"
+                        CssClass="btn-service" CausesValidation="false"
+                        OnClick="btnRequestService_Click" />
                 </div>
             </div>
 
-            <div class="col-sm-6 col-md-3">
-                <div class="service-card">
-                    <div class="service-card-top">
-                        <img src="images/plumbing.png" alt="Plumbing" class="service-img" />
-                    </div>
-                    <div class="service-card-body">
-                        <h5>Plumbing</h5>
-                        <p>Pipe installation, leak repairs and plumbing maintenance.</p>
-                        <button class="btn btn-service">Request Service</button>
-                    </div>
+            <div class="service-card">
+                <div class="service-card-img">
+                    <img src="images/plumbing.png" alt="Plumbing" />
+                    <span class="service-pill">Trade</span>
+                </div>
+                <div class="service-card-body">
+                    <div class="service-accent"></div>
+                    <h5>Plumbing</h5>
+                    <p>Pipe installation, leak repairs and plumbing maintenance.</p>
+                    <asp:Button runat="server" ID="btnPlumbing" Text="Request Service"
+                        CssClass="btn-service" CausesValidation="false"
+                        OnClick="btnRequestService_Click" />
                 </div>
             </div>
 
-            <div class="col-sm-6 col-md-3">
-                <div class="service-card">
-                    <div class="service-card-top">
-                        <img src="images/painting.png" alt="Painting" class="service-img" />
-                    </div>
-                    <div class="service-card-body">
-                        <h5>Painting</h5>
-                        <p>Interior and exterior painting for homes and businesses.</p>
-                        <button class="btn btn-service">Request Service</button>
-                    </div>
+            <div class="service-card">
+                <div class="service-card-img">
+                    <img src="images/painting.png" alt="Painting" />
+                    <span class="service-pill">Trade</span>
+                </div>
+                <div class="service-card-body">
+                    <div class="service-accent"></div>
+                    <h5>Painting</h5>
+                    <p>Interior and exterior painting for homes and businesses.</p>
+                    <asp:Button runat="server" ID="btnPainting" Text="Request Service"
+                        CssClass="btn-service" CausesValidation="false"
+                        OnClick="btnRequestService_Click" />
                 </div>
             </div>
 
@@ -174,3 +332,14 @@
     </div>
 
 </asp:Content>
+
+
+
+
+
+
+
+
+
+
+
