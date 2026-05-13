@@ -24,12 +24,36 @@ namespace Unleashing_Potential
             if (!Page.IsValid) return;
 
             string connStr = ConfigurationManager
-                .ConnectionStrings["UnleashingPotentialDB"].ConnectionString;
+                .ConnectionStrings["ProjectDB"].ConnectionString;
 
             SqlTransaction transaction = null;
 
             try
             {
+                string fullName = txtFullName.Text.Trim();
+                string email = txtEmail.Text.Trim().ToLower();
+                string phone = txtPhone.Text.Trim();
+                string password = txtPassword.Text;
+                string township = ddlTownship.SelectedValue;
+                string securityQuestion = ddlSecurityQuestion.SelectedItem.Text;
+                string securityAnswerHash = BookingDB.HashPassword(
+                    txtSecurityAnswer.Text.Trim().ToLower());
+
+                DateTime dob;
+                if (!DateTime.TryParse(txtDOB.Text.Trim(), out dob))
+                {
+                    ShowWarning("Please enter a valid date of birth.");
+                    return;
+                }
+
+                if ((DateTime.Today - dob).TotalDays < 365.25 * 18)
+                {
+                    ShowWarning("You must be at least 18 years old to register.");
+                    return;
+                }
+
+                string passwordHash = HashPassword(password);
+
                 using (SqlConnection conn = new SqlConnection(connStr))
                 {
                     conn.Open();
@@ -40,32 +64,35 @@ namespace Unleashing_Potential
                     SqlCommand checkCmd = new SqlCommand(checkSql, conn);
                     checkCmd.Transaction = transaction;
                     checkCmd.Parameters.Add("@Email", SqlDbType.NVarChar, 100);
-                    checkCmd.Parameters["@Email"].Value = txtEmail.Text.Trim();
+                    checkCmd.Parameters["@Email"].Value = email;
 
                     int existing = (int)checkCmd.ExecuteScalar();
                     if (existing > 0)
                     {
-                        lblMessage.Text = "That email address is already registered.";
+                        ShowWarning("That email address is already registered.");
                         transaction.Rollback();
                         return;
                     }
 
-                    // Step 2: Hash the password
-                    string passwordHash = HashPassword(txtPassword.Text);
-
-                    // Step 3: Insert into Users
+                    // Step 2: Insert into Users
                     string userSql =
-                        "INSERT INTO Users (FullName, Email, Phone, PasswordHash, Role, DateCreated, IsActive) " +
-                        "VALUES (@FullName, @Email, @Phone, @PasswordHash, @Role, @DateCreated, @IsActive); " +
+                        "INSERT INTO Users (FullName, Email, Phone, DateOfBirth, Township, PasswordHash, " +
+                        "SecurityQuestion, SecurityAnswerHash, Role, DateCreated, IsActive) " +
+                        "VALUES (@FullName, @Email, @Phone, @DOB, @Township, @PasswordHash, " +
+                        "@SecurityQuestion, @SecurityAnswerHash, @Role, @DateCreated, @IsActive); " +
                         "SELECT SCOPE_IDENTITY();";
 
                     SqlCommand userCmd = new SqlCommand(userSql, conn);
                     userCmd.Transaction = transaction;
 
-                    userCmd.Parameters.Add("@FullName", SqlDbType.NVarChar, 100).Value = txtFullName.Text.Trim();
-                    userCmd.Parameters.Add("@Email", SqlDbType.NVarChar, 100).Value = txtEmail.Text.Trim();
-                    userCmd.Parameters.Add("@Phone", SqlDbType.NVarChar, 20).Value = txtPhone.Text.Trim();
+                    userCmd.Parameters.Add("@FullName", SqlDbType.NVarChar, 100).Value = fullName;
+                    userCmd.Parameters.Add("@Email", SqlDbType.NVarChar, 100).Value = email;
+                    userCmd.Parameters.Add("@Phone", SqlDbType.NVarChar, 20).Value = phone;
+                    userCmd.Parameters.Add("@DOB", SqlDbType.Date).Value = dob;
+                    userCmd.Parameters.Add("@Township", SqlDbType.NVarChar, 100).Value = township;
                     userCmd.Parameters.Add("@PasswordHash", SqlDbType.NVarChar, 256).Value = passwordHash;
+                    userCmd.Parameters.Add("@SecurityQuestion", SqlDbType.NVarChar, 200).Value = securityQuestion;
+                    userCmd.Parameters.Add("@SecurityAnswerHash", SqlDbType.NVarChar, 64).Value = securityAnswerHash;
                     userCmd.Parameters.Add("@Role", SqlDbType.NVarChar, 20).Value = "ServiceProvider";
                     userCmd.Parameters.Add("@DateCreated", SqlDbType.DateTime).Value = DateTime.Now;
                     userCmd.Parameters.Add("@IsActive", SqlDbType.Bit).Value = true;
@@ -100,7 +127,9 @@ namespace Unleashing_Potential
 
                     // Step 6: Log the registration
                     WriteAuditLog("PROVIDER_REGISTER",
-                        "New service provider registered: " + txtEmail.Text.Trim());
+                        "New service provider registered: " + email);
+
+                    ClearForm();
 
                     // Step 7: Redirect to login with a success message
                     Response.Redirect("~/Login.aspx?registered=provider");
@@ -112,14 +141,43 @@ namespace Unleashing_Potential
                 {
                     try { transaction.Rollback(); } catch { }
                 }
-                lblMessage.Text = "Registration failed. Please try again.";
+                ShowDanger("Registration failed. Please try again.");
                 WriteAuditLog("PROVIDER_REGISTER_ERROR", ex.Message);
             }
         }
 
+        protected void btnClear_Click(object sender, EventArgs e)
+        {
+            ClearForm();
+        }
+
         protected void btnCancel_Click(object sender, EventArgs e)
         {
+            ClearForm();
             Response.Redirect("~/Default.aspx");
+        }
+
+        private void ClearForm()
+        {
+            txtFullName.Text = "";
+            txtEmail.Text = "";
+            txtPhone.Text = "";
+            txtDOB.Text = "";
+            ddlTownship.SelectedIndex = 0;
+            txtPassword.Text = "";
+            txtConfirmPassword.Text = "";
+            ddlSecurityQuestion.SelectedIndex = 0;
+            txtSecurityAnswer.Text = "";
+            txtProviderName.Text = "";
+            ddlCategory.SelectedIndex = 0;
+            txtSpecialty.Text = "";
+            txtDescription.Text = "";
+            txtPrice.Text = "";
+            ddlPriceUnit.SelectedIndex = 0;
+            txtLocation.Text = "";
+            txtYearsExperience.Text = "";
+            lblMessage.Text = "";
+            lblMessage.CssClass = "";
         }
 
         // Simple SHA256 hash — replace with your project's hashing method if different
@@ -140,7 +198,7 @@ namespace Unleashing_Potential
             try
             {
                 string connStr = ConfigurationManager
-                    .ConnectionStrings["UnleashingPotentialDB"].ConnectionString;
+                    .ConnectionStrings["ProjectDB"].ConnectionString;
 
                 using (SqlConnection conn = new SqlConnection(connStr))
                 {
@@ -156,6 +214,18 @@ namespace Unleashing_Potential
                 }
             }
             catch { }
+        }
+
+        private void ShowWarning(string message)
+        {
+            lblMessage.Text = message;
+            lblMessage.CssClass = "d-block mt-3 alert alert-warning";
+        }
+
+        private void ShowDanger(string message)
+        {
+            lblMessage.Text = message;
+            lblMessage.CssClass = "d-block mt-3 alert alert-danger";
         }
     }
 }

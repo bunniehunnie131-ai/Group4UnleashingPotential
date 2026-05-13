@@ -291,6 +291,42 @@
                     Please enter a valid phone number (7–15 digits).</asp:RegularExpressionValidator>
                 </div>
 
+                <div class="row">
+                    <%-- Date of Birth --%>
+                    <div class="col-sm-6">
+                        <div class="field-group">
+                            <label for="txtDOB" class="form-label">Date of Birth</label>
+                            <asp:TextBox ID="txtDOB" runat="server" CssClass="form-control"
+                                TextMode="Date"></asp:TextBox>
+                            <asp:RequiredFieldValidator ID="rfvDOB" runat="server"
+                                ControlToValidate="txtDOB"
+                                ErrorMessage="Date of birth is required."
+                                Display="Dynamic" CssClass="field-error" ForeColor="">
+                            Date of birth is required.</asp:RequiredFieldValidator>
+                        </div>
+                    </div>
+
+                    <%-- Township --%>
+                    <div class="col-sm-6">
+                        <div class="field-group">
+                            <label for="ddlTownship" class="form-label">Township</label>
+                            <asp:DropDownList ID="ddlTownship" runat="server" CssClass="form-select">
+                                <asp:ListItem Text="-- Select --" Value="" Selected="True"></asp:ListItem>
+                                <asp:ListItem Text="Quigney" Value="QG"></asp:ListItem>
+                                <asp:ListItem Text="Southernwood" Value="SW"></asp:ListItem>
+                                <asp:ListItem Text="Beacon Bay" Value="BB"></asp:ListItem>
+                                <asp:ListItem Text="Mdantsane" Value="Ntsane"></asp:ListItem>
+                            </asp:DropDownList>
+                            <asp:RequiredFieldValidator ID="rfvTownship" runat="server"
+                                ControlToValidate="ddlTownship"
+                                InitialValue=""
+                                ErrorMessage="Please select a township."
+                                Display="Dynamic" CssClass="field-error" ForeColor="">
+                            Please select a township.</asp:RequiredFieldValidator>
+                        </div>
+                    </div>
+                </div>
+
                 <%-- Password --%>
                 <div class="field-group">
                     <label for="txtPassword" class="form-label">Password</label>
@@ -350,6 +386,47 @@
                         ErrorMessage="Passwords do not match."
                         Display="Dynamic" CssClass="field-error" ForeColor="">
                     Passwords do not match.</asp:CompareValidator>
+                </div>
+
+                <hr class="divider" />
+
+                <p class="section-label">Security</p>
+
+                <%-- Security Question --%>
+                <div class="field-group">
+                    <label for="ddlSecurityQuestion" class="form-label">Security Question</label>
+                    <asp:DropDownList ID="ddlSecurityQuestion" runat="server" CssClass="form-select">
+                        <asp:ListItem Text="-- Select a question --" Value="" Selected="True"></asp:ListItem>
+                        <asp:ListItem Text="What is your mother's maiden name?" Value="Q1"></asp:ListItem>
+                        <asp:ListItem Text="What was the name of your first pet?" Value="Q2"></asp:ListItem>
+                        <asp:ListItem Text="What city were you born in?" Value="Q3"></asp:ListItem>
+                        <asp:ListItem Text="What is the name of your primary school?" Value="Q4"></asp:ListItem>
+                        <asp:ListItem Text="What was your childhood nickname?" Value="Q5"></asp:ListItem>
+                    </asp:DropDownList>
+                    <asp:RequiredFieldValidator ID="rfvSecurityQuestion" runat="server"
+                        ControlToValidate="ddlSecurityQuestion"
+                        InitialValue=""
+                        ErrorMessage="Please select a security question."
+                        Display="Dynamic" CssClass="field-error" ForeColor="">
+                    Please select a security question.</asp:RequiredFieldValidator>
+                </div>
+
+                <%-- Security Answer --%>
+                <div class="field-group">
+                    <label for="txtSecurityAnswer" class="form-label">Your Answer</label>
+                    <asp:TextBox ID="txtSecurityAnswer" runat="server" CssClass="form-control"
+                        placeholder="Enter your answer"></asp:TextBox>
+                    <asp:RequiredFieldValidator ID="rfvSecurityAnswer" runat="server"
+                        ControlToValidate="txtSecurityAnswer"
+                        ErrorMessage="Please provide an answer to your security question."
+                        Display="Dynamic" CssClass="field-error" ForeColor="">
+                    Please provide an answer to your security question.</asp:RequiredFieldValidator>
+                    <asp:RegularExpressionValidator ID="revSecurityAnswer" runat="server"
+                        ControlToValidate="txtSecurityAnswer"
+                        ValidationExpression="^.{2,100}$"
+                        ErrorMessage="Answer must be between 2 and 100 characters."
+                        Display="Dynamic" CssClass="field-error" ForeColor="">
+                    Answer must be between 2 and 100 characters.</asp:RegularExpressionValidator>
                 </div>
 
                 <hr class="divider" />
@@ -496,6 +573,10 @@
                     <asp:Button ID="btnRegister" runat="server" Text="Create Account"
                         CssClass="btn btn-register"
                         OnClick="btnRegister_Click" />
+                    <asp:Button ID="btnClear" runat="server" Text="Clear"
+                        CssClass="btn btn-clear"
+                        CausesValidation="False"
+                        OnClick="btnClear_Click" />
                     <asp:Button ID="btnCancel" runat="server" Text="Cancel"
                         CssClass="btn btn-clear"
                         CausesValidation="False"
