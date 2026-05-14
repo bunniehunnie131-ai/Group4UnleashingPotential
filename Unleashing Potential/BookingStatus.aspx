@@ -31,10 +31,12 @@
         font-size:0.8rem; font-weight:600;
     }
     .status-Pending       { background:#fef3c7; border:1px solid #fcd34d; color:#92400e; }
+    .status-Confirmed     { background:#dbeafe; border:1px solid #93c5fd; color:#1e40af; }
+    .status-Completed     { background:#dcfce7; border:1px solid #86efac; color:#166534; }
+    .status-Cancelled     { background:#fee2e2; border:1px solid #fca5a5; color:#991b1b; }
     .status-Accepted      { background:#dbeafe; border:1px solid #93c5fd; color:#1e40af; }
     .status-InProgress    { background:#f3e8ff; border:1px solid #c4b5fd; color:#5b21b6; }
     .status-AppointmentDay{ background:#fce7f3; border:1px solid #f9a8d4; color:#9d174d; }
-    .status-Completed     { background:#dcfce7; border:1px solid #86efac; color:#166534; }
 
     /* Timeline */
     .timeline { display:flex; align-items:center; gap:0; margin:1rem 0; overflow-x:auto; padding-bottom:0.5rem; }

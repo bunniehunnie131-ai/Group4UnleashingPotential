@@ -55,6 +55,9 @@ namespace Unleashing_Potential
 
             if (string.Equals(user.Role, "Admin", StringComparison.OrdinalIgnoreCase))
                 Response.Redirect("~/Admin.aspx");
+            else if (string.Equals(user.Role, "ServiceProvider", StringComparison.OrdinalIgnoreCase) ||
+                     string.Equals(user.Role, "Provider", StringComparison.OrdinalIgnoreCase))
+                Response.Redirect("~/ServiceProviderDashboard.aspx");
             else
                 Response.Redirect("~/ServiceCategories.aspx");
         }

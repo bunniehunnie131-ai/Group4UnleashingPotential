@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Text;
 using System.Web;
 
 namespace Unleashing_Potential
@@ -219,10 +220,14 @@ namespace Unleashing_Potential
             string trimmed = status.Trim();
             if (trimmed.Equals("Complete", StringComparison.OrdinalIgnoreCase))
                 return "Completed";
+            if (trimmed.Equals("Accepted", StringComparison.OrdinalIgnoreCase))
+                return "Confirmed";
             if (trimmed.Equals("InProcess", StringComparison.OrdinalIgnoreCase))
-                return "In Progress";
+                return "Confirmed";
+            if (trimmed.Equals("In Progress", StringComparison.OrdinalIgnoreCase))
+                return "Confirmed";
             if (trimmed.Equals("AppointmentDay", StringComparison.OrdinalIgnoreCase))
-                return "Appointment Day";
+                return "Confirmed";
             return trimmed;
         }
 
@@ -234,7 +239,7 @@ namespace Unleashing_Potential
             switch (statusId.Value)
             {
                 case 1: return "Pending";
-                case 2: return "In Progress";
+                case 2: return "Confirmed";
                 case 3: return "Completed";
                 case 4: return "Cancelled";
                 default: return statusId.Value.ToString();
@@ -312,6 +317,112 @@ namespace Unleashing_Potential
                 object result = cmd.ExecuteScalar();
                 return result == null || result == DBNull.Value ? string.Empty : result.ToString();
             }
+        }
+
+        private static int? ResolveCategoryId(SqlConnection conn, string categoryName)
+        {
+            if (string.IsNullOrWhiteSpace(categoryName))
+                return null;
+
+            using (var cmd = new SqlCommand(
+                "SELECT TOP 1 CategoryID FROM Category WHERE LOWER(Name) = LOWER(@Name) AND IsActive = 1", conn))
+            {
+                cmd.Parameters.Add("@Name", SqlDbType.NVarChar, 100).Value = categoryName.Trim();
+                object result = cmd.ExecuteScalar();
+                if (result == null || result == DBNull.Value)
+                    return null;
+
+                return Convert.ToInt32(result);
+            }
+        }
+
+        private static int? ResolveServiceId(SqlConnection conn, BasketItem item)
+        {
+            if (item == null)
+                return null;
+
+            if (item.ServiceID.HasValue)
+                return item.ServiceID;
+
+            string serviceName = (item.Service ?? string.Empty).Trim();
+            if (!string.IsNullOrWhiteSpace(serviceName))
+            {
+                using (var cmd = new SqlCommand(
+                    "SELECT TOP 1 ServiceID FROM Service " +
+                    "WHERE IsActive = 1 AND (LOWER(Name) = LOWER(@Name) OR LOWER(Description) = LOWER(@Name)) " +
+                    "ORDER BY ServiceID", conn))
+                {
+                    cmd.Parameters.Add("@Name", SqlDbType.NVarChar, 100).Value = serviceName;
+                    object result = cmd.ExecuteScalar();
+                    if (result != null && result != DBNull.Value)
+                        return Convert.ToInt32(result);
+                }
+            }
+
+            int? categoryId = ResolveCategoryId(conn, item.Category);
+            if (categoryId.HasValue)
+            {
+                using (var cmd = new SqlCommand(
+                    "SELECT TOP 1 ServiceID FROM Service " +
+                    "WHERE IsActive = 1 AND CategoryID = @CategoryID " +
+                    "ORDER BY ServiceID", conn))
+                {
+                    cmd.Parameters.Add("@CategoryID", SqlDbType.Int).Value = categoryId.Value;
+                    object result = cmd.ExecuteScalar();
+                    if (result != null && result != DBNull.Value)
+                        return Convert.ToInt32(result);
+                }
+            }
+
+            using (var cmd = new SqlCommand(
+                "SELECT TOP 1 ServiceID FROM Service WHERE IsActive = 1 ORDER BY ServiceID", conn))
+            {
+                object result = cmd.ExecuteScalar();
+                return result == null || result == DBNull.Value ? (int?)null : Convert.ToInt32(result);
+            }
+        }
+
+        private static string BuildBookingSelectSql(string whereClause)
+        {
+            var sql = new StringBuilder();
+            sql.AppendLine("SELECT");
+            sql.AppendLine("    b.BookingID,");
+            sql.AppendLine("    b.ReferenceNumber,");
+            sql.AppendLine("    b.CustomerID,");
+            sql.AppendLine("    b.LocationID,");
+            sql.AppendLine("    b.BookingStatusID,");
+            sql.AppendLine("    b.BookingDate,");
+            sql.AppendLine("    b.AppointmentDate,");
+            sql.AppendLine("    b.Notes,");
+            sql.AppendLine("    b.ReviewLeft,");
+            sql.AppendLine("    ISNULL(u.FullName, '') AS CustomerName,");
+            sql.AppendLine("    ISNULL(u.Phone, '') AS CustomerPhone,");
+            sql.AppendLine("    ISNULL(u.Township, '') AS CustomerAddress,");
+            sql.AppendLine("    ISNULL(bs.Name, '') AS Status,");
+            sql.AppendLine("    ISNULL(pay.PaymentMethod, '') AS PaymentMethod,");
+            sql.AppendLine("    ISNULL(pay.TotalAmount, 0) AS TotalAmount,");
+            sql.AppendLine("    ISNULL(pay.AmountPaid, 0) AS AmountPaid");
+            sql.AppendLine("FROM Booking b");
+            sql.AppendLine("LEFT JOIN Users u ON b.CustomerID = u.UserID");
+            sql.AppendLine("LEFT JOIN BookingStatus bs ON b.BookingStatusID = bs.BookingStatusID");
+            sql.AppendLine("OUTER APPLY (");
+            sql.AppendLine("    SELECT TOP 1");
+            sql.AppendLine("        pm.Name AS PaymentMethod,");
+            sql.AppendLine("        p.TotalAmount,");
+            sql.AppendLine("        p.AmountPaid");
+            sql.AppendLine("    FROM Payment p");
+            sql.AppendLine("    LEFT JOIN PaymentMethod pm ON p.PaymentMethodID = pm.PaymentMethodID");
+            sql.AppendLine("    WHERE p.BookingID = b.BookingID");
+            sql.AppendLine("    ORDER BY p.PaymentDate DESC, p.PaymentID DESC");
+            sql.AppendLine(") pay");
+
+            if (!string.IsNullOrWhiteSpace(whereClause))
+            {
+                sql.Append(" ").Append(whereClause.Trim()).AppendLine();
+            }
+
+            sql.AppendLine("ORDER BY b.BookingDate DESC, b.BookingID DESC");
+            return sql.ToString();
         }
 
         public static bool RegisterUser(
@@ -682,23 +793,25 @@ namespace Unleashing_Potential
 
                     int newBookingID = Convert.ToInt32(cmd.ExecuteScalar());
 
-                    foreach (var item in booking.Items)
+                    foreach (var item in booking.Items ?? new List<BasketItem>())
                     {
+                        int? serviceId = ResolveServiceId(conn, item);
+                        if (!serviceId.HasValue)
+                            throw new InvalidOperationException("Could not resolve a service for the booking item.");
+
                         var itemCmd = new SqlCommand(
-                            "INSERT INTO BookingItems (BookingID, ProviderID, ProviderName, " +
-                            "Service, Category, Price, PriceUnit, Quantity) " +
-                            "VALUES (@BookingID, @ProviderID, @ProviderName, " +
-                            "@Service, @Category, @Price, @PriceUnit, @Quantity)", conn);
+                            "INSERT INTO BookingItem (BookingID, ServiceID, ProviderID, Quantity, UnitPrice) " +
+                            "VALUES (@BookingID, @ServiceID, @ProviderID, @Quantity, @UnitPrice)", conn);
                         itemCmd.Transaction = tx;
 
                         itemCmd.Parameters.Add("@BookingID", SqlDbType.Int).Value = newBookingID;
+                        itemCmd.Parameters.Add("@ServiceID", SqlDbType.Int).Value = serviceId.Value;
                         itemCmd.Parameters.Add("@ProviderID", SqlDbType.Int).Value = item.ProviderID;
-                        itemCmd.Parameters.Add("@ProviderName", SqlDbType.NVarChar, 100).Value = item.ProviderName;
-                        itemCmd.Parameters.Add("@Service", SqlDbType.NVarChar, 100).Value = item.Service;
-                        itemCmd.Parameters.Add("@Category", SqlDbType.NVarChar, 50).Value = item.Category;
-                        itemCmd.Parameters.Add("@Price", SqlDbType.Decimal).Value = item.Price;
-                        itemCmd.Parameters.Add("@PriceUnit", SqlDbType.NVarChar, 50).Value = item.PriceUnit;
                         itemCmd.Parameters.Add("@Quantity", SqlDbType.Int).Value = item.Quantity;
+                        var unitPriceParam = itemCmd.Parameters.Add("@UnitPrice", SqlDbType.Decimal);
+                        unitPriceParam.Precision = 18;
+                        unitPriceParam.Scale = 2;
+                        unitPriceParam.Value = item.Price;
                         itemCmd.ExecuteNonQuery();
                     }
 
@@ -725,7 +838,7 @@ namespace Unleashing_Potential
                     conn.Open();
 
                     var cmd = new SqlCommand(
-                        "SELECT * FROM Booking WHERE ReferenceNumber = @Ref", conn);
+                        BuildBookingSelectSql("WHERE b.ReferenceNumber = @Ref"), conn);
                     cmd.Parameters.Add("@Ref", SqlDbType.NVarChar, 20).Value = referenceNumber;
 
                     using (var reader = cmd.ExecuteReader())
@@ -737,6 +850,7 @@ namespace Unleashing_Potential
                     if (booking == null) return null;
 
                     booking.Items = GetBookingItems(booking.BookingID, conn);
+                    FinalizeBookingSummary(booking);
                 }
             }
             catch (SqlException ex)
@@ -755,11 +869,8 @@ namespace Unleashing_Potential
                 {
                     conn.Open();
                     var cmd = new SqlCommand(
-                        "SELECT b.* " +
-                        "FROM Booking b " +
-                        "LEFT JOIN Users u ON b.CustomerID = u.UserID " +
-                        "WHERE u.FullName = @CustomerName OR u.Email = @CustomerName " +
-                        "ORDER BY b.BookingDate DESC", conn);
+                        BuildBookingSelectSql(
+                            "WHERE u.FullName = @CustomerName OR u.Email = @CustomerName"), conn);
                     cmd.Parameters.Add("@CustomerName", SqlDbType.NVarChar, 100).Value = customerName;
 
                     using (var reader = cmd.ExecuteReader())
@@ -769,7 +880,10 @@ namespace Unleashing_Potential
                     }
 
                     foreach (var b in list)
+                    {
                         b.Items = GetBookingItems(b.BookingID, conn);
+                        FinalizeBookingSummary(b);
+                    }
                 }
             }
             catch (SqlException ex)
@@ -783,7 +897,17 @@ namespace Unleashing_Potential
         {
             var items = new List<BasketItem>();
             var cmd = new SqlCommand(
-                "SELECT * FROM BookingItems WHERE BookingID = @BookingID", conn);
+                "SELECT bi.ItemID, bi.BookingID, bi.ServiceID, bi.ProviderID, bi.Quantity, bi.UnitPrice, " +
+                "       ISNULL(sp.Name, '') AS ProviderName, " +
+                "       ISNULL(s.Name, sp.Specialty) AS Service, " +
+                "       ISNULL(s.CategoryID, 0) AS CategoryID, " +
+                "       ISNULL(sp.Category, '') AS Category, " +
+                "       ISNULL(COALESCE(s.PriceUnit, sp.PriceUnit), '') AS PriceUnit " +
+                "FROM BookingItem bi " +
+                "LEFT JOIN ServiceProviders sp ON bi.ProviderID = sp.ProviderID " +
+                "LEFT JOIN Service s ON bi.ServiceID = s.ServiceID " +
+                "WHERE bi.BookingID = @BookingID " +
+                "ORDER BY bi.ItemID", conn);
             cmd.Parameters.Add("@BookingID", SqlDbType.Int).Value = bookingID;
 
             using (var reader = cmd.ExecuteReader())
@@ -792,12 +916,13 @@ namespace Unleashing_Potential
                 {
                     items.Add(new BasketItem
                     {
+                        ServiceID = ReadIntOrNull(reader, "ServiceID"),
                         ProviderID = reader.GetInt32(reader.GetOrdinal("ProviderID")),
-                        ProviderName = reader.GetString(reader.GetOrdinal("ProviderName")),
-                        Service = reader.GetString(reader.GetOrdinal("Service")),
-                        Category = reader.GetString(reader.GetOrdinal("Category")),
-                        Price = reader.GetDecimal(reader.GetOrdinal("Price")),
-                        PriceUnit = reader.GetString(reader.GetOrdinal("PriceUnit")),
+                        ProviderName = ReadStringOrEmpty(reader, "ProviderName"),
+                        Service = ReadStringOrEmpty(reader, "Service"),
+                        Category = ReadStringOrEmpty(reader, "Category"),
+                        Price = reader.GetDecimal(reader.GetOrdinal("UnitPrice")),
+                        PriceUnit = ReadStringOrEmpty(reader, "PriceUnit"),
                         Quantity = reader.GetInt32(reader.GetOrdinal("Quantity"))
                     });
                 }
@@ -805,9 +930,35 @@ namespace Unleashing_Potential
             return items;
         }
 
+        private static void FinalizeBookingSummary(Booking booking)
+        {
+            if (booking == null)
+                return;
+
+            decimal lineTotal = 0m;
+            if (booking.Items != null && booking.Items.Count > 0)
+                lineTotal = booking.Items.Sum(i => i.LineTotal);
+
+            if (booking.TotalAmount <= 0m && lineTotal > 0m)
+                booking.TotalAmount = lineTotal;
+
+            if (string.IsNullOrWhiteSpace(booking.PaymentMethod))
+                booking.PaymentMethod = "Pay on Completion";
+
+            if (booking.AmountPaid <= 0m &&
+                string.Equals(NormalizeStatus(booking.Status), "Completed", StringComparison.OrdinalIgnoreCase))
+            {
+                booking.AmountPaid = booking.TotalAmount;
+            }
+        }
+
         private static Booking MapBooking(SqlDataReader reader)
         {
             int notesCol = HasColumn(reader, "Notes") ? reader.GetOrdinal("Notes") : -1;
+            string status = NormalizeStatus(ReadStringOrEmpty(reader, "Status"));
+            if (string.IsNullOrWhiteSpace(status))
+                status = StatusNameFromId(ReadIntOrNull(reader, "BookingStatusID"));
+
             return new Booking
             {
                 BookingID = reader.GetInt32(reader.GetOrdinal("BookingID")),
@@ -815,14 +966,17 @@ namespace Unleashing_Potential
                 CustomerID = ReadIntOrNull(reader, "CustomerID"),
                 LocationID = ReadIntOrNull(reader, "LocationID"),
                 BookingStatusID = ReadIntOrNull(reader, "BookingStatusID"),
-                Status = StatusNameFromId(ReadIntOrNull(reader, "BookingStatusID")),
+                Status = status,
                 BookingDate = reader.GetDateTime(reader.GetOrdinal("BookingDate")),
                 AppointmentDate = reader.GetDateTime(reader.GetOrdinal("AppointmentDate")),
                 CustomerName = ReadStringOrEmpty(reader, "CustomerName"),
                 CustomerPhone = ReadStringOrEmpty(reader, "CustomerPhone"),
                 CustomerAddress = ReadStringOrEmpty(reader, "CustomerAddress"),
                 Notes = notesCol < 0 || reader.IsDBNull(notesCol) ? "" : reader.GetString(notesCol),
-                ReviewLeft = ReadBoolOrFalse(reader, "ReviewLeft")
+                ReviewLeft = ReadBoolOrFalse(reader, "ReviewLeft"),
+                PaymentMethod = ReadStringOrEmpty(reader, "PaymentMethod"),
+                TotalAmount = ReadDecimalOrNull(reader, "TotalAmount") ?? 0m,
+                AmountPaid = ReadDecimalOrNull(reader, "AmountPaid") ?? 0m
             };
         }
 
@@ -867,6 +1021,7 @@ namespace Unleashing_Potential
     [Serializable]
     public class BasketItem
     {
+        public int? ServiceID { get; set; }
         public int ProviderID { get; set; }
         public string ProviderName { get; set; }
         public string Service { get; set; }
@@ -876,6 +1031,20 @@ namespace Unleashing_Potential
         public int Quantity { get; set; }
 
         public decimal LineTotal => Price * Quantity;
+    }
+
+    [Serializable]
+    public class Service
+    {
+        public int ServiceID { get; set; }
+        public int? CategoryID { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public decimal MinPrice { get; set; }
+        public decimal MaxPrice { get; set; }
+        public string PriceUnit { get; set; }
+        public bool IsActive { get; set; }
+        public DateTime DateCreated { get; set; }
     }
 
     [Serializable]

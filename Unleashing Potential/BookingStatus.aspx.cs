@@ -37,19 +37,21 @@ namespace Unleashing_Potential
         protected string GetStatusBadge(string status)
         {
             if (string.IsNullOrWhiteSpace(status)) status = "Pending";
+            status = Normalize(status);
             string css = "status-" + status.Replace(" ", "");
             string icon = status == "Pending" ? "⏳" :
-                          status == "Accepted" ? "✅" :
-                          status == "In Progress" ? "🔨" :
-                          status == "Appointment Day" ? "📅" :
-                          status == "Completed" ? "🎉" : "❓";
+                          status == "Confirmed" ? "✅" :
+                          status == "Completed" ? "🎉" :
+                          status == "Cancelled" ? "✖" : "❓";
             return $"<span class='status-badge {css}'>{icon} {status}</span>";
         }
 
         protected string GetTimeline(string currentStatus)
         {
-            var stages = new[] { "Pending", "Accepted", "In Progress", "Appointment Day", "Completed" };
+            currentStatus = Normalize(currentStatus);
+            var stages = new[] { "Pending", "Confirmed", "Completed", "Cancelled" };
             int idx = Array.IndexOf(stages, currentStatus);
+            if (idx < 0) idx = 0;
             var sb = new StringBuilder("<div class='timeline'>");
 
             for (int i = 0; i < stages.Length; i++)
@@ -77,7 +79,7 @@ namespace Unleashing_Potential
             if (booking?.Items == null) return "";
             var sb = new StringBuilder();
             foreach (var item in booking.Items)
-                sb.Append($"<span class='service-tag'>{item.ProviderName}</span>");
+                sb.Append($"<span class='service-tag'>{item.ProviderName} — {item.Service}</span>");
             return sb.ToString();
         }
 
@@ -96,7 +98,10 @@ namespace Unleashing_Potential
         {
             if (string.IsNullOrWhiteSpace(status)) return "Pending";
             if (status.Equals("Complete", StringComparison.OrdinalIgnoreCase)) return "Completed";
-            if (status.Equals("InProcess", StringComparison.OrdinalIgnoreCase)) return "In Progress";
+            if (status.Equals("Accepted", StringComparison.OrdinalIgnoreCase)) return "Confirmed";
+            if (status.Equals("InProcess", StringComparison.OrdinalIgnoreCase)) return "Confirmed";
+            if (status.Equals("In Progress", StringComparison.OrdinalIgnoreCase)) return "Confirmed";
+            if (status.Equals("AppointmentDay", StringComparison.OrdinalIgnoreCase)) return "Confirmed";
             return status;
         }
     }
