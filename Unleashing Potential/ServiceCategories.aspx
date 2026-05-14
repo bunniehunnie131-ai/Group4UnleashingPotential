@@ -654,7 +654,7 @@
 
         <section class="action-grid">
             <a href="ServiceProviders.aspx" class="action-card">
-                <span class="action-icon">👥</span>
+                <span class="action-icon"><i class="bi bi-people-fill" aria-hidden="true"></i></span>
                 <div>
                     <h3>Find providers</h3>
                     <p>Open the provider list and start from the default category.</p>
@@ -662,7 +662,7 @@
             </a>
 
             <a href="Basket.aspx" class="action-card">
-                <span class="action-icon">🛒</span>
+                <span class="action-icon"><i class="bi bi-basket2-fill" aria-hidden="true"></i></span>
                 <div>
                     <h3>View basket</h3>
                     <p>Check what you have already added before you checkout.</p>
@@ -670,7 +670,7 @@
             </a>
 
             <a href="BookingStatus.aspx" class="action-card">
-                <span class="action-icon">📋</span>
+                <span class="action-icon"><i class="bi bi-clipboard2-check-fill" aria-hidden="true"></i></span>
                 <div>
                     <h3>Track bookings</h3>
                     <p>See the latest status updates and review completed jobs.</p>
