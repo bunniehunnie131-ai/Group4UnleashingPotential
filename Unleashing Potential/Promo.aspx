@@ -82,6 +82,8 @@
 
         .feature-icon {
             font-size: 3rem;
+            line-height: 1;
+            color: #0c4a6e;
             margin-bottom: 15px;
         }
 
@@ -173,31 +175,29 @@
             </h4>
 
             <div class="features-grid">
-
                 <div class="feature-card">
-                    <div class="feature-icon">🔍</div>
+                    <div class="feature-icon" aria-hidden="true"><i class="bi bi-search"></i></div>
                     <h4>Easy Discovery</h4>
                     <p>Find trusted plumbers, hairdressers, painters, tailors, and more in your community.</p>
                 </div>
 
                 <div class="feature-card">
-                    <div class="feature-icon">🤝</div>
+                    <div class="feature-icon" aria-hidden="true"><i class="bi bi-people-fill"></i></div>
                     <h4>Trusted Connections</h4>
                     <p>Connect directly with verified service providers and support local businesses.</p>
                 </div>
 
                 <div class="feature-card">
-                    <div class="feature-icon">📈</div>
+                    <div class="feature-icon" aria-hidden="true"><i class="bi bi-graph-up-arrow"></i></div>
                     <h4>Grow Your Business</h4>
                     <p>Service providers can showcase their skills and attract more customers online.</p>
                 </div>
 
                 <div class="feature-card">
-                    <div class="feature-icon">⭐</div>
+                    <div class="feature-icon" aria-hidden="true"><i class="bi bi-star-fill"></i></div>
                     <h4>Community Reviews</h4>
                     <p>Customers can leave reviews and ratings to help others choose quality services.</p>
                 </div>
-
             </div>
         </div>
     </section>
