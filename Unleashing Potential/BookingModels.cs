@@ -97,6 +97,12 @@ namespace Unleashing_Potential
             }
         }
 
+        private static string ReadStringOrEmpty(SqlDataReader reader, string columnName)
+        {
+            int ordinal = reader.GetOrdinal(columnName);
+            return reader.IsDBNull(ordinal) ? string.Empty : reader.GetString(ordinal);
+        }
+
         public static bool RegisterUser(
             string fullName, string email, string phone,
             DateTime dob, string township, string passwordHash,
@@ -225,11 +231,11 @@ namespace Unleashing_Potential
                         return new Users
                         {
                             UserID = reader.GetInt32(reader.GetOrdinal("UserID")),
-                            FullName = reader.GetString(reader.GetOrdinal("FullName")),
-                            Email = reader.GetString(reader.GetOrdinal("Email")),
-                            Phone = reader.GetString(reader.GetOrdinal("Phone")),
-                            Township = reader.GetString(reader.GetOrdinal("Township")),
-                            Role = reader.GetString(reader.GetOrdinal("Role"))
+                            FullName = ReadStringOrEmpty(reader, "FullName"),
+                            Email = ReadStringOrEmpty(reader, "Email"),
+                            Phone = ReadStringOrEmpty(reader, "Phone"),
+                            Township = ReadStringOrEmpty(reader, "Township"),
+                            Role = ReadStringOrEmpty(reader, "Role")
                         };
                     }
                 }

@@ -160,43 +160,44 @@
                     <li class="nav-item">
                         <a class="nav-link" href="Contact.aspx">Contact Us</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="Promo.aspx">
+                            <i class="bi bi-megaphone-fill me-1"></i>Promo
+                        </a>
+                    </li>
 
                     <%-- Shown only when the user is NOT logged in --%>
-                    <asp:Panel ID="pnlGuest" runat="server">
-                        <li class="nav-item">
-                            <a class="nav-link" href="Register.aspx">Register</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="Login.aspx">Login</a>
-                        </li>
-                    </asp:Panel>
+                    <li class="nav-item" id="liRegister" runat="server">
+                        <a class="nav-link" href="Register.aspx">Register</a>
+                    </li>
+                    <li class="nav-item" id="liLogin" runat="server">
+                        <a class="nav-link" href="Login.aspx">Login</a>
+                    </li>
 
                     <%-- Shown only when the user IS logged in --%>
-                    <asp:Panel ID="pnlUser" runat="server" Visible="false">
-                        <li class="nav-item">
-                            <a class="nav-link" href="ServiceCategories.aspx">
-                                <i class="bi bi-grid-fill me-1"></i>Browse Services
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="Basket.aspx">
-                                <i class="bi bi-basket2-fill me-1"></i>My Basket
-                            </a>
-                        </li>
-                        <li class="nav-item d-flex align-items-center">
-                            <span class="nav-greeting">
-                                <i class="bi bi-person-circle me-1"></i>
-                                <asp:Label ID="lblNavName" runat="server" />
-                            </span>
-                        </li>
-                        <li class="nav-item">
-                            <asp:Button ID="btnLogout" runat="server"
-                                Text="Sign Out"
-                                CssClass="btn-nav-logout"
-                                CausesValidation="false"
-                                OnClick="btnLogout_Click" />
-                        </li>
-                    </asp:Panel>
+                    <li class="nav-item" id="liBrowseServices" runat="server" visible="false">
+                        <a class="nav-link" href="ServiceCategories.aspx">
+                            <i class="bi bi-grid-fill me-1"></i>Browse Services
+                        </a>
+                    </li>
+                    <li class="nav-item" id="liBasket" runat="server" visible="false">
+                        <a class="nav-link" href="Basket.aspx">
+                            <i class="bi bi-basket2-fill me-1"></i>My Basket
+                        </a>
+                    </li>
+                    <li class="nav-item d-flex align-items-center" id="liGreeting" runat="server" visible="false">
+                        <span class="nav-greeting">
+                            <i class="bi bi-person-circle me-1"></i>
+                            <asp:Label ID="lblNavName" runat="server" />
+                        </span>
+                    </li>
+                    <li class="nav-item" id="liLogout" runat="server" visible="false">
+                        <asp:Button ID="btnLogout" runat="server"
+                            Text="Sign Out"
+                            CssClass="btn-nav-logout"
+                            CausesValidation="false"
+                            OnClick="btnLogout_Click" />
+                    </li>
 
                     <%-- Admin link — always visible so admin can reach the panel --%>
                     <li class="nav-item">

@@ -11,32 +11,29 @@ namespace Unleashing_Potential
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (Session["UserID"] != null)
-            {
-                // User is logged in — show the user panel, hide guest links
-                pnlUser.Visible = true;
-                pnlGuest.Visible = false;
+            bool isLoggedIn = Session["UserID"] != null;
 
-                // Show their first name in the navbar greeting
-                if (Session["FullName"] != null)
-                {
-                    string fullName = Session["FullName"].ToString();
-                    string firstName = fullName.Split(' ')[0];
-                    lblNavName.Text = firstName;
-                }
-            }
-            else
+            // Guest items (Register, Login) - shown when NOT logged in
+            liRegister.Visible = !isLoggedIn;
+            liLogin.Visible = !isLoggedIn;
+
+            // User items - shown when logged in
+            liBrowseServices.Visible = isLoggedIn;
+            liBasket.Visible = isLoggedIn;
+            liGreeting.Visible = isLoggedIn;
+            liLogout.Visible = isLoggedIn;
+
+            if (isLoggedIn)
             {
-                // User is not logged in — show guest links, hide user panel
-                pnlUser.Visible = false;
-                pnlGuest.Visible = true;
+                lblNavName.Text = Session["FirstName"]?.ToString() ?? "User";
             }
         }
 
         protected void btnLogout_Click(object sender, EventArgs e)
         {
+            Session.Clear();
             Session.Abandon();
-            Response.Redirect("~/Login.aspx");
+            Response.Redirect("Default.aspx");
         }
     }
 }

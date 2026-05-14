@@ -47,7 +47,7 @@ namespace Unleashing_Potential
         private void WriteAuditLog(string action, string description)
         {
             string sql =
-                "INSERT INTO AuditLogs (AdminName, Action, Description, LogDate) " +
+                "INSERT INTO AuditLogs (UserName, Action, Description, LogDate) " +
                 "VALUES (@Admin, @Action, @Desc, @Date)";
 
             try
@@ -339,6 +339,7 @@ namespace Unleashing_Potential
             {
                 // Set a temporary password — in production this would email the user
                 string tempPassword = "Temp@" + DateTime.Now.ToString("ddMM");
+                string tempPasswordHash = BookingDB.HashPassword(tempPassword);
 
                 try
                 {
@@ -346,8 +347,8 @@ namespace Unleashing_Potential
                     {
                         conn.Open();
                         SqlCommand cmd = new SqlCommand(
-                            "UPDATE Users SET Password = @PW WHERE UserID = @ID", conn);
-                        cmd.Parameters.Add("@PW", SqlDbType.NVarChar, 256).Value = tempPassword;
+                            "UPDATE Users SET PasswordHash = @PW WHERE UserID = @ID", conn);
+                        cmd.Parameters.Add("@PW", SqlDbType.NVarChar, 64).Value = tempPasswordHash;
                         cmd.Parameters.Add("@ID", SqlDbType.Int).Value = userID;
                         cmd.ExecuteNonQuery();
                     }
@@ -507,7 +508,7 @@ namespace Unleashing_Potential
         private void LoadAuditLog()
         {
             DataTable dt = FillTable(
-                "SELECT TOP 100 LogDate, AdminName, Action, Description " +
+                "SELECT TOP 100 LogDate, UserName AS AdminName, Action, Description " +
                 "FROM AuditLogs ORDER BY LogDate DESC");
 
             gvAudit.DataSource = dt;

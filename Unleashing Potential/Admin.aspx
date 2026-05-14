@@ -1,6 +1,8 @@
 ﻿<%@ Page Title="Admin Dashboard" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Admin.aspx.cs" Inherits="Unleashing_Potential.WebForm4" %>
 
    <asp:Content ID="Content2" ContentPlaceHolderID="HeadContent" runat="server">
+       <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <style>
 :root {
     --sky: #0ea5e9; --sky-dark: #0369a1;
