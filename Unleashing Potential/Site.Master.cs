@@ -25,7 +25,10 @@ namespace Unleashing_Potential
 
             if (isLoggedIn)
             {
-                lblNavName.Text = Session["FirstName"]?.ToString() ?? "User";
+                lblNavName.Text = Session["FullName"]?.ToString()
+                    ?? Session["UserName"]?.ToString()
+                    ?? Session["FirstName"]?.ToString()
+                    ?? "User";
             }
         }
 

@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Unleashing Potential Promo" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Promo.aspx.cs" Inherits="Unleashing_Potential.Promo" %>
+<%@ Page Title="Unleashing Potential Promo" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Promo.aspx.cs" Inherits="Unleashing_Potential.Promo" %>
 
 <asp:Content ID="HeadContent" ContentPlaceHolderID="HeadContent" runat="server">
     <style>
@@ -152,13 +152,13 @@
 
         <p>
             Unleashing Potential connects communities with trusted local service providers.
-            Discover skilled professionals, grow local businesses, and build stronger communities.
+            Customers can browse services, track bookings, and support small businesses from one place.
         </p>
 
         <div class="promo-buttons">
-            <a href="CustomerDashboard.aspx" class="btn-primary-custom">Customer Portal</a>
+            <a href="ServiceCategories.aspx" class="btn-primary-custom">Browse Services</a>
             <a href="ServiceProviderDashboard.aspx" class="btn-secondary-custom">Service Provider Portal</a>
-            <a href="AdminDashboard.aspx" class="btn-primary-custom">Admin Panel</a>
+            <a href="Admin.aspx" class="btn-primary-custom">Admin Panel</a>
         </div>
     </section>
 
