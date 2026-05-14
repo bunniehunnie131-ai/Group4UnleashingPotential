@@ -99,8 +99,219 @@ namespace Unleashing_Potential
 
         private static string ReadStringOrEmpty(SqlDataReader reader, string columnName)
         {
+            if (!HasColumn(reader, columnName))
+                return string.Empty;
+
             int ordinal = reader.GetOrdinal(columnName);
             return reader.IsDBNull(ordinal) ? string.Empty : reader.GetString(ordinal);
+        }
+
+        private static bool HasColumn(SqlDataReader reader, string columnName)
+        {
+            try
+            {
+                reader.GetOrdinal(columnName);
+                return true;
+            }
+            catch (IndexOutOfRangeException)
+            {
+                return false;
+            }
+        }
+
+        private static int? ReadIntOrNull(SqlDataReader reader, string columnName)
+        {
+            if (!HasColumn(reader, columnName))
+                return null;
+
+            int ordinal = reader.GetOrdinal(columnName);
+            return reader.IsDBNull(ordinal) ? (int?)null : Convert.ToInt32(reader.GetValue(ordinal));
+        }
+
+        private static decimal? ReadDecimalOrNull(SqlDataReader reader, string columnName)
+        {
+            if (!HasColumn(reader, columnName))
+                return null;
+
+            int ordinal = reader.GetOrdinal(columnName);
+            return reader.IsDBNull(ordinal) ? (decimal?)null : Convert.ToDecimal(reader.GetValue(ordinal));
+        }
+
+        private static DateTime? ReadDateTimeOrNull(SqlDataReader reader, string columnName)
+        {
+            if (!HasColumn(reader, columnName))
+                return null;
+
+            int ordinal = reader.GetOrdinal(columnName);
+            return reader.IsDBNull(ordinal) ? (DateTime?)null : reader.GetDateTime(ordinal);
+        }
+
+        private static bool ReadBoolOrFalse(SqlDataReader reader, string columnName)
+        {
+            if (!HasColumn(reader, columnName))
+                return false;
+
+            int ordinal = reader.GetOrdinal(columnName);
+            return !reader.IsDBNull(ordinal) && reader.GetBoolean(ordinal);
+        }
+
+        private static int? GetCurrentUserId()
+        {
+            object value = HttpContext.Current?.Session?["UserID"];
+            if (value == null || value == DBNull.Value)
+                return null;
+
+            try
+            {
+                return Convert.ToInt32(value);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private static bool TableExists(SqlConnection conn, string tableName)
+        {
+            using (var cmd = new SqlCommand(
+                "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = @TableName", conn))
+            {
+                cmd.Parameters.Add("@TableName", SqlDbType.NVarChar, 128).Value = tableName;
+                return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
+            }
+        }
+
+        private static string FirstExistingTable(SqlConnection conn, params string[] tableNames)
+        {
+            foreach (string tableName in tableNames)
+            {
+                if (TableExists(conn, tableName))
+                    return tableName;
+            }
+
+            return null;
+        }
+
+        private static string FirstExistingColumn(SqlConnection conn, string tableName, params string[] columnNames)
+        {
+            foreach (string columnName in columnNames)
+            {
+                using (var cmd = new SqlCommand(
+                    "SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS " +
+                    "WHERE TABLE_NAME = @TableName AND COLUMN_NAME = @ColumnName", conn))
+                {
+                    cmd.Parameters.Add("@TableName", SqlDbType.NVarChar, 128).Value = tableName;
+                    cmd.Parameters.Add("@ColumnName", SqlDbType.NVarChar, 128).Value = columnName;
+
+                    if (Convert.ToInt32(cmd.ExecuteScalar()) > 0)
+                        return columnName;
+                }
+            }
+
+            return null;
+        }
+
+        private static string NormalizeStatus(string status)
+        {
+            if (string.IsNullOrWhiteSpace(status))
+                return string.Empty;
+
+            string trimmed = status.Trim();
+            if (trimmed.Equals("Complete", StringComparison.OrdinalIgnoreCase))
+                return "Completed";
+            if (trimmed.Equals("InProcess", StringComparison.OrdinalIgnoreCase))
+                return "In Progress";
+            if (trimmed.Equals("AppointmentDay", StringComparison.OrdinalIgnoreCase))
+                return "Appointment Day";
+            return trimmed;
+        }
+
+        private static string StatusNameFromId(int? statusId)
+        {
+            if (!statusId.HasValue)
+                return "Pending";
+
+            switch (statusId.Value)
+            {
+                case 1: return "Pending";
+                case 2: return "In Progress";
+                case 3: return "Completed";
+                case 4: return "Cancelled";
+                default: return statusId.Value.ToString();
+            }
+        }
+
+        private static int? ResolveBookingStatusId(SqlConnection conn, string statusName)
+        {
+            string statusTable = FirstExistingTable(conn, "BookingStatus", "BookingStatuses");
+            if (string.IsNullOrEmpty(statusTable))
+                return null;
+
+            string idColumn = FirstExistingColumn(conn, statusTable, "BookingStatusID", "StatusID", "ID");
+            string textColumn = FirstExistingColumn(conn, statusTable, "Name", "StatusName", "Description");
+            if (string.IsNullOrEmpty(idColumn) || string.IsNullOrEmpty(textColumn))
+                return null;
+
+            using (var cmd = new SqlCommand(
+                $"SELECT TOP 1 {idColumn} FROM {statusTable} WHERE LOWER({textColumn}) = LOWER(@Status) OR LOWER({textColumn}) LIKE LOWER(@LikeStatus)", conn))
+            {
+                cmd.Parameters.Add("@Status", SqlDbType.NVarChar, 100).Value = statusName;
+                cmd.Parameters.Add("@LikeStatus", SqlDbType.NVarChar, 100).Value = "%" + statusName + "%";
+
+                object result = cmd.ExecuteScalar();
+                if (result == null || result == DBNull.Value)
+                    return null;
+
+                return Convert.ToInt32(result);
+            }
+        }
+
+        private static string ResolveBookingStatusName(SqlConnection conn, int? statusId)
+        {
+            if (!statusId.HasValue)
+                return string.Empty;
+
+            string statusTable = FirstExistingTable(conn, "BookingStatus", "BookingStatuses");
+            if (string.IsNullOrEmpty(statusTable))
+                return statusId.Value == 1 ? "Pending" : statusId.Value.ToString();
+
+            string idColumn = FirstExistingColumn(conn, statusTable, "BookingStatusID", "StatusID", "ID");
+            string textColumn = FirstExistingColumn(conn, statusTable, "Name", "StatusName", "Description");
+            if (string.IsNullOrEmpty(idColumn) || string.IsNullOrEmpty(textColumn))
+                return statusId.Value.ToString();
+
+            using (var cmd = new SqlCommand(
+                $"SELECT TOP 1 {textColumn} FROM {statusTable} WHERE {idColumn} = @StatusID", conn))
+            {
+                cmd.Parameters.Add("@StatusID", SqlDbType.Int).Value = statusId.Value;
+                object result = cmd.ExecuteScalar();
+                return result == null || result == DBNull.Value
+                    ? statusId.Value.ToString()
+                    : NormalizeStatus(result.ToString());
+            }
+        }
+
+        private static string ResolveLocationText(SqlConnection conn, int? locationId)
+        {
+            if (!locationId.HasValue)
+                return string.Empty;
+
+            string locationTable = FirstExistingTable(conn, "Location", "Locations");
+            if (string.IsNullOrEmpty(locationTable))
+                return string.Empty;
+
+            string idColumn = FirstExistingColumn(conn, locationTable, "LocationID", "ID");
+            string textColumn = FirstExistingColumn(conn, locationTable, "Address", "Name", "LocationName", "Township");
+            if (string.IsNullOrEmpty(idColumn) || string.IsNullOrEmpty(textColumn))
+                return string.Empty;
+
+            using (var cmd = new SqlCommand(
+                $"SELECT TOP 1 {textColumn} FROM {locationTable} WHERE {idColumn} = @LocationID", conn))
+            {
+                cmd.Parameters.Add("@LocationID", SqlDbType.Int).Value = locationId.Value;
+                object result = cmd.ExecuteScalar();
+                return result == null || result == DBNull.Value ? string.Empty : result.ToString();
+            }
         }
 
         public static bool RegisterUser(
@@ -400,7 +611,7 @@ namespace Unleashing_Potential
                     }
 
                     var updateCmd = new SqlCommand(
-                        "UPDATE Bookings SET ReviewLeft = 1 " +
+                        "UPDATE Booking SET ReviewLeft = 1 " +
                         "WHERE ReferenceNumber = @Ref", conn);
                     updateCmd.Transaction = transaction;
                     updateCmd.Parameters.Add("@Ref", SqlDbType.NVarChar, 20).Value = bookingReference;
@@ -447,27 +658,25 @@ namespace Unleashing_Potential
                     conn.Open();
                     tx = conn.BeginTransaction();
 
+                    int? customerId = booking.CustomerID ?? GetCurrentUserId();
+                    int? locationId = booking.LocationID;
+                    int? statusId = booking.BookingStatusID ?? ResolveBookingStatusId(conn, "Pending");
+
                     string insertBooking =
-                        "INSERT INTO Bookings (ReferenceNumber, PaymentMethod, TotalAmount, " +
-                        "AmountPaid, Status, BookingDate, AppointmentDate, CustomerName, " +
-                        "CustomerPhone, CustomerAddress, Notes, ReviewLeft) " +
-                        "VALUES (@Ref, @PayMethod, @Total, @AmtPaid, @Status, @BookDate, " +
-                        "@AppDate, @CustName, @CustPhone, @CustAddr, @Notes, 0); " +
+                        "INSERT INTO Booking (ReferenceNumber, CustomerID, LocationID, BookingStatusID, " +
+                        "AppointmentDate, BookingDate, Notes, ReviewLeft) " +
+                        "VALUES (@Ref, @CustomerID, @LocationID, @StatusID, @AppDate, @BookDate, @Notes, 0); " +
                         "SELECT SCOPE_IDENTITY();";
 
                     var cmd = new SqlCommand(insertBooking, conn);
                     cmd.Transaction = tx;
 
                     cmd.Parameters.Add("@Ref", SqlDbType.NVarChar, 20).Value = refNumber;
-                    cmd.Parameters.Add("@PayMethod", SqlDbType.NVarChar, 50).Value = booking.PaymentMethod;
-                    cmd.Parameters.Add("@Total", SqlDbType.Decimal).Value = booking.TotalAmount;
-                    cmd.Parameters.Add("@AmtPaid", SqlDbType.Decimal).Value = booking.AmountPaid;
-                    cmd.Parameters.Add("@Status", SqlDbType.NVarChar, 30).Value = "Pending";
+                    cmd.Parameters.Add("@CustomerID", SqlDbType.Int).Value = (object)customerId ?? DBNull.Value;
+                    cmd.Parameters.Add("@LocationID", SqlDbType.Int).Value = (object)locationId ?? DBNull.Value;
+                    cmd.Parameters.Add("@StatusID", SqlDbType.Int).Value = (object)statusId ?? DBNull.Value;
                     cmd.Parameters.Add("@BookDate", SqlDbType.DateTime).Value = DateTime.Now;
                     cmd.Parameters.Add("@AppDate", SqlDbType.Date).Value = booking.AppointmentDate;
-                    cmd.Parameters.Add("@CustName", SqlDbType.NVarChar, 100).Value = booking.CustomerName;
-                    cmd.Parameters.Add("@CustPhone", SqlDbType.NVarChar, 20).Value = booking.CustomerPhone;
-                    cmd.Parameters.Add("@CustAddr", SqlDbType.NVarChar, 200).Value = booking.CustomerAddress;
                     cmd.Parameters.Add("@Notes", SqlDbType.NVarChar, 500).Value =
                         string.IsNullOrEmpty(booking.Notes) ? (object)DBNull.Value : booking.Notes;
 
@@ -499,7 +708,7 @@ namespace Unleashing_Potential
             catch (SqlException ex)
             {
                 if (tx != null) try { tx.Rollback(); } catch { }
-                WriteAuditLog(booking.CustomerName, "DB_ERROR", ex.Message);
+                WriteAuditLog(null, "DB_ERROR", ex.Message);
                 throw;
             }
 
@@ -516,7 +725,7 @@ namespace Unleashing_Potential
                     conn.Open();
 
                     var cmd = new SqlCommand(
-                        "SELECT * FROM Bookings WHERE ReferenceNumber = @Ref", conn);
+                        "SELECT * FROM Booking WHERE ReferenceNumber = @Ref", conn);
                     cmd.Parameters.Add("@Ref", SqlDbType.NVarChar, 20).Value = referenceNumber;
 
                     using (var reader = cmd.ExecuteReader())
@@ -546,8 +755,11 @@ namespace Unleashing_Potential
                 {
                     conn.Open();
                     var cmd = new SqlCommand(
-                        "SELECT * FROM Bookings WHERE CustomerName = @CustomerName " +
-                        "ORDER BY BookingDate DESC", conn);
+                        "SELECT b.* " +
+                        "FROM Booking b " +
+                        "LEFT JOIN Users u ON b.CustomerID = u.UserID " +
+                        "WHERE u.FullName = @CustomerName OR u.Email = @CustomerName " +
+                        "ORDER BY b.BookingDate DESC", conn);
                     cmd.Parameters.Add("@CustomerName", SqlDbType.NVarChar, 100).Value = customerName;
 
                     using (var reader = cmd.ExecuteReader())
@@ -595,22 +807,22 @@ namespace Unleashing_Potential
 
         private static Booking MapBooking(SqlDataReader reader)
         {
-            int notesCol = reader.GetOrdinal("Notes");
+            int notesCol = HasColumn(reader, "Notes") ? reader.GetOrdinal("Notes") : -1;
             return new Booking
             {
                 BookingID = reader.GetInt32(reader.GetOrdinal("BookingID")),
                 ReferenceNumber = reader.GetString(reader.GetOrdinal("ReferenceNumber")),
-                PaymentMethod = reader.GetString(reader.GetOrdinal("PaymentMethod")),
-                TotalAmount = reader.GetDecimal(reader.GetOrdinal("TotalAmount")),
-                AmountPaid = reader.GetDecimal(reader.GetOrdinal("AmountPaid")),
-                Status = reader.GetString(reader.GetOrdinal("Status")),
+                CustomerID = ReadIntOrNull(reader, "CustomerID"),
+                LocationID = ReadIntOrNull(reader, "LocationID"),
+                BookingStatusID = ReadIntOrNull(reader, "BookingStatusID"),
+                Status = StatusNameFromId(ReadIntOrNull(reader, "BookingStatusID")),
                 BookingDate = reader.GetDateTime(reader.GetOrdinal("BookingDate")),
                 AppointmentDate = reader.GetDateTime(reader.GetOrdinal("AppointmentDate")),
-                CustomerName = reader.GetString(reader.GetOrdinal("CustomerName")),
-                CustomerPhone = reader.GetString(reader.GetOrdinal("CustomerPhone")),
-                CustomerAddress = reader.GetString(reader.GetOrdinal("CustomerAddress")),
-                Notes = reader.IsDBNull(notesCol) ? "" : reader.GetString(notesCol),
-                ReviewLeft = reader.GetBoolean(reader.GetOrdinal("ReviewLeft"))
+                CustomerName = ReadStringOrEmpty(reader, "CustomerName"),
+                CustomerPhone = ReadStringOrEmpty(reader, "CustomerPhone"),
+                CustomerAddress = ReadStringOrEmpty(reader, "CustomerAddress"),
+                Notes = notesCol < 0 || reader.IsDBNull(notesCol) ? "" : reader.GetString(notesCol),
+                ReviewLeft = ReadBoolOrFalse(reader, "ReviewLeft")
             };
         }
 
@@ -671,9 +883,9 @@ namespace Unleashing_Potential
     {
         public int BookingID { get; set; }
         public string ReferenceNumber { get; set; }
-        public string PaymentMethod { get; set; }
-        public decimal TotalAmount { get; set; }
-        public decimal AmountPaid { get; set; }
+        public int? CustomerID { get; set; }
+        public int? LocationID { get; set; }
+        public int? BookingStatusID { get; set; }
         public string Status { get; set; }
         public DateTime BookingDate { get; set; }
         public DateTime AppointmentDate { get; set; }
@@ -682,6 +894,9 @@ namespace Unleashing_Potential
         public string CustomerAddress { get; set; }
         public string Notes { get; set; }
         public bool ReviewLeft { get; set; }
+        public string PaymentMethod { get; set; }
+        public decimal TotalAmount { get; set; }
+        public decimal AmountPaid { get; set; }
         public List<BasketItem> Items { get; set; } = new List<BasketItem>();
     }
 

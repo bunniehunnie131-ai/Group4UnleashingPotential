@@ -94,24 +94,26 @@ namespace Unleashing_Potential
             var booking = new Booking
             {
                 Items = new List<BasketItem>(basket),
-                PaymentMethod = rblPayment.SelectedValue ?? "PayOnCompletion",
-                TotalAmount = total,
-                AmountPaid = amtPaid,
-                Status = "Pending",
+                CustomerID = Session["UserID"] == null ? (int?)null : Convert.ToInt32(Session["UserID"]),
+                LocationID = null,
+                BookingStatusID = null,
                 BookingDate = DateTime.Now,
                 AppointmentDate = calAppointment.SelectedDate,
-                CustomerName = txtName.Text.Trim(),
-                CustomerPhone = txtPhone.Text.Trim(),
-                CustomerAddress = txtAddress.Text.Trim(),
                 Notes = txtNotes.Text.Trim()
             };
 
             try
             {
+                Session["LastBookingName"] = txtName.Text.Trim();
+                Session["LastBookingPhone"] = txtPhone.Text.Trim();
+                Session["LastBookingAddress"] = txtAddress.Text.Trim();
+                Session["LastBookingPayment"] = rblPayment.SelectedValue ?? "PayOnCompletion";
+                Session["LastBookingTotal"] = total;
+                Session["LastBookingAmtPaid"] = amtPaid;
                 string refNumber = BookingDB.SaveBooking(booking);
 
                 BookingDB.WriteAuditLog(
-                    booking.CustomerName,
+                    Session["UserName"] != null ? Session["UserName"].ToString() : null,
                     "BOOKING_CREATED",
                     "Booking " + refNumber + " created. Amount paid: R" + amtPaid.ToString("0.00"));
 

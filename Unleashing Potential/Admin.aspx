@@ -543,12 +543,12 @@
                     GridLines="None">
                     <Columns>
                         <asp:BoundField DataField="BookingID"    HeaderText="#" />
-                        <asp:BoundField DataField="ClientName"   HeaderText="Client" />
-                        <asp:BoundField DataField="ServiceName"  HeaderText="Service" />
-                        <asp:BoundField DataField="ProviderName" HeaderText="Provider" />
+                        <asp:BoundField DataField="ReferenceNumber" HeaderText="Reference" />
+                        <asp:BoundField DataField="CustomerID"   HeaderText="Customer ID" />
+                        <asp:BoundField DataField="LocationID"   HeaderText="Location ID" />
                         <asp:BoundField DataField="BookingDate"  HeaderText="Date"
                             DataFormatString="{0:dd MMM yyyy}" HtmlEncode="false" />
-                        <asp:BoundField DataField="Status"       HeaderText="Status" />
+                        <asp:BoundField DataField="BookingStatusID" HeaderText="Status ID" />
                     </Columns>
                 </asp:GridView>
 
@@ -655,9 +655,10 @@
                     GridLines="None">
                     <Columns>
                         <asp:BoundField DataField="BookingID"    HeaderText="#" />
-                        <asp:BoundField DataField="ClientName"   HeaderText="Client" />
-                        <asp:BoundField DataField="ServiceName"  HeaderText="Service" />
-                        <asp:BoundField DataField="ProviderName" HeaderText="Provider" />
+                        <asp:BoundField DataField="ReferenceNumber" HeaderText="Reference" />
+                        <asp:BoundField DataField="CustomerID"   HeaderText="Customer ID" />
+                        <asp:BoundField DataField="LocationID"   HeaderText="Location ID" />
+                        <asp:BoundField DataField="BookingStatusID" HeaderText="Status ID" />
                         <asp:BoundField DataField="BookingDate"  HeaderText="Date"
                             DataFormatString="{0:dd MMM yyyy}" HtmlEncode="false" />
                         <asp:TemplateField HeaderText="Status">
@@ -665,10 +666,10 @@
                                 <asp:DropDownList ID="ddlStatus" runat="server"
                                     CssClass="form-select form-select-sm"
                                     style="font-size:0.78rem; padding:0.2rem 0.5rem; width:130px;">
-                                    <asp:ListItem Text="Pending"    Value="Pending" />
-                                    <asp:ListItem Text="In Process" Value="InProcess" />
-                                    <asp:ListItem Text="Complete"   Value="Complete" />
-                                    <asp:ListItem Text="Cancelled"  Value="Cancelled" />
+                                    <asp:ListItem Text="Pending"    Value="1" />
+                                    <asp:ListItem Text="In Process" Value="2" />
+                                    <asp:ListItem Text="Complete"   Value="3" />
+                                    <asp:ListItem Text="Cancelled"  Value="4" />
                                 </asp:DropDownList>
                             </ItemTemplate>
                         </asp:TemplateField>

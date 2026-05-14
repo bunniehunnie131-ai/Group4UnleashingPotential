@@ -28,14 +28,14 @@ namespace Unleashing_Potential
             }
 
             lblRef.Text = booking.ReferenceNumber;
-            lblName.Text = booking.CustomerName;
-            lblPhone.Text = booking.CustomerPhone;
-            lblAddress.Text = booking.CustomerAddress;
+            lblName.Text = Session["LastBookingName"] as string ?? Session["UserName"] as string ?? "";
+            lblPhone.Text = Session["LastBookingPhone"] as string ?? "";
+            lblAddress.Text = Session["LastBookingAddress"] as string ?? "";
             lblDate.Text = booking.AppointmentDate.ToString("dd MMMM yyyy");
-            lblPayment.Text = booking.PaymentMethod == "EFT"
-                              ? "EFT Proof Upload" : "Pay on Completion";
-            lblAmtPaid.Text = booking.AmountPaid.ToString("0.00");
-            lblTotal.Text = booking.TotalAmount.ToString("0.00");
+            string payment = Session["LastBookingPayment"] as string ?? "PayOnCompletion";
+            lblPayment.Text = payment == "EFT" ? "EFT Proof Upload" : "Pay on Completion";
+            lblAmtPaid.Text = Convert.ToDecimal(Session["LastBookingAmtPaid"] ?? 0m).ToString("0.00");
+            lblTotal.Text = Convert.ToDecimal(Session["LastBookingTotal"] ?? 0m).ToString("0.00");
 
             rptItems.DataSource = booking.Items;
             rptItems.DataBind();

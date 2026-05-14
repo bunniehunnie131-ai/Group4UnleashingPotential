@@ -36,6 +36,7 @@ namespace Unleashing_Potential
 
         protected string GetStatusBadge(string status)
         {
+            if (string.IsNullOrWhiteSpace(status)) status = "Pending";
             string css = "status-" + status.Replace(" ", "");
             string icon = status == "Pending" ? "⏳" :
                           status == "Accepted" ? "✅" :
@@ -84,11 +85,19 @@ namespace Unleashing_Potential
         {
             var booking = dataItem as Booking;
             if (booking == null) return "";
-            if (booking.Status == "Completed" && !booking.ReviewLeft)
+            if (Normalize(booking.Status) == "Completed" && !booking.ReviewLeft)
                 return $"<a href='LeaveReview.aspx?ref={booking.ReferenceNumber}' class='btn-review'>⭐ Leave a Review</a>";
-            if (booking.Status == "Completed" && booking.ReviewLeft)
+            if (Normalize(booking.Status) == "Completed" && booking.ReviewLeft)
                 return "<span style='font-size:0.84rem;color:#166534;font-weight:600;'>✅ Review submitted</span>";
             return "";
+        }
+
+        private string Normalize(string status)
+        {
+            if (string.IsNullOrWhiteSpace(status)) return "Pending";
+            if (status.Equals("Complete", StringComparison.OrdinalIgnoreCase)) return "Completed";
+            if (status.Equals("InProcess", StringComparison.OrdinalIgnoreCase)) return "In Progress";
+            return status;
         }
     }
 }

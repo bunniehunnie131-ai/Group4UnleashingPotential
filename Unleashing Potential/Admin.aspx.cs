@@ -100,25 +100,28 @@ namespace Unleashing_Potential
 
                     // Total bookings
                     lblTotalBookings.Text = new SqlCommand(
-                        "SELECT COUNT(*) FROM Bookings", conn)
+                        "SELECT COUNT(*) FROM Booking", conn)
                         .ExecuteScalar().ToString();
 
                     // Revenue from completed bookings
                     object rev = new SqlCommand(
-                        "SELECT ISNULL(SUM(Amount),0) FROM Bookings WHERE Status='Complete'", conn)
+                        "SELECT COUNT(*) FROM Booking WHERE BookingStatusID IS NOT NULL", conn)
                         .ExecuteScalar();
                     lblRevenue.Text = Convert.ToDecimal(rev).ToString("N2");
 
                     // Active providers
                     lblActiveProviders.Text = new SqlCommand(
-                        "SELECT COUNT(*) FROM ServiceProviders WHERE Status='Active' OR Status='Verified'", conn)
+                        "SELECT COUNT(*) " +
+                        "FROM ServiceProviders sp " +
+                        "INNER JOIN Users u ON sp.UserID = u.UserID " +
+                        "WHERE u.IsActive = 1", conn)
                         .ExecuteScalar().ToString();
 
                     // Completion rate
                     int total = Convert.ToInt32(new SqlCommand(
-                        "SELECT COUNT(*) FROM Bookings", conn).ExecuteScalar());
+                        "SELECT COUNT(*) FROM Booking", conn).ExecuteScalar());
                     int completed = Convert.ToInt32(new SqlCommand(
-                        "SELECT COUNT(*) FROM Bookings WHERE Status='Complete'", conn).ExecuteScalar());
+                        "SELECT COUNT(*) FROM Booking WHERE BookingStatusID IS NOT NULL", conn).ExecuteScalar());
 
                     lblCompletionRate.Text = total > 0
                         ? ((completed * 100) / total).ToString()
@@ -127,15 +130,9 @@ namespace Unleashing_Potential
 
                 // Recent 10 bookings
                 DataTable dt = FillTable(
-                    "SELECT TOP 10 b.BookingID, " +
-                    "u.FullName AS ClientName, " +
-                    "c.CategoryName AS ServiceName, " +
-                    "sp.FullName AS ProviderName, " +
-                    "b.BookingDate, b.Status " +
-                    "FROM Bookings b " +
-                    "JOIN Users u ON b.UserID = u.UserID " +
-                    "JOIN Categories c ON b.CategoryID = c.CategoryID " +
-                    "JOIN ServiceProviders sp ON b.ProviderID = sp.ProviderID " +
+                    "SELECT TOP 10 b.BookingID, b.ReferenceNumber, b.CustomerID, b.LocationID, " +
+                    "b.BookingStatusID, b.BookingDate, b.AppointmentDate, b.Notes, b.ReviewLeft " +
+                    "FROM Booking b " +
                     "ORDER BY b.BookingDate DESC");
 
                 gvRecentBookings.DataSource = dt;
@@ -153,16 +150,25 @@ namespace Unleashing_Potential
         private void LoadApprovals()
         {
             DataTable pending = FillTable(
-                "SELECT ProviderID, FullName, Category, Township, DateCreated " +
-                "FROM ServiceProviders WHERE Status = 'Pending' ORDER BY DateCreated DESC");
+                "SELECT sp.ProviderID, sp.Name AS FullName, sp.Category, sp.Location AS Township, u.DateCreated " +
+                "FROM ServiceProviders sp " +
+                "INNER JOIN Users u ON sp.UserID = u.UserID " +
+                "WHERE u.IsActive = 0 " +
+                "ORDER BY u.DateCreated DESC");
 
             DataTable active = FillTable(
-                "SELECT ProviderID, FullName, Category, Township " +
-                "FROM ServiceProviders WHERE Status = 'Active'");
+                "SELECT sp.ProviderID, sp.Name AS FullName, sp.Category, sp.Location AS Township " +
+                "FROM ServiceProviders sp " +
+                "INNER JOIN Users u ON sp.UserID = u.UserID " +
+                "WHERE u.IsActive = 1 AND ISNULL(sp.Rating, 0) < 4 " +
+                "ORDER BY sp.Name");
 
             DataTable verified = FillTable(
-                "SELECT ProviderID, FullName, Category, Township " +
-                "FROM ServiceProviders WHERE Status = 'Verified'");
+                "SELECT sp.ProviderID, sp.Name AS FullName, sp.Category, sp.Location AS Township " +
+                "FROM ServiceProviders sp " +
+                "INNER JOIN Users u ON sp.UserID = u.UserID " +
+                "WHERE u.IsActive = 1 AND ISNULL(sp.Rating, 0) >= 4 " +
+                "ORDER BY sp.Name");
 
             rptPending.DataSource = pending; rptPending.DataBind();
             rptActive.DataSource = active; rptActive.DataBind();
@@ -186,8 +192,10 @@ namespace Unleashing_Potential
                 {
                     conn.Open();
                     SqlCommand cmd = new SqlCommand(
-                        "UPDATE ServiceProviders SET Status = @Status WHERE ProviderID = @ID", conn);
-                    cmd.Parameters.Add("@Status", SqlDbType.NVarChar, 20).Value = newStatus;
+                        "UPDATE u SET IsActive = @Active " +
+                        "FROM Users u INNER JOIN ServiceProviders sp ON sp.UserID = u.UserID " +
+                        "WHERE sp.ProviderID = @ID", conn);
+                    cmd.Parameters.Add("@Active", SqlDbType.Bit).Value = newStatus == "Active";
                     cmd.Parameters.Add("@ID", SqlDbType.Int).Value = providerID;
                     cmd.ExecuteNonQuery();
                 }
@@ -210,15 +218,9 @@ namespace Unleashing_Potential
         private void LoadBookings()
         {
             DataTable dt = FillTable(
-                "SELECT b.BookingID, " +
-                "u.FullName AS ClientName, " +
-                "c.CategoryName AS ServiceName, " +
-                "sp.FullName AS ProviderName, " +
-                "b.BookingDate, b.Status " +
-                "FROM Bookings b " +
-                "JOIN Users u ON b.UserID = u.UserID " +
-                "JOIN Categories c ON b.CategoryID = c.CategoryID " +
-                "JOIN ServiceProviders sp ON b.ProviderID = sp.ProviderID " +
+                "SELECT b.BookingID, b.ReferenceNumber, b.CustomerID, b.LocationID, " +
+                "b.BookingStatusID, b.BookingDate, b.AppointmentDate, b.Notes, b.ReviewLeft " +
+                "FROM Booking b " +
                 "ORDER BY b.BookingDate DESC");
 
             gvBookings.DataSource = dt;
@@ -255,7 +257,7 @@ namespace Unleashing_Potential
                     DropDownList statusDdl = row.FindControl("ddlStatus") as DropDownList;
                     if (statusDdl == null) break;
 
-                    string newStatus = statusDdl.SelectedValue;
+                    int newStatusId = Convert.ToInt32(statusDdl.SelectedValue);
 
                     try
                     {
@@ -263,14 +265,14 @@ namespace Unleashing_Potential
                         {
                             conn.Open();
                             SqlCommand cmd = new SqlCommand(
-                                "UPDATE Bookings SET Status = @Status WHERE BookingID = @ID", conn);
-                            cmd.Parameters.Add("@Status", SqlDbType.NVarChar, 20).Value = newStatus;
+                                "UPDATE Booking SET BookingStatusID = @StatusID WHERE BookingID = @ID", conn);
+                            cmd.Parameters.Add("@StatusID", SqlDbType.Int).Value = newStatusId;
                             cmd.Parameters.Add("@ID", SqlDbType.Int).Value = bookingID;
                             cmd.ExecuteNonQuery();
                         }
 
                         WriteAuditLog("BOOKING_UPDATED",
-                            $"Booking {bookingID} status set to {newStatus}");
+                            $"Booking {bookingID} status set to {newStatusId}");
 
                         ShowMessage("Booking status updated.");
                         LoadBookings();
@@ -371,12 +373,13 @@ namespace Unleashing_Potential
         private void LoadCategories()
         {
             DataTable dt = FillTable(
-                "SELECT c.CategoryID, c.CategoryName, c.Description, " +
+                "SELECT c.CategoryID, c.Name AS CategoryName, c.Description, c.IsActive, " +
                 "COUNT(sp.ProviderID) AS ProviderCount " +
-                "FROM Categories c " +
-                "LEFT JOIN ServiceProviders sp ON c.CategoryName = sp.Category " +
-                "GROUP BY c.CategoryID, c.CategoryName, c.Description " +
-                "ORDER BY c.CategoryName");
+                "FROM Category c " +
+                "LEFT JOIN ServiceProviders sp ON c.Name = sp.Category " +
+                "WHERE c.IsActive = 1 " +
+                "GROUP BY c.CategoryID, c.Name, c.Description, c.IsActive " +
+                "ORDER BY c.Name");
 
             gvCategories.DataSource = dt;
             gvCategories.DataBind();
@@ -399,8 +402,8 @@ namespace Unleashing_Potential
                 {
                     conn.Open();
                     SqlCommand cmd = new SqlCommand(
-                        "INSERT INTO Categories (CategoryName, Description) " +
-                        "VALUES (@Name, @Desc)", conn);
+                        "INSERT INTO Category (Name, Description, IsActive, DateCreated) " +
+                        "VALUES (@Name, @Desc, 1, GETDATE())", conn);
                     cmd.Parameters.Add("@Name", SqlDbType.NVarChar, 100).Value = name;
                     cmd.Parameters.Add("@Desc", SqlDbType.NVarChar, 500).Value = desc;
                     cmd.ExecuteNonQuery();
@@ -430,7 +433,7 @@ namespace Unleashing_Potential
                 {
                     conn.Open();
                     SqlCommand cmd = new SqlCommand(
-                        "DELETE FROM Categories WHERE CategoryID = @ID", conn);
+                        "DELETE FROM Category WHERE CategoryID = @ID", conn);
                     cmd.Parameters.Add("@ID", SqlDbType.Int).Value = categoryID;
                     cmd.ExecuteNonQuery();
                 }
@@ -451,14 +454,11 @@ namespace Unleashing_Potential
         protected void btnRptBookings_Click(object sender, EventArgs e)
         {
             DataTable dt = FillTable(
-                "SELECT c.CategoryName AS Category, " +
-                "COUNT(*) AS TotalBookings, " +
-                "SUM(CASE WHEN b.Status='Complete' THEN 1 ELSE 0 END) AS Completed, " +
-                "SUM(CASE WHEN b.Status='Cancelled' THEN 1 ELSE 0 END) AS Cancelled, " +
-                "ISNULL(SUM(b.Amount),0) AS Revenue " +
-                "FROM Bookings b " +
-                "JOIN Categories c ON b.CategoryID = c.CategoryID " +
-                "GROUP BY c.CategoryName ORDER BY TotalBookings DESC");
+                "SELECT COUNT(*) AS TotalBookings, " +
+                "SUM(CASE WHEN BookingStatusID = 3 THEN 1 ELSE 0 END) AS Completed, " +
+                "SUM(CASE WHEN BookingStatusID = 4 THEN 1 ELSE 0 END) AS Cancelled, " +
+                "0 AS Revenue " +
+                "FROM Booking");
 
             WriteAuditLog("REPORT_GENERATED", "Bookings report generated");
             gvReport.DataSource = dt;
@@ -469,13 +469,13 @@ namespace Unleashing_Potential
         protected void btnRptProviders_Click(object sender, EventArgs e)
         {
             DataTable dt = FillTable(
-                "SELECT sp.FullName AS Provider, sp.Category, sp.Township, sp.Status, " +
-                "COUNT(b.BookingID) AS TotalJobs, " +
-                "SUM(CASE WHEN b.Status='Complete' THEN 1 ELSE 0 END) AS Completed " +
+                "SELECT sp.Name AS Provider, sp.Category, sp.Location AS Township, " +
+                "CASE WHEN u.IsActive = 1 AND ISNULL(sp.Rating, 0) >= 4 THEN 'Verified' " +
+                "     WHEN u.IsActive = 1 THEN 'Active' ELSE 'Inactive' END AS Status, " +
+                "sp.Rating, sp.ReviewCount, u.DateCreated " +
                 "FROM ServiceProviders sp " +
-                "LEFT JOIN Bookings b ON sp.ProviderID = b.ProviderID " +
-                "GROUP BY sp.FullName, sp.Category, sp.Township, sp.Status " +
-                "ORDER BY Completed DESC");
+                "INNER JOIN Users u ON sp.UserID = u.UserID " +
+                "ORDER BY sp.Rating DESC, sp.ReviewCount DESC, sp.Name");
 
             WriteAuditLog("REPORT_GENERATED", "Provider report generated");
             gvReport.DataSource = dt;
@@ -487,13 +487,11 @@ namespace Unleashing_Potential
         {
             DataTable dt = FillTable(
                 "SELECT YEAR(BookingDate) AS Year, MONTH(BookingDate) AS Month, " +
-                "c.CategoryName AS Category, " +
                 "COUNT(*) AS Bookings, " +
-                "ISNULL(SUM(Amount),0) AS Revenue " +
-                "FROM Bookings b " +
-                "JOIN Categories c ON b.CategoryID = c.CategoryID " +
-                "WHERE Status = 'Complete' " +
-                "GROUP BY YEAR(BookingDate), MONTH(BookingDate), c.CategoryName " +
+                "0 AS Revenue " +
+                "FROM Booking " +
+                "WHERE BookingStatusID = 3 " +
+                "GROUP BY YEAR(BookingDate), MONTH(BookingDate) " +
                 "ORDER BY Year DESC, Month DESC");
 
             WriteAuditLog("REPORT_GENERATED", "Revenue report generated");
