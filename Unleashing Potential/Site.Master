@@ -160,7 +160,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="Contact.aspx">Contact Us</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" id="liPromo" runat="server" visible="false">
                         <a class="nav-link" href="Promo.aspx">
                             <i class="bi bi-megaphone-fill me-1"></i>Promo
                         </a>
@@ -197,13 +197,6 @@
                             CssClass="btn-nav-logout"
                             CausesValidation="false"
                             OnClick="btnLogout_Click" />
-                    </li>
-
-                    <%-- Admin link — always visible so admin can reach the panel --%>
-                    <li class="nav-item">
-                        <a class="nav-link" href="Admin.aspx">
-                            <i class="bi bi-shield-lock me-1"></i>Admin
-                        </a>
                     </li>
 
                 </ul>

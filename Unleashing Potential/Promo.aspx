@@ -158,7 +158,6 @@
         <div class="promo-buttons">
             <a href="ServiceCategories.aspx" class="btn-primary-custom">Browse Services</a>
             <a href="ServiceProviderDashboard.aspx" class="btn-secondary-custom">Service Provider Portal</a>
-            <a href="Admin.aspx" class="btn-primary-custom">Admin Panel</a>
         </div>
     </section>
 
