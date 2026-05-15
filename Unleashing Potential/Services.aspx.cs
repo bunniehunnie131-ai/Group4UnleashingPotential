@@ -16,7 +16,30 @@ namespace Unleashing_Potential
 
         protected void btnRequestService_Click(object sender, EventArgs e)
         {
-            Response.Redirect("~/Login.aspx");
+            var button = sender as Button;
+            string category = GetCategoryFromButton(button != null ? button.ID : string.Empty);
+
+            if (string.IsNullOrWhiteSpace(category))
+                category = "Hairdressing";
+
+            Response.Redirect("~/ServiceProviders.aspx?category=" + HttpUtility.UrlEncode(category));
+        }
+
+        private string GetCategoryFromButton(string buttonId)
+        {
+            switch (buttonId)
+            {
+                case "btnHairdressing":
+                    return "Hairdressing";
+                case "btnTailoring":
+                    return "Tailoring";
+                case "btnPlumbing":
+                    return "Plumbing";
+                case "btnPainting":
+                    return "Painting";
+                default:
+                    return string.Empty;
+            }
         }
     }
 }
