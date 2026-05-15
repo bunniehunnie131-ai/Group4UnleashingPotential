@@ -78,7 +78,7 @@ namespace Unleashing_Potential
             if (string.IsNullOrEmpty(email)) { ResetToStep1(); return; }
 
             // Normalise to lowercase before hashing — matches how we stored it
-            string answerHash = BookingDB.HashPassword(
+            string answerHash = BookingDB.HashLegacySha256(
                 txtAnswer.Text.Trim().ToLower());
 
             bool valid = false;
@@ -123,10 +123,8 @@ namespace Unleashing_Potential
                 return;
             }
 
-            string newHash = BookingDB.HashPassword(newPassword);
-
             bool success = false;
-            try { success = BookingDB.ResetPassword(email, newHash); }
+            try { success = BookingDB.ResetPassword(email, newPassword); }
             catch
             {
                 ShowMessage("Password reset failed. Please try again.", "danger");

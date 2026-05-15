@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Web;
 
@@ -13,6 +14,11 @@ namespace Unleashing_Potential
     {
         private static string ConnStr
             => ConfigurationManager.ConnectionStrings["ProjectDB"].ConnectionString;
+
+        private const string PasswordHashVersion = "v1";
+        private const int PasswordHashIterations = 100000;
+        private const int PasswordSaltSize = 16;
+        private const int PasswordHashSize = 32;
 
         // ═══════════════════════════════════════════════
         // AUDIT LOG
@@ -85,17 +91,105 @@ namespace Unleashing_Potential
 
         public static string HashPassword(string password)
         {
-            using (var sha = System.Security.Cryptography.SHA256.Create())
+            password = password ?? string.Empty;
+
+            byte[] salt = new byte[PasswordSaltSize];
+            using (var rng = RandomNumberGenerator.Create())
             {
-                byte[] bytes = System.Text.Encoding.UTF8.GetBytes(password);
+                rng.GetBytes(salt);
+            }
+
+            byte[] derivedKey;
+            using (var pbkdf2 = new Rfc2898DeriveBytes(password, salt, PasswordHashIterations))
+            {
+                derivedKey = pbkdf2.GetBytes(PasswordHashSize);
+            }
+
+            return string.Join("$", new[]
+            {
+                PasswordHashVersion,
+                PasswordHashIterations.ToString(),
+                Convert.ToBase64String(salt),
+                Convert.ToBase64String(derivedKey)
+            });
+        }
+
+        public static string HashLegacySha256(string value)
+        {
+            value = value ?? string.Empty;
+
+            using (var sha = SHA256.Create())
+            {
+                byte[] bytes = Encoding.UTF8.GetBytes(value);
                 byte[] hash = sha.ComputeHash(bytes);
 
-                var sb = new System.Text.StringBuilder();
+                var sb = new StringBuilder(hash.Length * 2);
                 foreach (byte b in hash)
                     sb.Append(b.ToString("x2"));
 
                 return sb.ToString();
             }
+        }
+
+        public static bool VerifyPassword(string password, string storedPasswordHash)
+        {
+            if (string.IsNullOrWhiteSpace(storedPasswordHash))
+                return false;
+
+            password = password ?? string.Empty;
+            storedPasswordHash = storedPasswordHash.Trim();
+
+            if (storedPasswordHash.StartsWith(PasswordHashVersion + "$", StringComparison.OrdinalIgnoreCase))
+                return VerifyVersionedPassword(password, storedPasswordHash);
+
+            return string.Equals(HashLegacySha256(password), storedPasswordHash, StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static bool VerifyVersionedPassword(string password, string storedPasswordHash)
+        {
+            string[] parts = storedPasswordHash.Split('$');
+            if (parts.Length != 4 || !parts[0].Equals(PasswordHashVersion, StringComparison.OrdinalIgnoreCase))
+                return false;
+
+            int iterations;
+            if (!int.TryParse(parts[1], out iterations) || iterations <= 0)
+                return false;
+
+            byte[] salt;
+            byte[] expectedHash;
+
+            try
+            {
+                salt = Convert.FromBase64String(parts[2]);
+                expectedHash = Convert.FromBase64String(parts[3]);
+            }
+            catch (FormatException)
+            {
+                return false;
+            }
+
+            if (salt.Length == 0 || expectedHash.Length == 0)
+                return false;
+
+            byte[] actualHash;
+            using (var pbkdf2 = new Rfc2898DeriveBytes(password, salt, iterations))
+            {
+                actualHash = pbkdf2.GetBytes(expectedHash.Length);
+            }
+
+            return FixedTimeEquals(actualHash, expectedHash);
+        }
+
+        private static bool FixedTimeEquals(byte[] left, byte[] right)
+        {
+            if (left == null || right == null || left.Length != right.Length)
+                return false;
+
+            int diff = 0;
+            for (int i = 0; i < left.Length; i++)
+                diff |= left[i] ^ right[i];
+
+            return diff == 0;
         }
 
         private static string ReadStringOrEmpty(SqlDataReader reader, string columnName)
@@ -458,11 +552,13 @@ namespace Unleashing_Potential
 
         public static bool RegisterUser(
             string fullName, string email, string phone,
-            DateTime dob, string township, string passwordHash,
+            DateTime dob, string township, string password,
             string securityQuestion, string securityAnswerHash)
         {
             try
             {
+                string passwordHash = HashPassword(password);
+
                 using (var conn = new SqlConnection(ConnStr))
                 {
                     conn.Open();
@@ -478,7 +574,7 @@ namespace Unleashing_Potential
                     cmd.Parameters.Add("@Phone", SqlDbType.NVarChar, 20).Value = phone;
                     cmd.Parameters.Add("@DOB", SqlDbType.Date).Value = dob;
                     cmd.Parameters.Add("@Township", SqlDbType.NVarChar, 100).Value = township;
-                    cmd.Parameters.Add("@PasswordHash", SqlDbType.NVarChar, 64).Value = passwordHash;
+                    cmd.Parameters.Add("@PasswordHash", SqlDbType.NVarChar, 256).Value = passwordHash;
                     cmd.Parameters.Add("@SecurityQuestion", SqlDbType.NVarChar, 200).Value = securityQuestion;
                     cmd.Parameters.Add("@SecurityAnswerHash", SqlDbType.NVarChar, 64).Value = securityAnswerHash;
                     cmd.Parameters.Add("@DateCreated", SqlDbType.DateTime).Value = DateTime.Now;
@@ -540,16 +636,18 @@ namespace Unleashing_Potential
             }
         }
 
-        public static bool ResetPassword(string email, string newPasswordHash)
+        public static bool ResetPassword(string email, string newPassword)
         {
             try
             {
+                string passwordHash = HashPassword(newPassword);
+
                 using (var conn = new SqlConnection(ConnStr))
                 {
                     conn.Open();
                     var cmd = new SqlCommand(
                         "UPDATE Users SET PasswordHash = @PasswordHash WHERE Email = @Email", conn);
-                    cmd.Parameters.Add("@PasswordHash", SqlDbType.NVarChar, 64).Value = newPasswordHash;
+                    cmd.Parameters.Add("@PasswordHash", SqlDbType.NVarChar, 256).Value = passwordHash;
                     cmd.Parameters.Add("@Email", SqlDbType.NVarChar, 100).Value = email;
                     return cmd.ExecuteNonQuery() == 1;
                 }
@@ -561,7 +659,7 @@ namespace Unleashing_Potential
             }
         }
 
-        public static Users LoginUser(string email, string passwordHash)
+        public static Users LoginUser(string email, string password)
         {
             try
             {
@@ -569,17 +667,20 @@ namespace Unleashing_Potential
                 {
                     conn.Open();
                     var cmd = new SqlCommand(
-                        "SELECT UserID, FullName, Email, Phone, Township, Role " +
+                        "SELECT TOP 1 UserID, FullName, Email, Phone, Township, Role, PasswordHash " +
                         "FROM Users " +
-                        "WHERE Email = @Email AND PasswordHash = @PasswordHash AND IsActive = 1",
+                        "WHERE Email = @Email AND IsActive = 1",
                         conn);
 
                     cmd.Parameters.Add("@Email", SqlDbType.NVarChar, 100).Value = email;
-                    cmd.Parameters.Add("@PasswordHash", SqlDbType.NVarChar, 64).Value = passwordHash;
 
                     using (var reader = cmd.ExecuteReader())
                     {
                         if (!reader.Read()) return null;
+
+                        string storedPasswordHash = ReadStringOrEmpty(reader, "PasswordHash");
+                        if (!VerifyPassword(password, storedPasswordHash))
+                            return null;
 
                         return new Users
                         {

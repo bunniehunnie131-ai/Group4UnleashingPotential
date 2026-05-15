@@ -36,7 +36,7 @@ namespace Unleashing_Potential
                 string password = txtPassword.Text;
                 string township = ddlTownship.SelectedValue;
                 string securityQuestion = ddlSecurityQuestion.SelectedItem.Text;
-                string securityAnswerHash = BookingDB.HashPassword(
+                string securityAnswerHash = BookingDB.HashLegacySha256(
                     txtSecurityAnswer.Text.Trim().ToLower());
 
                 DateTime dob;
@@ -52,7 +52,7 @@ namespace Unleashing_Potential
                     return;
                 }
 
-                string passwordHash = HashPassword(password);
+                string passwordHash = BookingDB.HashPassword(password);
 
                 using (SqlConnection conn = new SqlConnection(connStr))
                 {
@@ -233,19 +233,6 @@ namespace Unleashing_Potential
 
             errorMessage = string.Empty;
             return true;
-        }
-
-        // Simple SHA256 hash — replace with your project's hashing method if different
-        private string HashPassword(string password)
-        {
-            using (SHA256 sha256 = SHA256.Create())
-            {
-                byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-                StringBuilder sb = new StringBuilder();
-                foreach (byte b in bytes)
-                    sb.Append(b.ToString("x2"));
-                return sb.ToString();
-            }
         }
 
         private void WriteAuditLog(string action, string description)

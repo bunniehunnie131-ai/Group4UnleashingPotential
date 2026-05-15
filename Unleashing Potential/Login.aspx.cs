@@ -22,13 +22,12 @@ namespace Unleashing_Potential
                 return;
             }
 
-            string email = txtEmail.Text.Trim();
-            string passHash = BookingDB.HashPassword(txtPassword.Text);
+            string email = txtEmail.Text.Trim().ToLower();
 
             Users user = null;
             try
             {
-                user = BookingDB.LoginUser(email, passHash);
+                user = BookingDB.LoginUser(email, txtPassword.Text);
             }
             catch (Exception)
             {

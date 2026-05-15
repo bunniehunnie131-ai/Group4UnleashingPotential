@@ -347,7 +347,7 @@ namespace Unleashing_Potential
                         conn.Open();
                         SqlCommand cmd = new SqlCommand(
                             "UPDATE Users SET PasswordHash = @PW WHERE UserID = @ID", conn);
-                        cmd.Parameters.Add("@PW", SqlDbType.NVarChar, 64).Value = tempPasswordHash;
+                        cmd.Parameters.Add("@PW", SqlDbType.NVarChar, 256).Value = tempPasswordHash;
                         cmd.Parameters.Add("@ID", SqlDbType.Int).Value = userID;
                         cmd.ExecuteNonQuery();
                     }

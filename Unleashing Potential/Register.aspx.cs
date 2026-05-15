@@ -45,7 +45,7 @@ namespace Unleashing_Potential
 
             // Read security question text (not just the value code)
             string securityQuestion = ddlSecurityQuestion.SelectedItem.Text;
-            string securityAnswerHash = BookingDB.HashPassword(
+            string securityAnswerHash = BookingDB.HashLegacySha256(
                 txtSecurityAnswer.Text.Trim().ToLower());
 
             // ── 1. Parse date of birth ────────────────────────────────────────
@@ -103,16 +103,13 @@ namespace Unleashing_Potential
                 return;
             }
 
-            // ── 6. Hash password ──────────────────────────────────────────────
-            string passwordHash = BookingDB.HashPassword(password);
-
-            // ── 7. Insert user into database ──────────────────────────────────
+            // ── 6. Store user securely ────────────────────────────────────────
             bool success = false;
             try
             {
                 success = BookingDB.RegisterUser(
                     fullName, email, phone, dob, township,
-                    passwordHash, securityQuestion, securityAnswerHash);
+                    password, securityQuestion, securityAnswerHash);
             }
             catch (Exception)
             {
@@ -120,7 +117,7 @@ namespace Unleashing_Potential
                 return;
             }
 
-            // ── 8. Post-registration steps ────────────────────────────────────
+            // ── 7. Post-registration steps ────────────────────────────────────
             if (success)
             {
                 BookingDB.WriteAuditLog(
