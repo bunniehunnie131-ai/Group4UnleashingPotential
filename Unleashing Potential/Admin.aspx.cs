@@ -15,6 +15,8 @@ namespace Unleashing_Potential
         private string ConnStr =>
             ConfigurationManager.ConnectionStrings["ProjectDB"].ConnectionString;
 
+        private const string CategoriesPanelId = "pnlCategories";
+
         protected void Page_Load(object sender, EventArgs e)
         {
             // Only admins may access this page
@@ -402,19 +404,31 @@ namespace Unleashing_Potential
                 using (SqlConnection conn = new SqlConnection(ConnStr))
                 {
                     conn.Open();
-                    SqlCommand cmd = new SqlCommand(
-                        "INSERT INTO Category (Name, Description, IsActive, DateCreated) " +
-                        "VALUES (@Name, @Desc, 1, GETDATE())", conn);
+
+                    SqlCommand cmd = new SqlCommand(@"
+                        IF EXISTS (SELECT 1 FROM Category WHERE Name = @Name)
+                        BEGIN
+                            UPDATE Category
+                            SET Description = @Desc,
+                                IsActive = 1
+                            WHERE Name = @Name
+                        END
+                        ELSE
+                        BEGIN
+                            INSERT INTO Category (Name, Description, IsActive, DateCreated)
+                            VALUES (@Name, @Desc, 1, GETDATE())
+                        END", conn);
                     cmd.Parameters.Add("@Name", SqlDbType.NVarChar, 100).Value = name;
                     cmd.Parameters.Add("@Desc", SqlDbType.NVarChar, 500).Value = desc;
                     cmd.ExecuteNonQuery();
                 }
 
-                WriteAuditLog("CATEGORY_ADDED", $"New category added: {name}");
-                ShowMessage($"Category '{name}' added successfully.");
+                WriteAuditLog("CATEGORY_SAVED", $"Category saved: {name}");
+                ShowMessage($"Category '{name}' saved successfully.");
                 txtCatName.Text = string.Empty;
                 txtCatDesc.Text = string.Empty;
                 LoadCategories();
+                SetActivePanel(CategoriesPanelId);
             }
             catch (SqlException ex)
             {
@@ -434,14 +448,15 @@ namespace Unleashing_Potential
                 {
                     conn.Open();
                     SqlCommand cmd = new SqlCommand(
-                        "DELETE FROM Category WHERE CategoryID = @ID", conn);
+                        "UPDATE Category SET IsActive = 0 WHERE CategoryID = @ID", conn);
                     cmd.Parameters.Add("@ID", SqlDbType.Int).Value = categoryID;
                     cmd.ExecuteNonQuery();
                 }
 
-                WriteAuditLog("CATEGORY_DELETED", $"Category ID {categoryID} deleted");
+                WriteAuditLog("CATEGORY_DELETED", $"Category ID {categoryID} deactivated");
                 ShowMessage("Category deleted.");
                 LoadCategories();
+                SetActivePanel(CategoriesPanelId);
             }
             catch (SqlException)
             {
@@ -512,6 +527,11 @@ namespace Unleashing_Potential
 
             gvAudit.DataSource = dt;
             gvAudit.DataBind();
+        }
+
+        private void SetActivePanel(string panelId)
+        {
+            hfActivePanel.Value = panelId;
         }
     }
 }

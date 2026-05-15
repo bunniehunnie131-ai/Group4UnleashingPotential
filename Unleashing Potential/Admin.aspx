@@ -1,6 +1,6 @@
 ﻿<%@ Page Title="Admin Dashboard" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Admin.aspx.cs" Inherits="Unleashing_Potential.WebForm4" %>
 
-   <asp:Content ID="Content2" ContentPlaceHolderID="HeadContent" runat="server">
+<asp:Content ID="Content2" ContentPlaceHolderID="HeadContent" runat="server">
        <link rel="stylesheet"
   href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <style>
@@ -407,6 +407,7 @@
 
 <asp:Content ID="Content3" ContentPlaceHolderID="MainContent" runat="server">
 
+<asp:HiddenField ID="hfActivePanel" runat="server" Value="pnlDashboard" />
 <asp:Label ID="lblAdminMsg" runat="server" CssClass="admin-msg" />
     
 <div class="admin-shell">
@@ -881,9 +882,26 @@
        
         document.getElementById(id).classList.add('active');
         btn.classList.add('active');
+        document.getElementById('<%= hfActivePanel.ClientID %>').value = id;
        
         document.getElementById('topbarTitle').textContent = btn.querySelector('span')?.textContent || '';
     }
+
+    (function restoreActivePanel() {
+        const panelId = document.getElementById('<%= hfActivePanel.ClientID %>').value || 'pnlDashboard';
+        const panel = document.getElementById(panelId);
+        if (!panel) return;
+
+        document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
+        panel.classList.add('active');
+
+        const button = document.querySelector(`.sidebar-nav li button[onclick*="${panelId}"]`);
+        if (button) {
+            document.querySelectorAll('.sidebar-nav li button').forEach(b => b.classList.remove('active'));
+            button.classList.add('active');
+            document.getElementById('topbarTitle').textContent = button.querySelector('span')?.textContent || '';
+        }
+    })();
 </script>
 
 </asp:Content>
