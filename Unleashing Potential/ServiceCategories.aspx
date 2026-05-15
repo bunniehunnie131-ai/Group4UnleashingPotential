@@ -391,6 +391,11 @@
         .status-confirmed { background: #dbeafe; color: #1e40af; }
         .status-completed { background: #d1e7dd; color: #0f5132; }
         .status-cancelled { background: #f8d7da; color: #842029; }
+        .status-rejected {
+            background: #fed7aa;
+            border: 1px solid #fb923c;
+            color: #9a3412;
+        }
 
         .booking-tags {
             display: flex;

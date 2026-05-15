@@ -81,7 +81,7 @@
         .badge-confirmed  { background:#dbeafe; color:#1e40af; }
         .badge-completed  { background:#d1e7dd; color:#0a3622; }
         .badge-cancelled  { background:#f8d7da; color:#842029; }
-        .badge-rejected   { background:#fff7ed; color:#c2410c; }
+        .badge-rejected   { background:#fed7aa; color:#9a3412; }
         .badge-accepted   { background:#dbeafe; color:#1e40af; }
         .badge-inprogress { background:#d1ecf1; color:#0c5460; }
 

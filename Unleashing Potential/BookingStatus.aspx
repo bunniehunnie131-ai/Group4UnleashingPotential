@@ -34,7 +34,7 @@
     .status-Confirmed     { background:#dbeafe; border:1px solid #93c5fd; color:#1e40af; }
     .status-Completed     { background:#dcfce7; border:1px solid #86efac; color:#166534; }
     .status-Cancelled     { background:#fee2e2; border:1px solid #fca5a5; color:#991b1b; }
-    .status-Rejected      { background:#fff7ed; border:1px solid #fdba74; color:#9a3412; }
+    .status-Rejected      { background:#fed7aa; border:1px solid #fb923c; color:#9a3412; }
     .status-Accepted      { background:#dbeafe; border:1px solid #93c5fd; color:#1e40af; }
     .status-InProgress    { background:#f3e8ff; border:1px solid #c4b5fd; color:#5b21b6; }
     .status-AppointmentDay{ background:#fce7f3; border:1px solid #f9a8d4; color:#9d174d; }
@@ -52,7 +52,7 @@
     .status-note.confirmed { background:#eff6ff; border-color:#bfdbfe; color:#1e3a8a; }
     .status-note.completed { background:#ecfdf5; border-color:#bbf7d0; color:#166534; }
     .status-note.cancelled { background:#fff1f2; border-color:#fda4af; color:#9f1239; }
-    .status-note.rejected { background:#fff7ed; border-color:#fdba74; color:#9a3412; }
+    .status-note.rejected { background:#fed7aa; border-color:#fb923c; color:#9a3412; }
 
     /* Timeline */
     .timeline { display:flex; align-items:center; gap:0; margin:1rem 0; overflow-x:auto; padding-bottom:0.5rem; }
