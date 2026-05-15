@@ -1,0 +1,45 @@
+name: Deploy Zizi branch to Azure App Service
+
+on:
+  push:
+    branches:
+      - Zizi
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  AZURE_WEBAPP_NAME: ${{ vars.AZURE_WEBAPP_NAME }}
+  PROJECT_PATH: 'Unleashing Potential/Unleashing Potential.csproj'
+  PUBLISH_FOLDER: 'Unleashing Potential/obj/Release/Package/PackageTmp'
+  NUGET_VERSION: '6.x'
+
+jobs:
+  build-and-deploy:
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install NuGet
+        uses: nuget/setup-nuget@v1
+        with:
+          nuget-version: ${{ env.NUGET_VERSION }}
+
+      - name: Restore packages
+        run: nuget restore "${{ env.PROJECT_PATH }}"
+
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@v1.0.2
+
+      - name: Build and publish Web Forms app
+        run: msbuild "${{ env.PROJECT_PATH }}" /p:Configuration=Release /p:DeployOnBuild=true
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: '${{ github.workspace }}/${{ env.PUBLISH_FOLDER }}/'

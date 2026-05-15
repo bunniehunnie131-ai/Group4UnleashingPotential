@@ -30,12 +30,11 @@
             background-color: var(--sky-pale);
             color: var(--text);
         }
-
+        
         .navbar {
-            background-color: var(--sky-deeper) !important;
-            border-bottom: 3px solid var(--accent);
-        }
-
+    background-color: var(--sky-deeper) ;
+    border-bottom: 3px solid gold;
+}
         .navbar-brand {
             font-family: 'Lora', serif;
             color: #f0f9ff !important;

@@ -33,6 +33,15 @@ namespace Unleashing_Potential
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
 
         /// <summary>
+        /// liServices control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl liServices;
+
+        /// <summary>
         /// liPromo control.
         /// </summary>
         /// <remarks>
@@ -58,15 +67,6 @@ namespace Unleashing_Potential
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl liLogin;
-
-        /// <summary>
-        /// liServices control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl liServices;
 
         /// <summary>
         /// liBrowseServices control.
