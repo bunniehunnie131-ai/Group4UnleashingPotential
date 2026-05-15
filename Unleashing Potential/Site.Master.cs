@@ -26,11 +26,13 @@ namespace Unleashing_Potential
         protected void Page_Load(object sender, EventArgs e)
         {
             bool isLoggedIn = Session["UserID"] != null;
+            string role = Session["Role"]?.ToString();
             bool showCustomerLinks = ShouldShowCustomerLinks();
 
             
             liRegister.Visible = !isLoggedIn;
             liLogin.Visible = !isLoggedIn;
+            liServices.Visible = !IsProviderRole(role);
 
             
             liPromo.Visible = showCustomerLinks;
@@ -46,6 +48,19 @@ namespace Unleashing_Potential
                     ?? Session["FirstName"]?.ToString()
                     ?? "User";
             }
+        }
+
+        protected string GetHomeUrl()
+        {
+            string role = Session["Role"]?.ToString();
+
+            if (IsAdminRole(role))
+                return "~/Admin.aspx";
+
+            if (IsProviderRole(role))
+                return "~/ServiceProviderDashboard.aspx";
+
+            return "~/Default.aspx";
         }
 
         private bool ShouldShowCustomerLinks()

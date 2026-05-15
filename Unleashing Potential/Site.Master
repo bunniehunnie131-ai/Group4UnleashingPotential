@@ -139,7 +139,7 @@
 
     <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="Default.aspx">
+            <a class="navbar-brand" href="<%= ResolveUrl(GetHomeUrl()) %>">
                 <img src="~/Images/Unleashing Potential Logo.jpeg" runat="server" class="nav-logo" />
                 Unleashing Potential
             </a>
@@ -153,9 +153,9 @@
                 <ul class="navbar-nav ms-auto align-items-lg-center">
 
                     <li class="nav-item">
-                        <a class="nav-link" href="Default.aspx">Home</a>
+                        <a class="nav-link" href="<%= ResolveUrl(GetHomeUrl()) %>">Home</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" id="liServices" runat="server">
                         <a class="nav-link" href="Services.aspx">Services</a>
                     </li>
                     <li class="nav-item">
