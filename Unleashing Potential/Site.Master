@@ -3,6 +3,11 @@
 <html>
 <head runat="server">
     <title>Unleashing Potential</title>
+    <link rel="icon" type="image/x-icon" href="~/favicon.ico" runat="server" />
+    <link rel="icon" type="image/png" sizes="32x32" href="~/favicon-32x32.png" runat="server" />
+    <link rel="icon" type="image/png" sizes="16x16" href="~/favicon-16x16.png" runat="server" />
+    <link rel="apple-touch-icon" sizes="180x180" href="~/apple-touch-icon.png" runat="server" />
+    <link rel="manifest" href="~/site.webmanifest" runat="server" />
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600&family=Nunito:wght@400;500;600&display=swap" rel="stylesheet">
