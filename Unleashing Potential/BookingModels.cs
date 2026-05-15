@@ -10,6 +10,13 @@ using System.Web;
 
 namespace Unleashing_Potential
 {
+    public enum LoginAttemptStatus
+    {
+        Success,
+        InvalidCredentials,
+        InactiveAccount
+    }
+
     public static class BookingDB
     {
         private static string ConnStr
@@ -688,28 +695,39 @@ namespace Unleashing_Potential
 
         public static Users LoginUser(string email, string password)
         {
+            Users user;
+            return TryLoginUser(email, password, out user) == LoginAttemptStatus.Success ? user : null;
+        }
+
+        public static LoginAttemptStatus TryLoginUser(string email, string password, out Users user)
+        {
+            user = null;
             try
             {
                 using (var conn = new SqlConnection(ConnStr))
                 {
                     conn.Open();
                     var cmd = new SqlCommand(
-                        "SELECT TOP 1 UserID, FullName, Email, Phone, Township, Role, PasswordHash " +
+                        "SELECT TOP 1 UserID, FullName, Email, Phone, Township, Role, PasswordHash, IsActive " +
                         "FROM Users " +
-                        "WHERE Email = @Email AND IsActive = 1",
+                        "WHERE Email = @Email",
                         conn);
 
                     cmd.Parameters.Add("@Email", SqlDbType.NVarChar, 100).Value = email;
 
                     using (var reader = cmd.ExecuteReader())
                     {
-                        if (!reader.Read()) return null;
+                        if (!reader.Read())
+                            return LoginAttemptStatus.InvalidCredentials;
 
                         string storedPasswordHash = ReadStringOrEmpty(reader, "PasswordHash");
                         if (!VerifyPassword(password, storedPasswordHash))
-                            return null;
+                            return LoginAttemptStatus.InvalidCredentials;
 
-                        return new Users
+                        bool isActive = !reader.IsDBNull(reader.GetOrdinal("IsActive")) &&
+                                        reader.GetBoolean(reader.GetOrdinal("IsActive"));
+
+                        user = new Users
                         {
                             UserID = reader.GetInt32(reader.GetOrdinal("UserID")),
                             FullName = ReadStringOrEmpty(reader, "FullName"),
@@ -718,6 +736,10 @@ namespace Unleashing_Potential
                             Township = ReadStringOrEmpty(reader, "Township"),
                             Role = ReadStringOrEmpty(reader, "Role")
                         };
+
+                        return isActive
+                            ? LoginAttemptStatus.Success
+                            : LoginAttemptStatus.InactiveAccount;
                     }
                 }
             }
@@ -741,9 +763,11 @@ namespace Unleashing_Potential
                 {
                     conn.Open();
                     var cmd = new SqlCommand(
-                        "SELECT * FROM ServiceProviders " +
-                        "WHERE LOWER(REPLACE(REPLACE(REPLACE(Category, ' ', ''), '-', ''), '_', '')) = @NormalizedCategory " +
-                        "ORDER BY Rating DESC", conn);
+                        "SELECT sp.* FROM ServiceProviders sp " +
+                        "INNER JOIN Users u ON sp.UserID = u.UserID " +
+                        "WHERE u.IsActive = 1 AND " +
+                        "LOWER(REPLACE(REPLACE(REPLACE(sp.Category, ' ', ''), '-', ''), '_', '')) = @NormalizedCategory " +
+                        "ORDER BY sp.Rating DESC", conn);
 
                     cmd.Parameters.Add("@NormalizedCategory", SqlDbType.NVarChar, 100).Value = NormalizeLookupKey(resolvedCategory);
 
@@ -770,7 +794,9 @@ namespace Unleashing_Potential
                 {
                     conn.Open();
                     var cmd = new SqlCommand(
-                        "SELECT * FROM ServiceProviders WHERE ProviderID = @ProviderID", conn);
+                        "SELECT sp.* FROM ServiceProviders sp " +
+                        "INNER JOIN Users u ON sp.UserID = u.UserID " +
+                        "WHERE sp.ProviderID = @ProviderID AND u.IsActive = 1", conn);
                     cmd.Parameters.Add("@ProviderID", SqlDbType.Int).Value = providerID;
 
                     using (var reader = cmd.ExecuteReader())

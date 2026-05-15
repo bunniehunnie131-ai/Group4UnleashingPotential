@@ -25,9 +25,10 @@ namespace Unleashing_Potential
             string email = txtEmail.Text.Trim().ToLower();
 
             Users user = null;
+            LoginAttemptStatus loginStatus;
             try
             {
-                user = BookingDB.LoginUser(email, txtPassword.Text);
+                loginStatus = BookingDB.TryLoginUser(email, txtPassword.Text, out user);
             }
             catch (Exception)
             {
@@ -35,9 +36,24 @@ namespace Unleashing_Potential
                 return;
             }
 
-            if (user == null)
+            if (loginStatus == LoginAttemptStatus.InvalidCredentials || user == null)
             {
                 ShowError("Incorrect email or password.");
+                return;
+            }
+
+            if (loginStatus == LoginAttemptStatus.InactiveAccount)
+            {
+                string role = user.Role ?? string.Empty;
+                if (string.Equals(role, "ServiceProvider", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(role, "Provider", StringComparison.OrdinalIgnoreCase))
+                {
+                    ShowError("Your service provider account is pending approval. Please wait for an admin to activate it.");
+                }
+                else
+                {
+                    ShowError("Your account is inactive. Please contact support.");
+                }
                 return;
             }
 

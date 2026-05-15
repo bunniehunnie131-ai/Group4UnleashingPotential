@@ -95,7 +95,7 @@ namespace Unleashing_Potential
                     userCmd.Parameters.Add("@SecurityAnswerHash", SqlDbType.NVarChar, 64).Value = securityAnswerHash;
                     userCmd.Parameters.Add("@Role", SqlDbType.NVarChar, 20).Value = "ServiceProvider";
                     userCmd.Parameters.Add("@DateCreated", SqlDbType.DateTime).Value = DateTime.Now;
-                    userCmd.Parameters.Add("@IsActive", SqlDbType.Bit).Value = true;
+                    userCmd.Parameters.Add("@IsActive", SqlDbType.Bit).Value = false;
 
                     int newUserID = Convert.ToInt32(userCmd.ExecuteScalar());
 

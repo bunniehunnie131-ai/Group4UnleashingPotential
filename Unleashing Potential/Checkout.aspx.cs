@@ -20,8 +20,11 @@ namespace Unleashing_Potential
                 return;
             }
 
-            NormalizeBasket(basket);
-            Session["Basket"] = basket;
+            if (!PrepareBasket(basket))
+            {
+                Response.Redirect("~/Basket.aspx");
+                return;
+            }
 
             if (!IsPostBack)
                 txtName.Text = Session["UserName"].ToString();
@@ -41,8 +44,12 @@ namespace Unleashing_Potential
             var basket = Session["Basket"] as List<BasketItem>;
             if (basket == null) return;
 
-            NormalizeBasket(basket);
-            Session["Basket"] = basket;
+            if (!PrepareBasket(basket))
+            {
+                Response.Redirect("~/Basket.aspx");
+                e.Cancel = true;
+                return;
+            }
 
            
             if (e.CurrentStepIndex == 0)
@@ -65,8 +72,11 @@ namespace Unleashing_Potential
             var basket = Session["Basket"] as List<BasketItem>;
             if (basket == null) return;
 
-            NormalizeBasket(basket);
-            Session["Basket"] = basket;
+            if (!PrepareBasket(basket))
+            {
+                Response.Redirect("~/Basket.aspx");
+                return;
+            }
             RefreshStepState(wzCheckout.ActiveStepIndex, basket);
         }
 
@@ -75,8 +85,12 @@ namespace Unleashing_Potential
             var basket = Session["Basket"] as List<BasketItem>;
             if (basket == null) return;
 
-            NormalizeBasket(basket);
-            Session["Basket"] = basket;
+            if (!PrepareBasket(basket))
+            {
+                Response.Redirect("~/Basket.aspx");
+                e.Cancel = true;
+                return;
+            }
 
             Page.Validate("Step1");
             if (!Page.IsValid ||
@@ -194,6 +208,18 @@ namespace Unleashing_Potential
                 if (item != null)
                     item.Quantity = 1;
             }
+        }
+
+        private bool PrepareBasket(List<BasketItem> basket)
+        {
+            if (basket == null)
+                return false;
+
+            NormalizeBasket(basket);
+            basket.RemoveAll(item => item == null || BookingDB.GetProviderByID(item.ProviderID) == null);
+            Session["Basket"] = basket;
+
+            return basket.Count > 0;
         }
     }
 }

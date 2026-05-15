@@ -47,6 +47,14 @@ namespace Unleashing_Potential
                 return;
             }
 
+            if (!IsCurrentProviderActive())
+            {
+                Session.Clear();
+                Session.Abandon();
+                Response.Redirect("~/Login.aspx");
+                return;
+            }
+
             SyncActiveTabState();
 
             if (!IsPostBack)
@@ -84,7 +92,20 @@ namespace Unleashing_Potential
             }
         }
 
-        
+        private bool IsCurrentProviderActive()
+        {
+            string sql = "SELECT ISNULL(IsActive, 0) FROM Users WHERE UserID = @UID";
+            using (SqlConnection conn = new SqlConnection(ConnStr))
+            {
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@UID", CurrentUserID);
+                conn.Open();
+                object result = cmd.ExecuteScalar();
+                return result != null && result != DBNull.Value && Convert.ToBoolean(result);
+            }
+        }
+
+
         private void LoadHeader()
         {
             string sql = @"SELECT sp.Name, sp.Category, sp.Location, sp.Price, sp.PriceUnit,

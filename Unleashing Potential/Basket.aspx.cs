@@ -27,6 +27,15 @@ namespace Unleashing_Potential
             }
 
             NormalizeBasket(basket);
+            basket.RemoveAll(item => item == null || BookingDB.GetProviderByID(item.ProviderID) == null);
+            Session["Basket"] = basket;
+
+            if (basket.Count == 0)
+            {
+                pnlEmpty.Visible = true;
+                pnlBasket.Visible = false;
+                return;
+            }
 
             pnlEmpty.Visible = false;
             pnlBasket.Visible = true;
