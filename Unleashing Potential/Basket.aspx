@@ -35,17 +35,6 @@
     .item-info { flex:1; min-width:160px; }
     .item-name { font-weight:600; color:#1e293b; font-size:0.92rem; }
     .item-service { font-size:0.8rem; color:var(--muted); }
-    .item-qty { display:flex; align-items:center; gap:0.5rem; }
-    .qty-input {
-        width:55px; text-align:center; border:1.5px solid #e2e8f0;
-        border-radius:7px; padding:0.3rem 0.5rem; font-size:0.88rem;
-    }
-    .btn-update {
-        background:var(--sky-pale); border:1.5px solid var(--sky-light);
-        color:var(--sky-dark); border-radius:7px; padding:0.3rem 0.7rem;
-        font-size:0.8rem; font-weight:600; cursor:pointer; transition:all 0.2s;
-    }
-    .btn-update:hover { background:var(--sky-light); }
     .btn-remove {
         background:#fef2f2; border:1.5px solid #fecaca;
         color:#dc2626; border-radius:7px; padding:0.3rem 0.7rem;
@@ -108,7 +97,6 @@
                 <div class="basket-table-wrap">
                     <div class="basket-row-header">
                         <span style="flex:1;">Service Provider</span>
-                        <span style="width:120px;">Quantity</span>
                         <span style="width:80px;text-align:right;">Total</span>
                         <span style="width:60px;"></span>
                     </div>
@@ -119,16 +107,8 @@
                                     <div class="item-name"><%# Eval("ProviderName") %></div>
                                     <div class="item-service"><%# Eval("Service") %> · <%# Eval("Category") %></div>
                                     <div class="item-service" style="color:var(--sky-dark);font-weight:600;">
-                                        R<%# Eval("Price") %> <%# Eval("PriceUnit") %>
+                                        R<%# String.Format("{0:0.00}", Eval("Price")) %> <%# Eval("PriceUnit") %>
                                     </div>
-                                </div>
-                                <div class="item-qty">
-                                    <asp:TextBox runat="server" ID="txtQty" CssClass="qty-input"
-                                        Text='<%# Eval("Quantity") %>' />
-                                    <asp:Button runat="server" CssClass="btn-update" Text="Update"
-                                        CommandName="Update"
-                                        CommandArgument='<%# Eval("ProviderID") %>'
-                                        CausesValidation="false" />
                                 </div>
                                 <div class="item-price">R<%# String.Format("{0:0.00}", Eval("LineTotal")) %></div>
                                 <asp:Button runat="server" CssClass="btn-remove" Text="✕"

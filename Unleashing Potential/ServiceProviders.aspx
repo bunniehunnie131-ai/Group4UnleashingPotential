@@ -122,7 +122,7 @@
                             <div class="provider-desc"><%# Eval("Description") %></div>
                             <div class="provider-meta">📍 <%# Eval("Location") %></div>
                             <div class="provider-meta">⏱ <%# Eval("YearsExperience") %> years experience</div>
-                            <div class="price-tag">R<%# Eval("Price") %> <small style="font-weight:400;font-size:0.78rem;color:var(--muted);"><%# Eval("PriceUnit") %></small></div>
+                            <div class="price-tag">R<%# String.Format("{0:0.00}", Eval("Price")) %> <small style="font-weight:400;font-size:0.78rem;color:var(--muted);"><%# Eval("PriceUnit") %></small></div>
                             <div class="d-flex gap-2 flex-wrap">
                                 <a href='<%# "ProviderProfile.aspx?id=" + Eval("ProviderID") %>' class="btn-view">View Profile</a>
                                 <asp:Button runat="server" CssClass="btn-basket"

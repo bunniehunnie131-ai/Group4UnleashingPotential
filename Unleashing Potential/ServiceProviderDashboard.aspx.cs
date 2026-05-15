@@ -171,7 +171,8 @@ namespace Unleashing_Potential
                                   ISNULL(bs.Name, 'Pending') AS Status
                            FROM BookingItem bi
                            INNER JOIN Booking b ON bi.BookingID = b.BookingID
-                           LEFT JOIN Users u ON b.CustomerID = u.UserID
+                            LEFT JOIN Customer c ON b.CustomerID = c.CustomerID
+                            LEFT JOIN Users u ON c.UserID = u.UserID
                            LEFT JOIN ServiceProviders sp ON bi.ProviderID = sp.ProviderID
                            LEFT JOIN Service s ON bi.ServiceID = s.ServiceID
                            LEFT JOIN BookingStatus bs ON b.BookingStatusID = bs.BookingStatusID
@@ -318,7 +319,8 @@ namespace Unleashing_Potential
                                   CAST(ISNULL(bi.UnitPrice, 0) * ISNULL(bi.Quantity, 1) AS DECIMAL(18,2)) AS Price
                            FROM BookingItem bi
                            INNER JOIN Booking b ON bi.BookingID=b.BookingID
-                           LEFT JOIN Users u ON b.CustomerID = u.UserID
+                            LEFT JOIN Customer c ON b.CustomerID = c.CustomerID
+                            LEFT JOIN Users u ON c.UserID = u.UserID
                            LEFT JOIN ServiceProviders sp ON bi.ProviderID = sp.ProviderID
                            LEFT JOIN Service s ON bi.ServiceID = s.ServiceID
                            LEFT JOIN BookingStatus bs ON b.BookingStatusID = bs.BookingStatusID
@@ -377,7 +379,7 @@ namespace Unleashing_Potential
                     {
                         txtName.Text = rdr["Name"].ToString();
                         txtSpecialty.Text = rdr["Specialty"].ToString();
-                        txtPrice.Text = rdr["Price"].ToString();
+                        txtPrice.Text = string.Format("{0:0.00}", rdr["Price"]);
                         txtLocation.Text = rdr["Location"].ToString();
                         txtPhone.Text = rdr["Phone"].ToString();
                         txtYears.Text = rdr["YearsExperience"].ToString();
@@ -409,7 +411,11 @@ namespace Unleashing_Potential
                     cmd.Parameters.AddWithValue("@Name", txtName.Text.Trim());
                     cmd.Parameters.AddWithValue("@Cat", ddlCategory.SelectedValue);
                     cmd.Parameters.AddWithValue("@Spec", txtSpecialty.Text.Trim());
-                    cmd.Parameters.AddWithValue("@Price", decimal.Parse(txtPrice.Text));
+                    decimal price = decimal.Parse(txtPrice.Text);
+                    var priceParam = cmd.Parameters.Add("@Price", SqlDbType.Decimal);
+                    priceParam.Precision = 18;
+                    priceParam.Scale = 2;
+                    priceParam.Value = price;
                     cmd.Parameters.AddWithValue("@PUnit", ddlPriceUnit.SelectedValue);
                     cmd.Parameters.AddWithValue("@Loc", txtLocation.Text.Trim());
                     cmd.Parameters.AddWithValue("@Phone", txtPhone.Text.Trim());
@@ -426,6 +432,57 @@ namespace Unleashing_Potential
             {
                 ShowMsg(lblProfileMsg, "Error: " + ex.Message, false);
             }
+        }
+
+        protected void cvPrice_ServerValidate(object source, ServerValidateEventArgs args)
+        {
+            string message;
+            args.IsValid = ValidateServicePrice(ddlCategory.SelectedValue, txtPrice.Text, out message);
+
+            var validator = source as CustomValidator;
+            if (validator != null)
+            {
+                validator.ErrorMessage = message;
+                validator.Text = message;
+            }
+        }
+
+        private bool ValidateServicePrice(string category, string priceText, out string errorMessage)
+        {
+            errorMessage = "Enter a valid price.";
+
+            if (string.IsNullOrWhiteSpace(priceText))
+            {
+                errorMessage = string.Empty;
+                return true;
+            }
+
+            decimal price;
+            if (!decimal.TryParse(priceText.Trim(), out price))
+            {
+                errorMessage = "Enter a valid price (e.g. 250.00).";
+                return false;
+            }
+
+            var service = BookingDB.GetActiveServiceForCategory(category);
+            if (service == null)
+            {
+                errorMessage = "No active service price range is configured for this category.";
+                return false;
+            }
+
+            if (price < service.MinPrice || price > service.MaxPrice)
+            {
+                errorMessage = string.Format(
+                    "Price for {0} must be between R{1:0.00} and R{2:0.00}.",
+                    service.Name,
+                    service.MinPrice,
+                    service.MaxPrice);
+                return false;
+            }
+
+            errorMessage = string.Empty;
+            return true;
         }
 
         // ══════════════════════════════════════════════════════════════════════
@@ -454,7 +511,15 @@ namespace Unleashing_Potential
         {
             ListItem item = ddl.Items.FindByText(value);
             if (item == null) item = ddl.Items.FindByValue(value);
-            if (item != null) ddl.SelectedValue = item.Value;
+            if (item != null)
+            {
+                ddl.SelectedValue = item.Value;
+            }
+            else if (!string.IsNullOrWhiteSpace(value))
+            {
+                ddl.Items.Insert(0, new ListItem(value, value));
+                ddl.SelectedValue = value;
+            }
         }
     }
 }

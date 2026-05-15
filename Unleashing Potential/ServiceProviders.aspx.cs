@@ -35,14 +35,25 @@ namespace Unleashing_Potential
             var provider = BookingDB.GetProviderByID(providerID);
             if (provider == null) return;
 
+            var service = BookingDB.GetActiveServiceForCategory(provider.Category);
             var basket = Session["Basket"] as List<BasketItem> ?? new List<BasketItem>();
             var existing = basket.Find(b => b.ProviderID == providerID);
+            bool alreadyInBasket = existing != null;
 
             if (existing != null)
-                existing.Quantity++;
+            {
+                existing.ServiceID = service != null ? (int?)service.ServiceID : existing.ServiceID;
+                existing.ProviderName = provider.Name;
+                existing.Service = provider.Specialty;
+                existing.Category = provider.Category;
+                existing.Price = provider.Price;
+                existing.PriceUnit = provider.PriceUnit;
+                existing.Quantity = 1;
+            }
             else
                 basket.Add(new BasketItem
                 {
+                    ServiceID = service != null ? (int?)service.ServiceID : null,
                     ProviderID = provider.ProviderID,
                     ProviderName = provider.Name,
                     Service = provider.Specialty,
@@ -53,7 +64,9 @@ namespace Unleashing_Potential
                 });
 
             Session["Basket"] = basket;
-            lblMessage.Text = provider.Name + " has been added to your basket.";
+            lblMessage.Text = alreadyInBasket
+                ? provider.Name + " is already in your basket."
+                : provider.Name + " has been added to your basket.";
             pnlMessage.Visible = true;
 
             BookingDB.WriteAuditLog(

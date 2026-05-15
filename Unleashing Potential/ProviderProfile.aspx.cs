@@ -40,7 +40,7 @@ namespace Unleashing_Potential
             lblPhone.Text = p.Phone;
             lblExperience.Text = p.YearsExperience + " years";
             lblCategory.Text = p.Category;
-            lblPrice.Text = p.Price.ToString("0");
+            lblPrice.Text = p.Price.ToString("0.00");
             lblPriceUnit.Text = p.PriceUnit;
 
             var reviews = BookingDB.GetReviewsByProvider(_providerID);
@@ -63,17 +63,26 @@ namespace Unleashing_Potential
             var p = BookingDB.GetProviderByID(_providerID);
             if (p == null) return;
 
+            var service = BookingDB.GetActiveServiceForCategory(p.Category);
             var basket = Session["Basket"] as List<BasketItem> ?? new List<BasketItem>();
             var existing = basket.Find(b => b.ProviderID == _providerID);
+            bool alreadyInBasket = existing != null;
 
             if (existing != null)
             {
-                existing.Quantity++;
+                existing.ServiceID = service != null ? (int?)service.ServiceID : existing.ServiceID;
+                existing.ProviderName = p.Name;
+                existing.Service = p.Specialty;
+                existing.Category = p.Category;
+                existing.Price = p.Price;
+                existing.PriceUnit = p.PriceUnit;
+                existing.Quantity = 1;
             }
             else
             {
                 basket.Add(new BasketItem
                 {
+                    ServiceID = service != null ? (int?)service.ServiceID : null,
                     ProviderID = p.ProviderID,
                     ProviderName = p.Name,
                     Service = p.Specialty,
@@ -85,7 +94,9 @@ namespace Unleashing_Potential
             }
 
             Session["Basket"] = basket;
-            lblMessage.Text = p.Name + " added to your basket!";
+            lblMessage.Text = alreadyInBasket
+                ? p.Name + " is already in your basket."
+                : p.Name + " added to your basket!";
             pnlMessage.Visible = true;
 
             BookingDB.WriteAuditLog(

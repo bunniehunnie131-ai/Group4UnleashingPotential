@@ -513,6 +513,11 @@
                                 ErrorMessage="Enter a valid price (e.g. 250.00)."
                                 Display="Dynamic" CssClass="field-error" ForeColor="">
                             Enter a valid price (e.g. 250.00).</asp:RegularExpressionValidator>
+                            <asp:CustomValidator ID="cvPrice" runat="server"
+                                ControlToValidate="txtPrice"
+                                OnServerValidate="cvPrice_ServerValidate"
+                                Display="Dynamic" CssClass="field-error" ForeColor="">
+                            </asp:CustomValidator>
                         </div>
                     </div>
 

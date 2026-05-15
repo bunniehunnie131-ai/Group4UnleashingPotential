@@ -9,13 +9,62 @@
     }
     .page-wrap { max-width:820px; margin:0 auto; }
     .checkout-wizard { background:#fff; border-radius:16px; box-shadow:0 4px 24px rgba(12,74,110,0.09); overflow:hidden; }
+    .checkout-wizard table { width:100%; }
+    .checkout-wizard > tbody > tr { display:flex; flex-direction:column; gap:1rem; }
+    .checkout-wizard > tbody > tr > td { width:100%; display:block; }
     /* Wizard header */
     .checkout-wizard .wizard-step-title {
         background:linear-gradient(135deg,var(--sky-dark),var(--sky-deeper));
         color:#fff; font-family:'Lora',serif; font-size:1.1rem; padding:1rem 1.5rem;
     }
-    /* Sidebar */
-    table.wizard-sidebar td { background:var(--sky-pale)!important; }
+    .checkout-stepper {
+        margin:1.2rem 1.2rem 0;
+    }
+    .checkout-stepper table {
+        width:100%;
+        border-collapse:separate;
+        border-spacing:0;
+    }
+    .checkout-stepper tbody {
+        display:flex;
+        gap:0.55rem;
+        width:100%;
+    }
+    .checkout-stepper table tr {
+        flex:1;
+        display:flex;
+    }
+    .checkout-stepper table td {
+        flex:1;
+        padding:0;
+    }
+    .checkout-stepper a,
+    .checkout-stepper span {
+        display:block;
+        text-align:center;
+        padding:0.8rem 0.95rem;
+        border-radius:999px;
+        border:1px solid var(--sky-light);
+        background:#fff;
+        color:var(--sky-dark);
+        font-weight:700;
+        font-size:0.82rem;
+        text-decoration:none;
+        box-shadow:0 1px 2px rgba(12,74,110,0.04);
+        transition:background 0.2s, color 0.2s, border-color 0.2s, transform 0.2s;
+    }
+    .checkout-stepper a:hover {
+        background:var(--sky-pale);
+        color:var(--sky-deeper);
+        border-color:var(--sky);
+        transform:translateY(-1px);
+    }
+    .checkout-stepper span {
+        background:linear-gradient(135deg,var(--sky),var(--sky-dark));
+        border-color:transparent;
+        color:#fff;
+        box-shadow:0 4px 12px rgba(14,165,233,0.18);
+    }
     .form-group { margin-bottom:1.2rem; }
     .form-label { font-size:0.84rem; font-weight:600; color:#374151; display:block; margin-bottom:0.4rem; }
     .form-input {
@@ -48,10 +97,36 @@
     .order-summary-total { display:flex; justify-content:space-between; padding:0.8rem 0 0; font-size:1.05rem; font-weight:700; color:var(--sky-deeper); }
     .step-content { padding:1.5rem 2rem; }
     .err { color:#dc2626; font-size:0.8rem; margin-top:0.3rem; }
+    .checkout-error {
+        background:#fef2f2;
+        border:1px solid #fecaca;
+        color:#991b1b;
+        border-radius:10px;
+        padding:0.85rem 1rem;
+        margin-bottom:1rem;
+        font-size:0.85rem;
+    }
     .info-badge {
         background:var(--sky-pale); border:1px solid var(--sky-light);
         border-radius:8px; padding:0.7rem 1rem; font-size:0.84rem; color:var(--sky-darker,var(--sky-dark));
         margin:0.8rem 0;
+    }
+    .btn-checkout {
+        background:linear-gradient(135deg,var(--sky),var(--sky-dark));
+        border:none;
+        color:#fff;
+        border-radius:10px;
+        padding:0.75rem 1.35rem;
+        font-size:0.92rem;
+        font-weight:700;
+        cursor:pointer;
+        transition:opacity 0.2s, transform 0.2s;
+        min-width:120px;
+    }
+    .btn-checkout:hover {
+        opacity:0.9;
+        color:#fff;
+        transform:translateY(-1px);
     }
 </style>
 <script>
@@ -83,9 +158,14 @@
 
     <asp:Wizard ID="wzCheckout" runat="server"
         DisplaySideBar="true"
+        OnActiveStepChanged="wzCheckout_ActiveStepChanged"
         OnFinishButtonClick="wzCheckout_FinishButtonClick"
         OnNextButtonClick="wzCheckout_NextButtonClick"
         CssClass="checkout-wizard">
+        <SideBarStyle CssClass="checkout-stepper" />
+        <SideBarButtonStyle CssClass="checkout-stepper-link" />
+        <StepStyle CssClass="checkout-step-panel" />
+        <NavigationButtonStyle CssClass="btn-checkout" />
 
         <WizardSteps>
 
@@ -224,6 +304,10 @@
             <asp:WizardStep ID="step3" runat="server" Title="Confirm Booking" StepType="Finish">
                 <div class="step-content">
                     <h5 style="font-family:'Lora',serif;color:var(--sky-deeper);margin-bottom:1.2rem;">Confirm Your Booking</h5>
+
+                    <asp:Panel ID="pnlCheckoutError" runat="server" Visible="false" CssClass="checkout-error">
+                        <asp:Label ID="lblCheckoutError" runat="server" />
+                    </asp:Panel>
 
                     <div style="background:var(--sky-pale);border-radius:12px;padding:1.2rem 1.5rem;margin-bottom:1.2rem;">
                         <div style="font-size:0.8rem;font-weight:700;color:var(--sky-dark);text-transform:uppercase;margin-bottom:0.6rem;">Booking Details</div>

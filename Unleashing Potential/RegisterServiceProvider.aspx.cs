@@ -114,7 +114,11 @@ namespace Unleashing_Potential
                     providerCmd.Parameters.Add("@Category", SqlDbType.NVarChar, 50).Value = ddlCategory.SelectedValue;
                     providerCmd.Parameters.Add("@Specialty", SqlDbType.NVarChar, 100).Value = txtSpecialty.Text.Trim();
                     providerCmd.Parameters.Add("@Description", SqlDbType.NVarChar, 500).Value = txtDescription.Text.Trim();
-                    providerCmd.Parameters.Add("@Price", SqlDbType.Decimal).Value = decimal.Parse(txtPrice.Text.Trim());
+                    decimal price = decimal.Parse(txtPrice.Text.Trim());
+                    var priceParam = providerCmd.Parameters.Add("@Price", SqlDbType.Decimal);
+                    priceParam.Precision = 18;
+                    priceParam.Scale = 2;
+                    priceParam.Value = price;
                     providerCmd.Parameters.Add("@PriceUnit", SqlDbType.NVarChar, 50).Value = ddlPriceUnit.SelectedValue;
                     providerCmd.Parameters.Add("@Location", SqlDbType.NVarChar, 100).Value = txtLocation.Text.Trim();
                     providerCmd.Parameters.Add("@Phone", SqlDbType.NVarChar, 20).Value = txtPhone.Text.Trim();
@@ -178,6 +182,57 @@ namespace Unleashing_Potential
             txtYearsExperience.Text = "";
             lblMessage.Text = "";
             lblMessage.CssClass = "";
+        }
+
+        protected void cvPrice_ServerValidate(object source, ServerValidateEventArgs args)
+        {
+            string message;
+            args.IsValid = ValidateServicePrice(ddlCategory.SelectedValue, txtPrice.Text, out message);
+
+            var validator = source as CustomValidator;
+            if (validator != null)
+            {
+                validator.ErrorMessage = message;
+                validator.Text = message;
+            }
+        }
+
+        private bool ValidateServicePrice(string category, string priceText, out string errorMessage)
+        {
+            errorMessage = "Enter a valid price.";
+
+            if (string.IsNullOrWhiteSpace(priceText))
+            {
+                errorMessage = string.Empty;
+                return true;
+            }
+
+            decimal price;
+            if (!decimal.TryParse(priceText.Trim(), out price))
+            {
+                errorMessage = "Enter a valid price (e.g. 250.00).";
+                return false;
+            }
+
+            var service = BookingDB.GetActiveServiceForCategory(category);
+            if (service == null)
+            {
+                errorMessage = "No active service price range is configured for this category.";
+                return false;
+            }
+
+            if (price < service.MinPrice || price > service.MaxPrice)
+            {
+                errorMessage = string.Format(
+                    "Price for {0} must be between R{1:0.00} and R{2:0.00}.",
+                    service.Name,
+                    service.MinPrice,
+                    service.MaxPrice);
+                return false;
+            }
+
+            errorMessage = string.Empty;
+            return true;
         }
 
         // Simple SHA256 hash — replace with your project's hashing method if different

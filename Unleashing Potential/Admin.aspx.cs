@@ -237,15 +237,12 @@ namespace Unleashing_Potential
             GridViewRow row = null;
             foreach (GridViewRow r in gvBookings.Rows)
             {
-                Button btn = r.FindControl("") as Button;
                 if (r.Cells[0].Text == bookingID.ToString()) { row = r; break; }
             }
 
             // Locate the row by iterating
             foreach (GridViewRow r in gvBookings.Rows)
             {
-                DropDownList ddl = r.FindControl("ddlStatus") as DropDownList;
-                Button updateBtn = null;
                 foreach (Control ctrl in r.Controls)
                     foreach (Control inner in ctrl.Controls)
                         if (inner is Button b && b.CommandName == "UpdateStatus"
@@ -271,15 +268,15 @@ namespace Unleashing_Potential
                             cmd.ExecuteNonQuery();
                         }
 
-                        WriteAuditLog("BOOKING_UPDATED",
+                    WriteAuditLog("BOOKING_UPDATED",
                             $"Booking {bookingID} status set to {newStatusId}");
 
                         ShowMessage("Booking status updated.");
                         LoadBookings();
                     }
-                    catch (SqlException ex)
+                    catch (SqlException)
                     {
-                        ShowMessage("Error: " + ex.Message, false);
+                        ShowMessage("Error updating booking status.", false);
                     }
                     break;
                 }
@@ -442,7 +439,7 @@ namespace Unleashing_Potential
                 ShowMessage("Category deleted.");
                 LoadCategories();
             }
-            catch (SqlException ex)
+            catch (SqlException)
             {
                 ShowMessage("Cannot delete — this category may have providers linked to it.", false);
             }

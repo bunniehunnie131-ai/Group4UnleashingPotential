@@ -26,6 +26,8 @@ namespace Unleashing_Potential
                 return;
             }
 
+            NormalizeBasket(basket);
+
             pnlEmpty.Visible = false;
             pnlBasket.Visible = true;
 
@@ -49,17 +51,6 @@ namespace Unleashing_Potential
             {
                 basket.RemoveAll(b => b.ProviderID == providerID);
             }
-            else if (e.CommandName == "Update")
-            {
-                var txtQty = e.Item.FindControl("txtQty") as TextBox;
-                if (txtQty == null) return;
-
-                int newQty;
-                if (!int.TryParse(txtQty.Text, out newQty) || newQty < 1) newQty = 1;
-
-                var item = basket.Find(b => b.ProviderID == providerID);
-                if (item != null) item.Quantity = newQty;
-            }
 
             Session["Basket"] = basket;
             BindBasket();
@@ -68,6 +59,17 @@ namespace Unleashing_Potential
         protected void btnCheckout_Click(object sender, EventArgs e)
         {
             Response.Redirect("~/Checkout.aspx");
+        }
+
+        private static void NormalizeBasket(List<BasketItem> basket)
+        {
+            if (basket == null) return;
+
+            foreach (var item in basket)
+            {
+                if (item != null)
+                    item.Quantity = 1;
+            }
         }
     }
 }

@@ -328,15 +328,10 @@
                 <div class="form-group">
                     <label>Category</label>
                     <asp:DropDownList ID="ddlCategory" runat="server">
-                        <asp:ListItem>Cleaning</asp:ListItem>
+                        <asp:ListItem>Tailoring</asp:ListItem>
                         <asp:ListItem>Plumbing</asp:ListItem>
-                        <asp:ListItem>Electrical</asp:ListItem>
-                        <asp:ListItem>Gardening</asp:ListItem>
-                        <asp:ListItem>Tutoring</asp:ListItem>
-                        <asp:ListItem>Catering</asp:ListItem>
-                        <asp:ListItem>Security</asp:ListItem>
-                        <asp:ListItem>Transport</asp:ListItem>
-                        <asp:ListItem>Other</asp:ListItem>
+                        <asp:ListItem>Painting</asp:ListItem>
+                        <asp:ListItem>Hairdressing</asp:ListItem>
                     </asp:DropDownList>
                 </div>
                 <div class="form-group">
@@ -346,9 +341,11 @@
                 <div class="form-group">
                     <label>Price (R)</label>
                     <asp:TextBox ID="txtPrice" runat="server" TextMode="Number" />
-                    <asp:RangeValidator ControlToValidate="txtPrice" runat="server"
-                        MinimumValue="0" MaximumValue="99999" Type="Double"
-                        ValidationGroup="Prov" ErrorMessage="Enter a valid price." ForeColor="Red" Display="Dynamic" />
+                    <asp:RequiredFieldValidator ControlToValidate="txtPrice" runat="server"
+                        ValidationGroup="Prov" ErrorMessage="Price is required." ForeColor="Red" Display="Dynamic" />
+                    <asp:CustomValidator ControlToValidate="txtPrice" runat="server"
+                        ValidationGroup="Prov" OnServerValidate="cvPrice_ServerValidate"
+                        ForeColor="Red" Display="Dynamic" />
                 </div>
                 <div class="form-group">
                     <label>Price Unit</label>

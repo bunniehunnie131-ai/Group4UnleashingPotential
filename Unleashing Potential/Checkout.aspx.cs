@@ -20,6 +20,9 @@ namespace Unleashing_Potential
                 return;
             }
 
+            NormalizeBasket(basket);
+            Session["Basket"] = basket;
+
             if (!IsPostBack)
                 txtName.Text = Session["UserName"].ToString();
         }
@@ -38,6 +41,9 @@ namespace Unleashing_Potential
             var basket = Session["Basket"] as List<BasketItem>;
             if (basket == null) return;
 
+            NormalizeBasket(basket);
+            Session["Basket"] = basket;
+
             // Validate Step 1 — appointment date
             if (e.CurrentStepIndex == 0)
             {
@@ -51,35 +57,17 @@ namespace Unleashing_Potential
                 lblDateError.Visible = false;
             }
 
-            // Set amounts on Step 2
-            if (e.NextStepIndex == 1)
-            {
-                decimal total = basket.Sum(b => b.LineTotal);
-                lblDepositAmt.Text = (total * 0.5m).ToString("0.00");
-                lblFullAmt.Text = total.ToString("0.00");
-                rblPayment.SelectedValue = "PayOnCompletion";
-                rblAmount.SelectedValue = "Deposit";
-            }
+            RefreshStepState(e.NextStepIndex, basket);
+        }
 
-            // Populate confirm step
-            if (e.NextStepIndex == 2)
-            {
-                decimal total = basket.Sum(b => b.LineTotal);
-                string amtType = rblAmount.SelectedValue ?? "Deposit";
-                decimal payNow = amtType == "Full" ? total : total * 0.5m;
+        protected void wzCheckout_ActiveStepChanged(object sender, EventArgs e)
+        {
+            var basket = Session["Basket"] as List<BasketItem>;
+            if (basket == null) return;
 
-                lblConfirmDetails.Text =
-                    "<strong>Name:</strong> " + txtName.Text + "<br/>" +
-                    "<strong>Phone:</strong> " + txtPhone.Text + "<br/>" +
-                    "<strong>Address:</strong> " + txtAddress.Text + "<br/>" +
-                    "<strong>Date:</strong> " + calAppointment.SelectedDate.ToString("dd MMMM yyyy") + "<br/>" +
-                    "<strong>Payment:</strong> " + (rblPayment.SelectedValue ?? "PayOnCompletion");
-
-                rptConfirmItems.DataSource = basket;
-                rptConfirmItems.DataBind();
-                lblConfirmTotal.Text = total.ToString("0.00");
-                lblConfirmPayNow.Text = payNow.ToString("0.00");
-            }
+            NormalizeBasket(basket);
+            Session["Basket"] = basket;
+            RefreshStepState(wzCheckout.ActiveStepIndex, basket);
         }
 
         protected void wzCheckout_FinishButtonClick(object sender, WizardNavigationEventArgs e)
@@ -87,47 +75,124 @@ namespace Unleashing_Potential
             var basket = Session["Basket"] as List<BasketItem>;
             if (basket == null) return;
 
+            NormalizeBasket(basket);
+            Session["Basket"] = basket;
+
+            Page.Validate("Step1");
+            if (!Page.IsValid ||
+                calAppointment.SelectedDate == DateTime.MinValue ||
+                calAppointment.SelectedDate < DateTime.Today)
+            {
+                lblCheckoutError.Text = "Please complete the booking details and select a valid appointment date before confirming.";
+                pnlCheckoutError.Visible = true;
+                e.Cancel = true;
+                return;
+            }
+
             decimal total = basket.Sum(b => b.LineTotal);
-            string amtType = rblAmount.SelectedValue ?? "Deposit";
+            string paymentMethod = string.IsNullOrWhiteSpace(rblPayment.SelectedValue)
+                ? "PayOnCompletion"
+                : rblPayment.SelectedValue;
+            string amtType = string.IsNullOrWhiteSpace(rblAmount.SelectedValue)
+                ? "Deposit"
+                : rblAmount.SelectedValue;
             decimal amtPaid = amtType == "Full" ? total : total * 0.5m;
 
             var booking = new Booking
             {
                 Items = new List<BasketItem>(basket),
-                CustomerID = Session["UserID"] == null ? (int?)null : Convert.ToInt32(Session["UserID"]),
-                LocationID = null,
-                BookingStatusID = null,
+                BookingStatusID = 1,
                 BookingDate = DateTime.Now,
                 AppointmentDate = calAppointment.SelectedDate,
-                Notes = txtNotes.Text.Trim()
+                Notes = txtNotes.Text.Trim(),
+                PaymentMethod = paymentMethod
             };
 
             try
             {
+                string refNumber = BookingDB.SaveBooking(booking);
+
                 Session["LastBookingName"] = txtName.Text.Trim();
                 Session["LastBookingPhone"] = txtPhone.Text.Trim();
                 Session["LastBookingAddress"] = txtAddress.Text.Trim();
-                Session["LastBookingPayment"] = rblPayment.SelectedValue ?? "PayOnCompletion";
+                Session["LastBookingPayment"] = paymentMethod;
                 Session["LastBookingTotal"] = total;
                 Session["LastBookingAmtPaid"] = amtPaid;
-                string refNumber = BookingDB.SaveBooking(booking);
+                Session["LastBookingRef"] = refNumber;
+                Session["Basket"] = null;
 
                 BookingDB.WriteAuditLog(
                     Session["UserName"] != null ? Session["UserName"].ToString() : null,
                     "BOOKING_CREATED",
                     "Booking " + refNumber + " created. Amount paid: R" + amtPaid.ToString("0.00"));
 
-                Session["LastBookingRef"] = refNumber;
-                Session["Basket"] = null;
-
-                Response.Redirect("~/BookingConfirmation.aspx");
+                Response.Redirect("~/BookingConfirmation.aspx", false);
+                Context.ApplicationInstance.CompleteRequest();
+                return;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // Show a friendly error — technical details are in AuditLogs
-                lblDateError.Text = "Your booking could not be saved. Please try again.";
-                lblDateError.Visible = true;
+                BookingDB.WriteAuditLog(
+                    Session["UserName"] != null ? Session["UserName"].ToString() : null,
+                    "BOOKING_CREATE_FAILED",
+                    ex.Message);
+
+                lblCheckoutError.Text = "Your booking could not be saved right now. " + ex.Message;
+                pnlCheckoutError.Visible = true;
                 e.Cancel = true;
+            }
+        }
+
+        private void RefreshStepState(int stepIndex, List<BasketItem> basket)
+        {
+            if (basket == null) return;
+
+            decimal total = basket.Sum(b => b.LineTotal);
+
+            if (stepIndex == 1)
+            {
+                lblDepositAmt.Text = (total * 0.5m).ToString("0.00");
+                lblFullAmt.Text = total.ToString("0.00");
+
+                if (string.IsNullOrWhiteSpace(rblPayment.SelectedValue))
+                    rblPayment.SelectedValue = "PayOnCompletion";
+
+                if (string.IsNullOrWhiteSpace(rblAmount.SelectedValue))
+                    rblAmount.SelectedValue = "Deposit";
+
+                pnlCheckoutError.Visible = false;
+            }
+            else if (stepIndex == 2)
+            {
+                string amtType = rblAmount.SelectedValue ?? "Deposit";
+                decimal payNow = amtType == "Full" ? total : total * 0.5m;
+                string selectedDate = calAppointment.SelectedDate == DateTime.MinValue
+                    ? string.Empty
+                    : calAppointment.SelectedDate.ToString("dd MMMM yyyy");
+
+                lblConfirmDetails.Text =
+                    "<strong>Name:</strong> " + txtName.Text + "<br/>" +
+                    "<strong>Phone:</strong> " + txtPhone.Text + "<br/>" +
+                    "<strong>Address:</strong> " + txtAddress.Text + "<br/>" +
+                    "<strong>Date:</strong> " + selectedDate + "<br/>" +
+                    "<strong>Payment:</strong> " + (rblPayment.SelectedValue ?? "PayOnCompletion");
+
+                rptConfirmItems.DataSource = basket;
+                rptConfirmItems.DataBind();
+                lblConfirmTotal.Text = total.ToString("0.00");
+                lblConfirmPayNow.Text = payNow.ToString("0.00");
+                pnlCheckoutError.Visible = false;
+            }
+        }
+
+        private static void NormalizeBasket(List<BasketItem> basket)
+        {
+            if (basket == null) return;
+
+            foreach (var item in basket)
+            {
+                if (item != null)
+                    item.Quantity = 1;
             }
         }
     }
