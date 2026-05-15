@@ -25,6 +25,12 @@ namespace Unleashing_Potential
             set { hfProviderID.Value = value.ToString(); }
         }
 
+        private string ActiveTab
+        {
+            get { return ViewState["ActiveTab"] as string ?? "bookings"; }
+            set { ViewState["ActiveTab"] = NormalizeTab(value); }
+        }
+
         // ══════════════════════════════════════════════════════════════════════
         // PAGE LOAD
         // ══════════════════════════════════════════════════════════════════════
@@ -42,6 +48,8 @@ namespace Unleashing_Potential
                 Response.Redirect("~/Login.aspx");
                 return;
             }
+
+            SyncActiveTabState();
 
             if (!IsPostBack)
             {
@@ -110,6 +118,44 @@ namespace Unleashing_Potential
                     }
                 }
             }
+        }
+
+        private void SyncActiveTabState()
+        {
+            if (IsPostBack && !string.IsNullOrWhiteSpace(hfActiveTab.Value))
+                ActiveTab = hfActiveTab.Value;
+            else if (!IsPostBack)
+                ActiveTab = "bookings";
+
+            hfActiveTab.Value = ActiveTab;
+        }
+
+        private string NormalizeTab(string tabName)
+        {
+            string tab = (tabName ?? string.Empty).Trim().ToLowerInvariant();
+            switch (tab)
+            {
+                case "earnings":
+                case "reviews":
+                case "profile":
+                    return tab;
+                default:
+                    return "bookings";
+            }
+        }
+
+        protected string TabButtonClass(string tabName)
+        {
+            return string.Equals(ActiveTab, NormalizeTab(tabName), StringComparison.OrdinalIgnoreCase)
+                ? "active"
+                : string.Empty;
+        }
+
+        protected string TabSectionClass(string tabName)
+        {
+            return string.Equals(ActiveTab, NormalizeTab(tabName), StringComparison.OrdinalIgnoreCase)
+                ? "active"
+                : string.Empty;
         }
 
         // ══════════════════════════════════════════════════════════════════════
@@ -195,6 +241,8 @@ namespace Unleashing_Potential
 
         protected void ddlFilter_Changed(object sender, EventArgs e)
         {
+            ActiveTab = "bookings";
+            hfActiveTab.Value = ActiveTab;
             LoadBookings(ddlFilter.SelectedValue);
         }
 
@@ -397,6 +445,9 @@ namespace Unleashing_Potential
         {
             if (!Page.IsValid) return;
 
+            ActiveTab = "profile";
+            hfActiveTab.Value = ActiveTab;
+
             string sql = @"UPDATE ServiceProviders
                            SET Name=@Name, Category=@Cat, Specialty=@Spec,
                                Price=@Price, PriceUnit=@PUnit,
@@ -427,9 +478,11 @@ namespace Unleashing_Potential
                 }
                 ShowMsg(lblProfileMsg, "Profile saved successfully.", true);
                 LoadHeader(); // Refresh header with new name/category
+                hfActiveTab.Value = ActiveTab;
             }
             catch (Exception ex)
             {
+                hfActiveTab.Value = ActiveTab;
                 ShowMsg(lblProfileMsg, "Error: " + ex.Message, false);
             }
         }

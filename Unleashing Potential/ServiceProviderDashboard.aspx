@@ -174,15 +174,16 @@
     </div>
 
     <!-- Tabs -->
+    <asp:HiddenField ID="hfActiveTab" runat="server" />
     <div class="tab-bar">
-        <button type="button" class="tab-btn active" onclick="switchTab('bookings',this)">Bookings</button>
-        <button type="button" class="tab-btn"        onclick="switchTab('earnings',this)">Earnings</button>
-        <button type="button" class="tab-btn"        onclick="switchTab('reviews',this)">Reviews</button>
-        <button type="button" class="tab-btn"        onclick="switchTab('profile',this)">My Profile</button>
+        <button type="button" class='tab-btn <%= TabButtonClass("bookings") %>' onclick="switchTab('bookings',this)">Bookings</button>
+        <button type="button" class='tab-btn <%= TabButtonClass("earnings") %>' onclick="switchTab('earnings',this)">Earnings</button>
+        <button type="button" class='tab-btn <%= TabButtonClass("reviews") %>' onclick="switchTab('reviews',this)">Reviews</button>
+        <button type="button" class='tab-btn <%= TabButtonClass("profile") %>' onclick="switchTab('profile',this)">My Profile</button>
     </div>
 
     <!-- ═══ TAB: BOOKINGS ═══ -->
-    <div id="tab-bookings" class="dash-section active">
+    <div id="tab-bookings" class='dash-section <%= TabSectionClass("bookings") %>'>
         <div class="panel">
             <h4>Assigned Bookings</h4>
             <div style="margin-bottom:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
@@ -249,7 +250,7 @@
     </div>
 
     <!-- ═══ TAB: EARNINGS ═══ -->
-    <div id="tab-earnings" class="dash-section">
+    <div id="tab-earnings" class='dash-section <%= TabSectionClass("earnings") %>'>
         <div class="panel">
             <h4>Earnings Overview</h4>
             <div class="earn-row">
@@ -293,7 +294,7 @@
     </div>
 
     <!-- ═══ TAB: REVIEWS ═══ -->
-    <div id="tab-reviews" class="dash-section">
+    <div id="tab-reviews" class='dash-section <%= TabSectionClass("reviews") %>'>
         <div class="panel">
             <h4>Customer Reviews</h4>
             <asp:Repeater ID="rptReviews" runat="server">
@@ -314,7 +315,7 @@
     </div>
 
     <!-- ═══ TAB: PROFILE ═══ -->
-    <div id="tab-profile" class="dash-section">
+    <div id="tab-profile" class='dash-section <%= TabSectionClass("profile") %>'>
         <div class="panel">
             <h4>My Service Profile</h4>
             <asp:Label ID="lblProfileMsg" runat="server" CssClass="msg" EnableViewState="false" />
@@ -390,8 +391,12 @@
         function switchTab(name, btn) {
             document.querySelectorAll('.dash-section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('tab-' + name).classList.add('active');
-            btn.classList.add('active');
+            var section = document.getElementById('tab-' + name);
+            if (section) section.classList.add('active');
+            if (btn) btn.classList.add('active');
+
+            var activeTabField = document.getElementById('<%= hfActiveTab.ClientID %>');
+            if (activeTabField) activeTabField.value = name;
         }
     </script>
 
