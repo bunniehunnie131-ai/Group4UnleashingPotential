@@ -95,7 +95,7 @@ namespace Unleashing_Potential
             }
             catch
             {
-               .
+                lblUserName.Text = HttpUtility.HtmlEncode(CustomerDisplayName);
             }
         }
 

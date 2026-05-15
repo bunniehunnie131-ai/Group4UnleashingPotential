@@ -16,10 +16,14 @@ namespace Unleashing_Potential
             if (!IsPostBack)
             {
                 string category = Request.QueryString["category"] ?? "Hairdressing";
-                lblCategory.Text = category;
-                lblCategoryIcon.Text = GetCategoryIcon(category);
+                string lookupCategory = BookingDB.ResolveProviderCategory(category);
+                if (string.IsNullOrWhiteSpace(lookupCategory))
+                    lookupCategory = "Hairdressing";
 
-                var providers = BookingDB.GetProvidersByCategory(category);
+                lblCategory.Text = category;
+                lblCategoryIcon.Text = GetCategoryIcon(lookupCategory);
+
+                var providers = BookingDB.GetProvidersByCategory(lookupCategory);
                 rptProviders.DataSource = providers;
                 rptProviders.DataBind();
             }
@@ -74,7 +78,10 @@ namespace Unleashing_Potential
                 "ADD_TO_BASKET",
                 "Added provider " + provider.Name + " to basket.");
 
-            string category = Request.QueryString["category"] ?? "Hairdressing";
+            string category = BookingDB.ResolveProviderCategory(Request.QueryString["category"] ?? "Hairdressing");
+            if (string.IsNullOrWhiteSpace(category))
+                category = "Hairdressing";
+
             rptProviders.DataSource = BookingDB.GetProvidersByCategory(category);
             rptProviders.DataBind();
             UpdateBasketCount();

@@ -81,6 +81,7 @@
         .badge-confirmed  { background:#dbeafe; color:#1e40af; }
         .badge-completed  { background:#d1e7dd; color:#0a3622; }
         .badge-cancelled  { background:#f8d7da; color:#842029; }
+        .badge-rejected   { background:#fff7ed; color:#c2410c; }
         .badge-accepted   { background:#dbeafe; color:#1e40af; }
         .badge-inprogress { background:#d1ecf1; color:#0c5460; }
 
@@ -108,6 +109,7 @@
         .btn-sm { padding:6px 14px; font-size:.8rem; border:none; border-radius:5px; cursor:pointer; font-weight:600; color:#fff; }
         .btn-confirm  { background:#2563eb; }
         .btn-accept   { background:#2563eb; }
+        .btn-reject   { background:#d97706; }
         .btn-progress { background:#d97706; }
         .btn-complete { background:var(--primary); }
         .btn-cancel   { background:var(--danger); }
@@ -196,6 +198,7 @@
                         <asp:ListItem Value="Confirmed">Confirmed</asp:ListItem>
                         <asp:ListItem Value="Completed">Completed</asp:ListItem>
                         <asp:ListItem Value="Cancelled">Cancelled</asp:ListItem>
+                        <asp:ListItem Value="Rejected">Rejected</asp:ListItem>
                     </asp:DropDownList>
                 </div>
 
@@ -234,12 +237,19 @@
                                     CssClass="btn-sm btn-complete"
                                     Visible='<%# Eval("Status").ToString() == "Confirmed" %>'
                                     CausesValidation="false" />
+                                <asp:LinkButton ID="btnReject" runat="server"
+                                    Text="Reject"
+                                    CommandName="RejectBooking"
+                                    CommandArgument='<%# Eval("BookingID") %>'
+                                    CssClass="btn-sm btn-reject"
+                                    Visible='<%# Eval("Status").ToString() == "Pending" %>'
+                                    CausesValidation="false" />
                                 <asp:LinkButton ID="btnCancel" runat="server"
                                     Text="Cancel"
-                                    CommandName="Cancel"
+                                    CommandName="CancelBooking"
                                     CommandArgument='<%# Eval("BookingID") %>'
                                     CssClass="btn-sm btn-cancel"
-                                    Visible='<%# Eval("Status").ToString() != "Completed" && Eval("Status").ToString() != "Cancelled" %>'
+                                    Visible='<%# Eval("Status").ToString() == "Confirmed" %>'
                                     CausesValidation="false" />
                             </ItemTemplate>
                         </asp:TemplateField>

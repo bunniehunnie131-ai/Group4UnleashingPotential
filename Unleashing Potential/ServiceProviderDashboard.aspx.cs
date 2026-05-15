@@ -247,7 +247,8 @@ namespace Unleashing_Potential
 
             if (e.CommandName == "Confirm") newStatus = "Confirmed";
             else if (e.CommandName == "Complete") newStatus = "Completed";
-            else if (e.CommandName == "Cancel") newStatus = "Cancelled";
+            else if (e.CommandName == "Reject" || e.CommandName == "RejectBooking") newStatus = "Rejected";
+            else if (e.CommandName == "Cancel" || e.CommandName == "CancelBooking") newStatus = "Cancelled";
 
             if (bookingId > 0 && !string.IsNullOrEmpty(newStatus))
                 UpdateBookingStatus(bookingId, newStatus);
@@ -265,6 +266,10 @@ namespace Unleashing_Potential
                 normalized.Equals("AppointmentDay", StringComparison.OrdinalIgnoreCase))
             {
                 normalized = "Confirmed";
+            }
+            else if (normalized.Equals("Reject", StringComparison.OrdinalIgnoreCase))
+            {
+                normalized = "Rejected";
             }
 
             using (SqlConnection conn = new SqlConnection(ConnStr))

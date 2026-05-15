@@ -16,7 +16,7 @@ namespace Unleashing_Potential
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Nothing needed on load for this page
+            
         }
 
         protected void btnRegister_Click(object sender, EventArgs e)
@@ -59,7 +59,7 @@ namespace Unleashing_Potential
                     conn.Open();
                     transaction = conn.BeginTransaction();
 
-                    // Step 1: Check email is not already registered
+                    
                     string checkSql = "SELECT COUNT(*) FROM Users WHERE Email = @Email";
                     SqlCommand checkCmd = new SqlCommand(checkSql, conn);
                     checkCmd.Transaction = transaction;
@@ -74,7 +74,7 @@ namespace Unleashing_Potential
                         return;
                     }
 
-                    // Step 2: Insert into Users
+                   
                     string userSql =
                         "INSERT INTO Users (FullName, Email, Phone, DateOfBirth, Township, PasswordHash, " +
                         "SecurityQuestion, SecurityAnswerHash, Role, DateCreated, IsActive) " +
@@ -99,7 +99,7 @@ namespace Unleashing_Potential
 
                     int newUserID = Convert.ToInt32(userCmd.ExecuteScalar());
 
-                    // Step 4: Insert into ServiceProviders using the new UserID
+                    
                     string providerSql =
                         "INSERT INTO ServiceProviders (UserID, Name, Category, Specialty, Description, " +
                         "Price, PriceUnit, Location, Phone, YearsExperience, Rating, ReviewCount) " +
@@ -126,16 +126,16 @@ namespace Unleashing_Potential
 
                     providerCmd.ExecuteNonQuery();
 
-                    // Step 5: Both inserts succeeded — commit
+                    
                     transaction.Commit();
 
-                    // Step 6: Log the registration
+                   
                     WriteAuditLog("PROVIDER_REGISTER",
                         "New service provider registered: " + email);
 
                     ClearForm();
 
-                    // Step 7: Redirect to login with a success message
+                    
                     Response.Redirect("~/Login.aspx?registered=provider");
                 }
             }

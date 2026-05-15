@@ -346,6 +346,8 @@ namespace Unleashing_Potential
                 return "Confirmed";
             if (trimmed.Equals("AppointmentDay", StringComparison.OrdinalIgnoreCase))
                 return "Confirmed";
+            if (trimmed.Equals("Reject", StringComparison.OrdinalIgnoreCase))
+                return "Rejected";
             return trimmed;
         }
 
@@ -366,6 +368,33 @@ namespace Unleashing_Potential
             return builder.ToString();
         }
 
+        // Map legacy UI category labels to the raw ServiceProviders.Category values stored in the database.
+        private static readonly Dictionary<string, string> ProviderCategoryAliases =
+            new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                { "beautyandpersonalcare", "Hairdressing" },
+                { "fashionandclothing", "Tailoring" },
+                { "homemaintence", "Plumbing" },
+                { "homemaintenance", "Painting" },
+                { "hairdressing", "Hairdressing" },
+                { "tailoring", "Tailoring" },
+                { "plumbing", "Plumbing" },
+                { "painting", "Painting" }
+            };
+
+        public static string ResolveProviderCategory(string category)
+        {
+            string normalized = NormalizeLookupKey(category);
+            if (string.IsNullOrWhiteSpace(normalized))
+                return string.Empty;
+
+            string resolved;
+            if (ProviderCategoryAliases.TryGetValue(normalized, out resolved))
+                return resolved;
+
+            return category == null ? string.Empty : category.Trim();
+        }
+
         private static string StatusNameFromId(int? statusId)
         {
             if (!statusId.HasValue)
@@ -377,6 +406,7 @@ namespace Unleashing_Potential
                 case 2: return "Confirmed";
                 case 3: return "Completed";
                 case 4: return "Cancelled";
+                case 5: return "Rejected";
                 default: return statusId.Value.ToString();
             }
         }
@@ -703,15 +733,19 @@ namespace Unleashing_Potential
             var list = new List<ServiceProvider>();
             try
             {
+                string resolvedCategory = ResolveProviderCategory(category);
+                if (string.IsNullOrWhiteSpace(resolvedCategory))
+                    return list;
+
                 using (var conn = new SqlConnection(ConnStr))
                 {
                     conn.Open();
                     var cmd = new SqlCommand(
                         "SELECT * FROM ServiceProviders " +
-                        "WHERE Category = @Category " +
+                        "WHERE LOWER(REPLACE(REPLACE(REPLACE(Category, ' ', ''), '-', ''), '_', '')) = @NormalizedCategory " +
                         "ORDER BY Rating DESC", conn);
 
-                    cmd.Parameters.Add("@Category", SqlDbType.NVarChar, 50).Value = category;
+                    cmd.Parameters.Add("@NormalizedCategory", SqlDbType.NVarChar, 100).Value = NormalizeLookupKey(resolvedCategory);
 
                     using (var reader = cmd.ExecuteReader())
                     {

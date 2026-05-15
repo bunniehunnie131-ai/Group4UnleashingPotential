@@ -42,14 +42,17 @@ namespace Unleashing_Potential
             string icon = status == "Pending" ? "⏳" :
                           status == "Confirmed" ? "✅" :
                           status == "Completed" ? "🎉" :
-                          status == "Cancelled" ? "✖" : "❓";
+                          status == "Cancelled" ? "✖" :
+                          status == "Rejected" ? "⛔" : "❓";
             return $"<span class='status-badge {css}'>{icon} {status}</span>";
         }
 
         protected string GetTimeline(string currentStatus)
         {
             currentStatus = Normalize(currentStatus);
-            var stages = new[] { "Pending", "Confirmed", "Completed", "Cancelled" };
+            var stages = currentStatus == "Rejected"
+                ? new[] { "Pending", "Rejected" }
+                : new[] { "Pending", "Confirmed", "Completed", "Cancelled" };
             int idx = Array.IndexOf(stages, currentStatus);
             if (idx < 0) idx = 0;
             var sb = new StringBuilder("<div class='timeline'>");
@@ -71,6 +74,39 @@ namespace Unleashing_Potential
 
             sb.Append("</div>");
             return sb.ToString();
+        }
+
+        protected string GetStatusMessage(object dataItem)
+        {
+            var booking = dataItem as Booking;
+            if (booking == null) return string.Empty;
+
+            switch (Normalize(booking.Status))
+            {
+                case "Rejected":
+                    return "This booking was rejected by the provider. The provider and service details below remain available for reference and rebooking.";
+                case "Cancelled":
+                    return "This booking was cancelled after confirmation.";
+                case "Completed":
+                    return "This booking has been completed.";
+                case "Confirmed":
+                    return "The provider has accepted this booking and it is waiting for the appointment.";
+                default:
+                    return "This booking is waiting for provider confirmation.";
+            }
+        }
+
+        protected string GetStatusNoteClass(object dataItem)
+        {
+            var booking = dataItem as Booking;
+            if (booking == null) return "status-note";
+
+            string status = Normalize(booking.Status);
+            if (status == "Rejected") return "status-note rejected";
+            if (status == "Cancelled") return "status-note cancelled";
+            if (status == "Completed") return "status-note completed";
+            if (status == "Confirmed") return "status-note confirmed";
+            return "status-note pending";
         }
 
         protected string GetServiceTags(object dataItem)
@@ -102,6 +138,7 @@ namespace Unleashing_Potential
             if (status.Equals("InProcess", StringComparison.OrdinalIgnoreCase)) return "Confirmed";
             if (status.Equals("In Progress", StringComparison.OrdinalIgnoreCase)) return "Confirmed";
             if (status.Equals("AppointmentDay", StringComparison.OrdinalIgnoreCase)) return "Confirmed";
+            if (status.Equals("Reject", StringComparison.OrdinalIgnoreCase)) return "Rejected";
             return status;
         }
     }

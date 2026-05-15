@@ -594,7 +594,7 @@
             </div>
 
             <div class="catalog-grid">
-                <a href="ServiceProviders.aspx?category=Beauty and Personal Care" class="catalog-card">
+                <a href="ServiceProviders.aspx?category=Hairdressing" class="catalog-card">
                     <div class="catalog-image">
                         <img src="Images/Hairdressing.png" alt="Hairdressing" />
                     </div>
@@ -608,7 +608,7 @@
                     </div>
                 </a>
 
-                <a href="ServiceProviders.aspx?category=Fashion and Clothing" class="catalog-card">
+                <a href="ServiceProviders.aspx?category=Tailoring" class="catalog-card">
                     <div class="catalog-image">
                         <img src="Images/Tailoring.png" alt="Tailoring" />
                     </div>
@@ -622,7 +622,7 @@
                     </div>
                 </a>
 
-                <a href="ServiceProviders.aspx?category=Home Maintence" class="catalog-card">
+                <a href="ServiceProviders.aspx?category=Plumbing" class="catalog-card">
                     <div class="catalog-image">
                         <img src="Images/Plumbing.png" alt="Plumbing" />
                     </div>
@@ -636,7 +636,7 @@
                     </div>
                 </a>
 
-                <a href="ServiceProviders.aspx?category=Home Maintenance" class="catalog-card">
+                <a href="ServiceProviders.aspx?category=Painting" class="catalog-card">
                     <div class="catalog-image">
                         <img src="Images/Painting.png" alt="Painting" />
                     </div>

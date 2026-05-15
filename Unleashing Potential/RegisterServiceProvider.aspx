@@ -234,10 +234,10 @@
 
             <div class="register-card-body">
 
-                <%-- ===== ACCOUNT DETAILS ===== --%>
+                
                 <p class="section-label">Account Details</p>
 
-                <%-- Full Name --%>
+                
                 <div class="field-group">
                     <label for="txtFullName" class="form-label">Full Name</label>
                     <asp:TextBox ID="txtFullName" runat="server" CssClass="form-control"
@@ -255,7 +255,7 @@
                     Full name must contain letters only (2–100 characters).</asp:RegularExpressionValidator>
                 </div>
 
-                <%-- Email --%>
+                
                 <div class="field-group">
                     <label for="txtEmail" class="form-label">Email Address</label>
                     <asp:TextBox ID="txtEmail" runat="server" CssClass="form-control"
@@ -273,7 +273,7 @@
                     Please enter a valid email address.</asp:RegularExpressionValidator>
                 </div>
 
-                <%-- Phone --%>
+               
                 <div class="field-group">
                     <label for="txtPhone" class="form-label">Phone Number</label>
                     <asp:TextBox ID="txtPhone" runat="server" CssClass="form-control"
@@ -292,7 +292,7 @@
                 </div>
 
                 <div class="row">
-                    <%-- Date of Birth --%>
+                   
                     <div class="col-sm-6">
                         <div class="field-group">
                             <label for="txtDOB" class="form-label">Date of Birth</label>
@@ -306,7 +306,7 @@
                         </div>
                     </div>
 
-                    <%-- Township --%>
+                    
                     <div class="col-sm-6">
                         <div class="field-group">
                             <label for="ddlTownship" class="form-label">Township</label>
@@ -327,7 +327,7 @@
                     </div>
                 </div>
 
-                <%-- Password --%>
+                
                 <div class="field-group">
                     <label for="txtPassword" class="form-label">Password</label>
                     <div class="password-wrap">
@@ -357,7 +357,7 @@
                     Password must be at least 8 characters and include an uppercase letter, lowercase letter, number, and special character.</asp:RegularExpressionValidator>
                 </div>
 
-                <%-- Confirm Password --%>
+               
                 <div class="field-group">
                     <label for="txtConfirmPassword" class="form-label">Confirm Password</label>
                     <div class="password-wrap">
@@ -392,7 +392,7 @@
 
                 <p class="section-label">Security</p>
 
-                <%-- Security Question --%>
+                
                 <div class="field-group">
                     <label for="ddlSecurityQuestion" class="form-label">Security Question</label>
                     <asp:DropDownList ID="ddlSecurityQuestion" runat="server" CssClass="form-select">
@@ -411,7 +411,7 @@
                     Please select a security question.</asp:RequiredFieldValidator>
                 </div>
 
-                <%-- Security Answer --%>
+                
                 <div class="field-group">
                     <label for="txtSecurityAnswer" class="form-label">Your Answer</label>
                     <asp:TextBox ID="txtSecurityAnswer" runat="server" CssClass="form-control"
@@ -431,10 +431,10 @@
 
                 <hr class="divider" />
 
-                <%-- ===== SERVICE PROVIDER PROFILE ===== --%>
+                
                 <p class="section-label">Service Provider Profile</p>
 
-                <%-- Business / Display Name --%>
+               
                 <div class="field-group">
                     <label for="txtProviderName" class="form-label">Business / Display Name</label>
                     <asp:TextBox ID="txtProviderName" runat="server" CssClass="form-control"
@@ -447,7 +447,7 @@
                 </div>
 
                 <div class="row">
-                    <%-- Category --%>
+                    
                     <div class="col-sm-6">
                         <div class="field-group">
                             <label for="ddlCategory" class="form-label">Category</label>
@@ -467,7 +467,7 @@
                         </div>
                     </div>
 
-                    <%-- Specialty --%>
+                    
                     <div class="col-sm-6">
                         <div class="field-group">
                             <label for="txtSpecialty" class="form-label">Specialty</label>
@@ -482,7 +482,7 @@
                     </div>
                 </div>
 
-                <%-- Description --%>
+                
                 <div class="field-group">
                     <label for="txtDescription" class="form-label">Description</label>
                     <asp:TextBox ID="txtDescription" runat="server" CssClass="form-control"
@@ -496,7 +496,7 @@
                 </div>
 
                 <div class="row">
-                    <%-- Price --%>
+                    
                     <div class="col-sm-6">
                         <div class="field-group">
                             <label for="txtPrice" class="form-label">Price (R)</label>
@@ -521,7 +521,7 @@
                         </div>
                     </div>
 
-                    <%-- Price Unit --%>
+                    
                     <div class="col-sm-6">
                         <div class="field-group">
                             <label for="ddlPriceUnit" class="form-label">Price Unit</label>
@@ -536,7 +536,7 @@
                 </div>
 
                 <div class="row">
-                    <%-- Location --%>
+                    
                     <div class="col-sm-6">
                         <div class="field-group">
                             <label for="txtLocation" class="form-label">Location</label>
@@ -550,7 +550,7 @@
                         </div>
                     </div>
 
-                    <%-- Years of Experience --%>
+                    
                     <div class="col-sm-6">
                         <div class="field-group">
                             <label for="txtYearsExperience" class="form-label">Years of Experience</label>
@@ -573,7 +573,7 @@
 
                 <hr class="divider" />
 
-                <%-- Buttons --%>
+               
                 <div class="d-flex gap-2 mt-3">
                     <asp:Button ID="btnRegister" runat="server" Text="Create Account"
                         CssClass="btn btn-register"

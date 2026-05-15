@@ -4,7 +4,6 @@
 
     public partial class WebForm1
     {
-
         protected global::System.Web.UI.WebControls.RadioButton rbCustomer;
 
         protected global::System.Web.UI.WebControls.RadioButton rbServiceProvider;
@@ -21,40 +20,12 @@
 
         protected global::System.Web.UI.WebControls.RegularExpressionValidator revEmail;
 
-        /// <summary>
-        /// txtPhone control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtPhone;
 
-        /// <summary>
-        /// rfvPhone control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvPhone;
 
-        /// <summary>
-        /// revPhone control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
         protected global::System.Web.UI.WebControls.RegularExpressionValidator revPhone;
 
-        /// <summary>
-        /// txtDOB control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtDOB;
 
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvDOB;
@@ -69,6 +40,7 @@
 
         protected global::System.Web.UI.WebControls.RegularExpressionValidator revPassword;
 
+        
         protected global::System.Web.UI.WebControls.TextBox txtConfirmPassword;
 
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvConfirmPassword;
@@ -79,7 +51,6 @@
 
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvSecurityQuestion;
 
-        
         protected global::System.Web.UI.WebControls.TextBox txtSecurityAnswer;
 
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvSecurityAnswer;

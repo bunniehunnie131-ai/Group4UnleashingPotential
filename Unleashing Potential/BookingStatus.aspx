@@ -34,9 +34,25 @@
     .status-Confirmed     { background:#dbeafe; border:1px solid #93c5fd; color:#1e40af; }
     .status-Completed     { background:#dcfce7; border:1px solid #86efac; color:#166534; }
     .status-Cancelled     { background:#fee2e2; border:1px solid #fca5a5; color:#991b1b; }
+    .status-Rejected      { background:#fff7ed; border:1px solid #fdba74; color:#9a3412; }
     .status-Accepted      { background:#dbeafe; border:1px solid #93c5fd; color:#1e40af; }
     .status-InProgress    { background:#f3e8ff; border:1px solid #c4b5fd; color:#5b21b6; }
     .status-AppointmentDay{ background:#fce7f3; border:1px solid #f9a8d4; color:#9d174d; }
+
+    .status-note {
+        margin:0.9rem 0 1rem;
+        padding:0.85rem 1rem;
+        border-radius:12px;
+        background:#f8fafc;
+        border:1px solid #e2e8f0;
+        color:#334155;
+        font-size:0.88rem;
+        line-height:1.55;
+    }
+    .status-note.confirmed { background:#eff6ff; border-color:#bfdbfe; color:#1e3a8a; }
+    .status-note.completed { background:#ecfdf5; border-color:#bbf7d0; color:#166534; }
+    .status-note.cancelled { background:#fff1f2; border-color:#fda4af; color:#9f1239; }
+    .status-note.rejected { background:#fff7ed; border-color:#fdba74; color:#9a3412; }
 
     /* Timeline */
     .timeline { display:flex; align-items:center; gap:0; margin:1rem 0; overflow-x:auto; padding-bottom:0.5rem; }
@@ -123,6 +139,10 @@
                         <div class="booking-meta">📅 Appointment: <strong><%# Convert.ToDateTime(Eval("AppointmentDate")).ToString("dd MMMM yyyy") %></strong></div>
                         <div class="booking-meta">📍 <%# Eval("CustomerAddress") %></div>
                         <div class="booking-meta">💳 <%# Eval("PaymentMethod") %> — Paid: <strong style="color:#166534;">R<%# String.Format("{0:0.00}", Eval("AmountPaid")) %></strong> of R<%# String.Format("{0:0.00}", Eval("TotalAmount")) %></div>
+                    </div>
+
+                    <div class='<%# GetStatusNoteClass(Container.DataItem) %>'>
+                        <%# GetStatusMessage(Container.DataItem) %>
                     </div>
 
                     <div style="margin-bottom:1rem;">
