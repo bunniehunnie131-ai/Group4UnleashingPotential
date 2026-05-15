@@ -7,7 +7,6 @@ namespace Unleashing_Potential
 {
     public partial class WebForm7 : System.Web.UI.Page
     {
-        // Class-level field so every method in this page can read it
         private int _providerID;
 
         protected void Page_Load(object sender, EventArgs e)

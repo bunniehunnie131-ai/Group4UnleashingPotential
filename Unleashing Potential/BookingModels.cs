@@ -42,13 +42,10 @@ namespace Unleashing_Potential
                     cmd.ExecuteNonQuery();
                 }
             }
-            catch { /* Never let logging break the main flow */ }
+            catch { }
         }
 
-        // ═══════════════════════════════════════════════
-        // AUTHENTICATION
-        // ═══════════════════════════════════════════════
-
+       
         public static bool FullNameExists(string fullName)
         {
             try
@@ -701,9 +698,6 @@ namespace Unleashing_Potential
             }
         }
 
-        // ═══════════════════════════════════════════════
-        // SERVICE PROVIDERS
-        // ═══════════════════════════════════════════════
         public static List<ServiceProvider> GetProvidersByCategory(string category)
         {
             var list = new List<ServiceProvider>();
@@ -807,9 +801,7 @@ namespace Unleashing_Potential
             };
         }
 
-        // ═══════════════════════════════════════════════
-        // REVIEWS
-        // ═══════════════════════════════════════════════
+        
         public static List<Review> GetReviewsByProvider(int providerID)
         {
             var list = new List<Review>();
@@ -902,9 +894,6 @@ namespace Unleashing_Potential
             };
         }
 
-        // ═══════════════════════════════════════════════
-        // BOOKINGS
-        // ═══════════════════════════════════════════════
         public static string SaveBooking(Booking booking)
         {
             if (booking == null)
@@ -1178,10 +1167,6 @@ namespace Unleashing_Potential
                 + Guid.NewGuid().ToString("N").Substring(0, 3).ToUpperInvariant();
         }
     }
-
-    // ═══════════════════════════════════════════════
-    // MODEL CLASSES
-    // ═══════════════════════════════════════════════
 
     [Serializable]
     public class ServiceProvider

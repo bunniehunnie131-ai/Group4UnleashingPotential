@@ -95,7 +95,7 @@ namespace Unleashing_Potential
             }
             catch
             {
-                // Keep the page usable even if the profile lookup fails.
+               .
             }
         }
 

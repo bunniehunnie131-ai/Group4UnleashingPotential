@@ -120,10 +120,10 @@
 
     <div class="row g-4">
 
-        <!-- LEFT COLUMN -->
+       
         <div class="col-md-7">
 
-            <!-- About -->
+            
             <div class="section-card">
                 <div class="section-title">About</div>
                 <p style="font-size:0.9rem;color:#374151;line-height:1.7;">
@@ -137,7 +137,7 @@
                 </div>
             </div>
 
-            <!-- Portfolio -->
+            
             <div class="section-card">
                 <div class="section-title">Portfolio</div>
                 <div class="portfolio-grid">
@@ -153,7 +153,7 @@
                 </p>
             </div>
 
-            <!-- Reviews -->
+            
             <div class="section-card">
                 <div class="section-title">Client Reviews</div>
                 <asp:Repeater ID="rptReviews" runat="server">
@@ -177,7 +177,7 @@
 
         </div>
 
-        <!-- RIGHT COLUMN -->
+        
         <div class="col-md-5">
             <div class="section-card" style="position:sticky;top:1rem;">
                 <div class="section-title">Book This Service</div>

@@ -99,6 +99,7 @@
   <ItemGroup>
     <Content Include="About.aspx" />
     <Content Include="Contact.aspx" />
+    <Content Include="Error404.aspx" />
     <Content Include="PrivacyTerms.aspx" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
@@ -132,7 +133,6 @@
     <Content Include="Images\Background.png" />
     <Content Include="Images\Tailoring.png" />
     <Content Include="Images\Unleashing Potential Logo.jpeg" />
-    <Content Include="MemberDashboard.aspx" />
     <Content Include="ServiceProviderDashboard.aspx" />
     <Content Include="Promo.aspx" />
     <Content Include="Scripts\bootstrap.bundle.js" />
@@ -228,6 +228,13 @@
     <Compile Include="Contact.aspx.designer.cs">
       <DependentUpon>Contact.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Error404.aspx.cs">
+      <DependentUpon>Error404.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Error404.aspx.designer.cs">
+      <DependentUpon>Error404.aspx</DependentUpon>
+    </Compile>
     <Compile Include="PrivacyTerms.aspx.cs">
       <DependentUpon>PrivacyTerms.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -244,13 +251,6 @@
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
-    </Compile>
-    <Compile Include="MemberDashboard.aspx.cs">
-      <DependentUpon>MemberDashboard.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="MemberDashboard.aspx.designer.cs">
-      <DependentUpon>MemberDashboard.aspx</DependentUpon>
     </Compile>
     <Compile Include="ServiceProviderDashboard.aspx.cs">
       <DependentUpon>ServiceProviderDashboard.aspx</DependentUpon>

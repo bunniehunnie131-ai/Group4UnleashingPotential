@@ -28,11 +28,11 @@ namespace Unleashing_Potential
             bool isLoggedIn = Session["UserID"] != null;
             bool showCustomerLinks = ShouldShowCustomerLinks();
 
-            // Guest items (Register, Login) - shown when NOT logged in
+            
             liRegister.Visible = !isLoggedIn;
             liLogin.Visible = !isLoggedIn;
 
-            // Customer-only items stay off admin/provider surfaces.
+            
             liPromo.Visible = showCustomerLinks;
             liBrowseServices.Visible = showCustomerLinks;
             liBasket.Visible = showCustomerLinks;
@@ -61,8 +61,7 @@ namespace Unleashing_Potential
             if (!IsCustomerNavigationPage())
                 return false;
 
-            // Legacy sessions created before Role was stored still get the
-            // customer links on customer-facing pages, but never on admin/provider pages.
+            
             if (string.IsNullOrWhiteSpace(role))
                 return true;
 

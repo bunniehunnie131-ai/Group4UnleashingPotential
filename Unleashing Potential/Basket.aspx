@@ -80,7 +80,6 @@
         <a href="ServiceCategories.aspx" class="back-link">← Continue Browsing</a>
     </div>
 
-    <!-- Empty state -->
     <asp:Panel ID="pnlEmpty" runat="server" Visible="false">
         <div class="empty-basket">
             <div style="font-size:3rem;margin-bottom:0.5rem;">🛒</div>
@@ -90,7 +89,6 @@
         </div>
     </asp:Panel>
 
-    <!-- Basket with items -->
     <asp:Panel ID="pnlBasket" runat="server">
         <div class="row g-4">
             <div class="col-md-8">

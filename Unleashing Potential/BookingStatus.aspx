@@ -24,7 +24,7 @@
     .booking-date { font-size:0.8rem; color:var(--muted); }
     .booking-card-body { padding:1.3rem 1.5rem; }
 
-    /* Status badges */
+    
     .status-badge {
         display:inline-flex; align-items:center; gap:0.4rem;
         border-radius:20px; padding:0.3rem 0.9rem;
@@ -116,7 +116,7 @@
                 </div>
                 <div class="booking-card-body">
 
-                    <!-- Status Timeline -->
+             
                     <%# GetTimeline(Eval("Status").ToString()) %>
 
                     <div style="margin:1rem 0 0.6rem;">

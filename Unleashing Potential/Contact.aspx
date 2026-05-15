@@ -14,7 +14,7 @@
         --muted:      #64748b;
     }
 
-    /* ── Hero ───────────────────────────────────────────── */
+   
     .contact-hero {
         position: relative;
         background: linear-gradient(135deg, var(--sky-deeper) 0%, var(--sky-dark) 60%, #0284c7 100%);
@@ -85,7 +85,7 @@
         margin: 1.2rem 0;
     }
 
-    /* ── Contact cards ───────────────────────────────────── */
+   
     .contact-cards {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -149,7 +149,7 @@
         margin-top: 0.3rem;
     }
 
-    /* ── Two-column layout (map + hours) ─────────────────── */
+    
     .contact-lower {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -157,7 +157,7 @@
         margin-bottom: 3rem;
     }
 
-    /* ── Map card ────────────────────────────────────────── */
+  
     .map-card {
         background: #fff;
         border: 1.5px solid var(--sky-light);
@@ -193,7 +193,7 @@
         filter: saturate(0.85);
     }
 
-    /* ── Hours card ──────────────────────────────────────── */
+   
     .hours-card {
         background: #fff;
         border: 1.5px solid var(--sky-light);
@@ -242,7 +242,7 @@
         vertical-align: middle;
     }
 
-    /* ── FAQ strip ───────────────────────────────────────── */
+    
     .faq-section { margin-bottom: 3rem; }
 
     .faq-heading {
@@ -303,7 +303,7 @@
 
     .faq-item.open .faq-answer { display: block; }
 
-    /* ── CTA banner ──────────────────────────────────────── */
+   
     .cta-banner {
         background: linear-gradient(135deg, var(--sky-dark), var(--sky-deeper));
         border-radius: 16px;
@@ -346,7 +346,7 @@
         text-decoration: none;
     }
 
-    /* ── Responsive ──────────────────────────────────────── */
+    
     @media (max-width: 700px) {
         .contact-cards  { grid-template-columns: 1fr; }
         .contact-lower  { grid-template-columns: 1fr; }
@@ -354,7 +354,7 @@
     }
 </style>
 
-<%-- ── HERO ──────────────────────────────────────────────────── --%>
+
 <div class="contact-hero">
     <div class="hero-eyebrow">We&rsquo;re here to help</div>
     <h1>Get in <span>Touch</span><br />With Us</h1>
@@ -365,10 +365,10 @@
     </p>
 </div>
 
-<%-- ── CONTACT CARDS ───────────────────────────────────────────── --%>
+
 <div class="contact-cards">
 
-    <%-- Email --%>
+   
     <a href="mailto:unleashingpotential@gmail.com" class="contact-card">
         <div class="contact-card-icon">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -383,7 +383,7 @@
         <div class="contact-card-hint">We reply within 24 hours</div>
     </a>
 
-    <%-- Phone --%>
+    
     <a href="tel:+27731234567" class="contact-card">
         <div class="contact-card-icon">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -400,7 +400,7 @@
         <div class="contact-card-hint">Mon – Fri, 8 AM – 5 PM</div>
     </a>
 
-    <%-- Location --%>
+    
     <div class="contact-card" style="cursor:default;">
         <div class="contact-card-icon">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -419,10 +419,10 @@
 
 </div>
 
-<%-- ── MAP + HOURS ─────────────────────────────────────────────── --%>
+
 <div class="contact-lower">
 
-    <%-- Embedded map --%>
+    
     <div class="map-card">
         <div class="map-card-header">
             <h3>Our Location</h3>
@@ -434,7 +434,7 @@
         </iframe>
     </div>
 
-    <%-- Office hours --%>
+   
     <div class="hours-card">
         <h3>Office Hours</h3>
         <div class="hours-row">
@@ -469,7 +469,6 @@
 
 </div>
 
-<%-- ── FAQ ─────────────────────────────────────────────────────── --%>
 <div class="faq-section">
     <p class="faq-heading">Frequently Asked Questions</p>
     <p class="faq-sub">Quick answers before you reach out.</p>
@@ -536,7 +535,6 @@
 
 </div>
 
-<%-- ── CTA ─────────────────────────────────────────────────────── --%>
 <div class="cta-banner">
     <h3>Still have questions?</h3>
     <p>Our team is happy to help. Drop us an email and we&rsquo;ll get back to you.</p>

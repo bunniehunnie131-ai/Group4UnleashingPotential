@@ -148,7 +148,7 @@
 
 <asp:Content ID="MainContent" ContentPlaceHolderID="MainContent" runat="server">
 
-    <!-- HERO SECTION -->
+    
     <section class="promo-hero">
         <h1>Empowering Local Talent Across South Africa</h1>
 
@@ -164,7 +164,6 @@
     </section>
 
 
-    <!-- FEATURES -->
     <section class="features-section">
         <div class="container">
             <h2>Why Choose Unleashing Potential?</h2>
@@ -203,7 +202,7 @@
     </section>
 
 
-    <!-- STATS -->
+  
     <section class="stats-section">
         <div class="container">
             <h2>Our Growing Community</h2>
@@ -228,7 +227,7 @@
     </section>
 
 
-    <!-- TESTIMONIAL -->
+    
     <section class="testimonial-section">
         <h2>What Our Users Say</h2>
 
@@ -241,7 +240,7 @@
     </section>
 
 
-    <!-- FINAL CTA -->
+    
     <section class="cta-section">
         <h2>Ready to Unlock Opportunities?</h2>
 

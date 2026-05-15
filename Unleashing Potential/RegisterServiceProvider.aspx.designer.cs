@@ -348,6 +348,15 @@ namespace Unleashing_Potential
         protected global::System.Web.UI.WebControls.RegularExpressionValidator revPrice;
 
         /// <summary>
+        /// cvPrice control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CustomValidator cvPrice;
+
+        /// <summary>
         /// ddlPriceUnit control.
         /// </summary>
         /// <remarks>
@@ -402,15 +411,6 @@ namespace Unleashing_Potential
         protected global::System.Web.UI.WebControls.RangeValidator rvYearsExperience;
 
         /// <summary>
-        /// btnClear control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnClear;
-
-        /// <summary>
         /// btnRegister control.
         /// </summary>
         /// <remarks>
@@ -418,6 +418,15 @@ namespace Unleashing_Potential
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnRegister;
+
+        /// <summary>
+        /// btnClear control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnClear;
 
         /// <summary>
         /// btnCancel control.

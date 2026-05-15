@@ -59,7 +59,6 @@
             color: var(--accent) !important;
         }
 
-        /* Greeting text in navbar */
         .nav-greeting {
             color: var(--sky-light);
             font-size: 0.88rem;
@@ -68,7 +67,7 @@
             white-space: nowrap;
         }
 
-        /* Logout button styled as a nav link */
+        
         .btn-nav-logout {
             background: none;
             border: 1.5px solid rgba(186, 230, 253, 0.4);
@@ -138,7 +137,7 @@
 <body>
 <form id="form1" runat="server">
 
-    <nav class="navbar navbar-expand-lg">
+    <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
             <a class="navbar-brand" href="Default.aspx">
                 <img src="~/Images/Unleashing Potential Logo.jpeg" runat="server" class="nav-logo" />
@@ -174,7 +173,7 @@
                         </a>
                     </li>
 
-                    <%-- Shown only when the user is NOT logged in --%>
+                    
                     <li class="nav-item" id="liRegister" runat="server">
                         <a class="nav-link" href="Register.aspx">Register</a>
                     </li>
@@ -182,7 +181,7 @@
                         <a class="nav-link" href="Login.aspx">Login</a>
                     </li>
 
-                    <%-- Shown only when the user IS logged in --%>
+                    
                     <li class="nav-item" id="liBrowseServices" runat="server" visible="false">
                         <a class="nav-link" href="ServiceCategories.aspx">
                             <i class="bi bi-grid-fill me-1"></i>Browse Services
@@ -216,7 +215,7 @@
         <div class="header-inner">
             <img src="~/Images/Unleashing Potential Logo.jpeg" runat="server" class="header-logo" />
             <div class="header-text">
-                <h1>Group 4 - Unleashing Potential</h1>
+                <h1>Unleashing Potential</h1>
                 <p>A local Kasi Service near you.</p>
             </div>
         </div>
@@ -227,10 +226,10 @@
     </main>
 
     <footer class="text-center">
-        <p><strong>Group 4 — Unleashing Potential</strong></p>
+        <p><strong>Unleashing Potential</strong></p>
         <p>© <%: DateTime.Now.Year %> All rights reserved.</p>
         <p>
-            <i class="bi bi-envelope"></i> kasiservices@unleashingpotential.co.za
+            <i class="bi bi-envelope"></i> unleashingotential@gmail.com
             &nbsp;&nbsp;
             <i class="bi bi-telephone"></i> +27 73 123 4567
         </p>

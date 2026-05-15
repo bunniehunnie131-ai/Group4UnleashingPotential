@@ -12,7 +12,7 @@
     .checkout-wizard table { width:100%; }
     .checkout-wizard > tbody > tr { display:flex; flex-direction:column; gap:1rem; }
     .checkout-wizard > tbody > tr > td { width:100%; display:block; }
-    /* Wizard header */
+    
     .checkout-wizard .wizard-step-title {
         background:linear-gradient(135deg,var(--sky-dark),var(--sky-deeper));
         color:#fff; font-family:'Lora',serif; font-size:1.1rem; padding:1rem 1.5rem;

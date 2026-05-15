@@ -12,7 +12,6 @@
     --green: #22c55e; --amber: #f59e0b; --red: #ef4444;
 }
 
-/* ── Layout ── */
 .admin-shell {
     display: flex;
     gap: 0;
@@ -23,7 +22,7 @@
     box-shadow: 0 4px 32px rgba(12,74,110,0.10);
 }
 
-/* ── Sidebar ── */
+
 .admin-sidebar {
     width: var(--sidebar-w);
     background: #fff;
@@ -103,7 +102,6 @@
 .sidebar-badge.amber { background: var(--amber); }
 .sidebar-badge.green { background: var(--green); }
 
-/* ── Main Panel ── */
 .admin-main {
     flex: 1;
     display: flex;
@@ -144,11 +142,11 @@
 
 .admin-content { padding: 1.8rem; overflow-y: auto; flex: 1; }
 
-/* ── Panels ── */
+
 .admin-panel { display: none; }
 .admin-panel.active { display: block; }
 
-/* ── KPI Cards ── */
+
 .kpi-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -186,7 +184,7 @@
 .kpi-icon.amber  { background: #fef9c3; color: #92400e; }
 .kpi-icon.red    { background: #fee2e2; color: #991b1b; }
 
-/* ── Section heading ── */
+
 .section-head {
     display: flex; align-items: center;
     justify-content: space-between;
@@ -198,7 +196,7 @@
     font-size: 1rem; color: var(--sky-deeper); margin: 0;
 }
 
-/* ── Kanban board (Approvals) ── */
+
 .kanban-board {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -288,7 +286,6 @@
 .pill-process  { background: #ede9fe; color: #5b21b6; }
 .pill-complete { background: #dcfce7; color: #15803d; }
 
-/* ── Data table ── */
 .admin-table {
     width: 100%; border-collapse: collapse;
     background: #fff; border-radius: 12px;
@@ -317,7 +314,7 @@
 .admin-table tr:last-child td { border-bottom: none; }
 .admin-table tr:hover td { background: var(--sky-pale); }
 
-/* ── Buttons ── */
+
 .btn-sm-sky {
     background: linear-gradient(135deg, var(--sky), var(--sky-dark));
     color: #fff; border: none; border-radius: 6px;
@@ -350,7 +347,7 @@
     font-family: 'Nunito', sans-serif;
 }
 
-/* ── Report cards ── */
+
 .report-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -380,10 +377,10 @@
     font-size: 0.8rem; color: var(--muted); margin-bottom: 1rem;
 }
 
-/* ── Audit log ── */
+
 .audit-row td:first-child { color: var(--muted); font-size: 0.78rem; }
 
-/* ── Alert message ── */
+
 .admin-msg {
     padding: 0.7rem 1rem; border-radius: 8px;
     font-size: 0.88rem; margin-bottom: 1rem;
@@ -394,7 +391,7 @@
 .admin-msg.success { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
 .admin-msg.error   { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
 
-/* ── Responsive ── */
+
 @media (max-width: 900px) {
     .kpi-grid { grid-template-columns: repeat(2,1fr); }
     .kanban-board { grid-template-columns: 1fr; }
@@ -411,10 +408,10 @@
 <asp:Content ID="Content3" ContentPlaceHolderID="MainContent" runat="server">
 
 <asp:Label ID="lblAdminMsg" runat="server" CssClass="admin-msg" />
-
+    
 <div class="admin-shell">
 
-    <%-- ══════════ SIDEBAR ══════════ --%>
+ 
     <div class="admin-sidebar">
 
         <div class="sidebar-profile">
@@ -481,7 +478,7 @@
 
     </div>
 
-    <%-- ══════════ MAIN ══════════ --%>
+    
     <div class="admin-main">
 
         <div class="admin-topbar">
@@ -494,7 +491,7 @@
 
         <div class="admin-content">
 
-            <%-- ── PANEL 1: DASHBOARD KPIs ── --%>
+           
             <div id="pnlDashboard" class="admin-panel active">
 
                 <div class="kpi-grid">
@@ -532,7 +529,7 @@
                     </div>
                 </div>
 
-                <%-- Recent bookings summary --%>
+              
                 <div class="section-head">
                     <h6>Recent Bookings</h6>
                 </div>
@@ -554,7 +551,7 @@
 
             </div>
 
-            <%-- ── PANEL 2: APPROVALS (KANBAN) ── --%>
+           
             <div id="pnlApprovals" class="admin-panel">
 
                 <div class="section-head">
@@ -563,7 +560,7 @@
 
                 <div class="kanban-board">
 
-                    <%-- Pending column --%>
+                   
                     <div class="kanban-col">
                         <div class="kanban-col-head">
                             <span class="kanban-col-title">Pending</span>
@@ -598,7 +595,7 @@
                         </asp:Repeater>
                     </div>
 
-                    <%-- Active column --%>
+                 
                     <div class="kanban-col">
                         <div class="kanban-col-head">
                             <span class="kanban-col-title">Active</span>
@@ -617,7 +614,7 @@
                         </asp:Repeater>
                     </div>
 
-                    <%-- Verified column --%>
+                    
                     <div class="kanban-col">
                         <div class="kanban-col-head">
                             <span class="kanban-col-title">Verified</span>
@@ -639,7 +636,7 @@
                 </div>
             </div>
 
-            <%-- ── PANEL 3: BOOKINGS ── --%>
+   
             <div id="pnlBookings" class="admin-panel">
 
                 <div class="section-head">
@@ -687,7 +684,7 @@
 
             </div>
 
-            <%-- ── PANEL 4: USER ACCOUNTS ── --%>
+           
             <div id="pnlUsers" class="admin-panel">
 
                 <div class="section-head">
@@ -736,7 +733,6 @@
 
             </div>
 
-            <%-- ── PANEL 5: SERVICE CATEGORIES ── --%>
             <div id="pnlCategories" class="admin-panel">
 
                 <div class="section-head">
@@ -747,7 +743,7 @@
                     </button>
                 </div>
 
-                <%-- Add form (hidden by default) --%>
+         >
                 <div id="addCatForm" style="display:none; background:#fff; border-radius:12px; padding:1.2rem; margin-bottom:1rem; box-shadow:0 2px 10px rgba(12,74,110,0.07);">
                     <div class="row g-2 align-items-end">
                         <div class="col-sm-4">
@@ -798,7 +794,7 @@
 
             </div>
 
-            <%-- ── PANEL 6: REPORTS ── --%>
+          
             <div id="pnlReports" class="admin-panel">
 
                 <div class="section-head">
@@ -849,7 +845,7 @@
 
             </div>
 
-            <%-- ── PANEL 7: AUDIT LOG ── --%>
+            
             <div id="pnlAudit" class="admin-panel">
 
                 <div class="section-head">
@@ -872,20 +868,20 @@
 
             </div>
 
-        </div><%-- end admin-content --%>
-    </div><%-- end admin-main --%>
-</div><%-- end admin-shell --%>
+        </div>
+    </div>
+</div>
 
 <script>
     function showPanel(id, btn) {
-        // Hide all panels
+       
         document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
-        // Deactivate all buttons
+       
         document.querySelectorAll('.sidebar-nav li button').forEach(b => b.classList.remove('active'));
-        // Show chosen panel and activate button
+       
         document.getElementById(id).classList.add('active');
         btn.classList.add('active');
-        // Update topbar title
+       
         document.getElementById('topbarTitle').textContent = btn.querySelector('span')?.textContent || '';
     }
 </script>

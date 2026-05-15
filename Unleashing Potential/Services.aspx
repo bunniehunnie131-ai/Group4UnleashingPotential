@@ -182,7 +182,7 @@
             gap: 0.55rem;
         }
 
-        /* accent line */
+    
         .service-accent {
             width: 36px;
             height: 3px;
@@ -208,7 +208,6 @@
             flex: 1;
         }
 
-        /* ── Button ── */
         .btn-service {
             display: inline-flex;
             align-items: center;

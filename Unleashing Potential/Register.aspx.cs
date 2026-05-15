@@ -9,13 +9,13 @@ namespace Unleashing_Potential
         {
         }
 
-        // ─── Terms checkbox: server-side custom validator ─────────────────────
+
         protected void cvTerms_ServerValidate(object source, ServerValidateEventArgs args)
         {
             args.IsValid = chkTerms.Checked;
         }
 
-        // ─── Clear button ─────────────────────────────────────────────────────
+     
         protected void btnClear_Click(object sender, EventArgs e)
         {
             txtFullName.Text = "";
@@ -32,7 +32,7 @@ namespace Unleashing_Potential
             lblMessage.CssClass = "";
         }
 
-        // ─── Register button ──────────────────────────────────────────────────
+        
         protected void btnRegister_Click(object sender, EventArgs e)
         {
             if (!Page.IsValid) return;
@@ -43,12 +43,10 @@ namespace Unleashing_Potential
             string password = txtPassword.Text;
             string township = ddlTownship.SelectedValue;
 
-            // Read security question text (not just the value code)
             string securityQuestion = ddlSecurityQuestion.SelectedItem.Text;
             string securityAnswerHash = BookingDB.HashLegacySha256(
                 txtSecurityAnswer.Text.Trim().ToLower());
 
-            // ── 1. Parse date of birth ────────────────────────────────────────
             DateTime dob;
             if (!DateTime.TryParse(txtDOB.Text.Trim(), out dob))
             {
@@ -56,14 +54,12 @@ namespace Unleashing_Potential
                 return;
             }
 
-            // ── 2. Minimum age check (18+) ────────────────────────────────────
             if ((DateTime.Today - dob).TotalDays < 365.25 * 18)
             {
                 ShowWarning("You must be at least 18 years old to register.");
                 return;
             }
 
-            // ── 3. Password may not equal full name or email ──────────────────
             if (password.Equals(fullName, StringComparison.OrdinalIgnoreCase) ||
                 password.Equals(email, StringComparison.OrdinalIgnoreCase))
             {
@@ -71,7 +67,6 @@ namespace Unleashing_Potential
                 return;
             }
 
-            // ── 4. Duplicate full-name check ──────────────────────────────────
             try
             {
                 if (BookingDB.FullNameExists(fullName))
@@ -87,7 +82,6 @@ namespace Unleashing_Potential
                 return;
             }
 
-            // ── 5. Duplicate email check ──────────────────────────────────────
             try
             {
                 if (BookingDB.EmailExists(email))
@@ -103,7 +97,6 @@ namespace Unleashing_Potential
                 return;
             }
 
-            // ── 6. Store user securely ────────────────────────────────────────
             bool success = false;
             try
             {
@@ -117,7 +110,6 @@ namespace Unleashing_Potential
                 return;
             }
 
-            // ── 7. Post-registration steps ────────────────────────────────────
             if (success)
             {
                 BookingDB.WriteAuditLog(
@@ -146,7 +138,6 @@ namespace Unleashing_Potential
             }
         }
 
-        // ─── Helpers ──────────────────────────────────────────────────────────
         private void ShowWarning(string message)
         {
             lblMessage.Text = message;

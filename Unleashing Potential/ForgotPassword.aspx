@@ -157,14 +157,14 @@
 
     <div class="fp-body">
 
-        <%-- Step indicator dots --%>
+        
         <div class="step-indicator">
             <asp:Panel ID="dot1" runat="server" CssClass="step-dot active"></asp:Panel>
             <asp:Panel ID="dot2" runat="server" CssClass="step-dot"></asp:Panel>
             <asp:Panel ID="dot3" runat="server" CssClass="step-dot"></asp:Panel>
         </div>
 
-        <%-- ── STEP 1: Email ──────────────────────────────────── --%>
+        
         <asp:Panel ID="pnlStep1" runat="server">
             <div class="field-group">
                 <label for="txtEmail" class="form-label">Email Address</label>
@@ -193,7 +193,7 @@
                 OnClick="btnStep1_Click" />
         </asp:Panel>
 
-        <%-- ── STEP 2: Security Question ──────────────────────── --%>
+        
         <asp:Panel ID="pnlStep2" runat="server" Visible="false">
             <div class="field-group">
                 <label class="form-label">Security Question</label>
@@ -230,7 +230,6 @@
             </div>
         </asp:Panel>
 
-        <%-- ── STEP 3: New Password ───────────────────────────── --%>
         <asp:Panel ID="pnlStep3" runat="server" Visible="false">
             <div class="field-group">
                 <label for="txtNewPassword" class="form-label">New Password</label>
@@ -310,7 +309,7 @@
             </div>
         </asp:Panel>
 
-        <%-- Message label (used across all steps) --%>
+        
         <div class="mt-3">
             <asp:Label ID="lblMessage" runat="server"></asp:Label>
         </div>

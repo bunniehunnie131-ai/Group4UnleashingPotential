@@ -265,7 +265,6 @@
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
 
-    <%-- ===== TERMS AND CONDITIONS MODAL ===== --%>
     <div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-scrollable">
             <div class="modal-content">
@@ -310,7 +309,7 @@
         </div>
     </div>
 
-    <%-- ===== REGISTRATION FORM ===== --%>
+  
     <div class="register-wrap">
         <div class="register-card">
 
@@ -343,7 +342,7 @@
 
                 <p class="section-label">Personal Information</p>
 
-                <%-- Full Name --%>
+                
                 <div class="field-group">
                     <label for="txtFullName" class="form-label">Full Name</label>
                     <asp:TextBox ID="txtFullName" runat="server" CssClass="form-control"
@@ -361,7 +360,7 @@
                     Full name must contain letters only (2–100 characters).</asp:RegularExpressionValidator>
                 </div>
 
-                <%-- Email --%>
+                
                 <div class="field-group">
                     <label for="txtEmail" class="form-label">Email Address</label>
                     <asp:TextBox ID="txtEmail" runat="server" CssClass="form-control"
@@ -379,7 +378,7 @@
                     Please enter a valid email address.</asp:RegularExpressionValidator>
                 </div>
 
-                <%-- Phone --%>
+                
                 <div class="field-group">
                     <label for="txtPhone" class="form-label">Phone Number</label>
                     <asp:TextBox ID="txtPhone" runat="server" CssClass="form-control"
@@ -398,7 +397,7 @@
                 </div>
 
                 <div class="row">
-                    <%-- Date of Birth --%>
+                    
                     <div class="col-sm-6">
                         <div class="field-group">
                             <label for="txtDOB" class="form-label">Date of Birth</label>
@@ -412,7 +411,7 @@
                         </div>
                     </div>
 
-                    <%-- Township --%>
+                    
                     <div class="col-sm-6">
                         <div class="field-group">
                             <label for="ddlTownship" class="form-label">Township</label>
@@ -437,7 +436,7 @@
 
                 <p class="section-label">Security</p>
 
-                <%-- Password --%>
+                
                 <div class="field-group">
                     <label for="txtPassword" class="form-label">Password</label>
                     <div class="password-wrap">
@@ -467,7 +466,7 @@
                     Password must be at least 8 characters and include an uppercase letter, lowercase letter, number, and special character.</asp:RegularExpressionValidator>
                 </div>
 
-                <%-- Confirm Password --%>
+                
                 <div class="field-group">
                     <label for="txtConfirmPassword" class="form-label">Confirm Password</label>
                     <div class="password-wrap">
@@ -497,7 +496,7 @@
                     Passwords do not match.</asp:CompareValidator>
                 </div>
 
-                <%-- Security Question --%>
+                
                 <div class="field-group">
                     <label for="ddlSecurityQuestion" class="form-label">Security Question</label>
                     <asp:DropDownList ID="ddlSecurityQuestion" runat="server" CssClass="form-select">
@@ -516,7 +515,7 @@
                     Please select a security question.</asp:RequiredFieldValidator>
                 </div>
 
-                <%-- Security Answer --%>
+               
                 <div class="field-group">
                     <label for="txtSecurityAnswer" class="form-label">Your Answer</label>
                     <asp:TextBox ID="txtSecurityAnswer" runat="server" CssClass="form-control"
@@ -536,7 +535,7 @@
 
                 <hr class="divider" />
 
-                <%-- Terms Checkbox --%>
+                
                 <div class="field-group">
                     <div class="terms-box">
                         <asp:CheckBox ID="chkTerms" runat="server" CssClass="form-check-input" />
@@ -555,7 +554,7 @@
                     You must accept the Terms and Conditions.</asp:CustomValidator>
                 </div>
 
-                <%-- Buttons --%>
+                
                 <div class="d-flex gap-2 mt-3">
                     <asp:Button ID="btnRegister" runat="server" Text="Create Account"
                         CssClass="btn btn-register"

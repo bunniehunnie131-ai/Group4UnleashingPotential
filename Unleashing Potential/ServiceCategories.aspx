@@ -594,12 +594,12 @@
             </div>
 
             <div class="catalog-grid">
-                <a href="ServiceProviders.aspx?category=Hairdressing" class="catalog-card">
+                <a href="ServiceProviders.aspx?category=Beauty and Personal Care" class="catalog-card">
                     <div class="catalog-image">
                         <img src="Images/Hairdressing.png" alt="Hairdressing" />
                     </div>
                     <div class="catalog-body">
-                        <h4>Hairdressing</h4>
+                        <h4>Beauty and Personal Care</h4>
                         <p>Braiding, styling, colouring, locs and wig services.</p>
                         <div class="catalog-meta">
                             <span>Trusted community services</span>
@@ -608,12 +608,12 @@
                     </div>
                 </a>
 
-                <a href="ServiceProviders.aspx?category=Tailoring" class="catalog-card">
+                <a href="ServiceProviders.aspx?category=Fashion and Clothing" class="catalog-card">
                     <div class="catalog-image">
                         <img src="Images/Tailoring.png" alt="Tailoring" />
                     </div>
                     <div class="catalog-body">
-                        <h4>Tailoring</h4>
+                        <h4>Fashion and Clothing</h4>
                         <p>Alterations, custom garments, traditional and bridal wear.</p>
                         <div class="catalog-meta">
                             <span>Trusted community services</span>
@@ -622,12 +622,12 @@
                     </div>
                 </a>
 
-                <a href="ServiceProviders.aspx?category=Plumbing" class="catalog-card">
+                <a href="ServiceProviders.aspx?category=Home Maintence" class="catalog-card">
                     <div class="catalog-image">
                         <img src="Images/Plumbing.png" alt="Plumbing" />
                     </div>
                     <div class="catalog-body">
-                        <h4>Plumbing</h4>
+                        <h4>Home Maintenance</h4>
                         <p>Pipe installation, leak repairs, geysers and renovations.</p>
                         <div class="catalog-meta">
                             <span>Trusted community services</span>
@@ -636,12 +636,12 @@
                     </div>
                 </a>
 
-                <a href="ServiceProviders.aspx?category=Painting" class="catalog-card">
+                <a href="ServiceProviders.aspx?category=Home Maintenance" class="catalog-card">
                     <div class="catalog-image">
                         <img src="Images/Painting.png" alt="Painting" />
                     </div>
                     <div class="catalog-body">
-                        <h4>Painting</h4>
+                        <h4>Home Maintenance</h4>
                         <p>Interior, exterior, commercial and decorative painting.</p>
                         <div class="catalog-meta">
                             <span>Trusted community services</span>

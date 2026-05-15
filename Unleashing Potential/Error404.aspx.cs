@@ -7,11 +7,12 @@ using System.Web.UI.WebControls;
 
 namespace Unleashing_Potential
 {
-    public partial class MemberDashboard : System.Web.UI.Page
+    public partial class Error404 : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            Response.StatusCode = 404;
+            Response.TrySkipIisCustomErrors = true;
         }
     }
 }

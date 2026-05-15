@@ -31,12 +31,10 @@ namespace Unleashing_Potential
             set { ViewState["ActiveTab"] = NormalizeTab(value); }
         }
 
-        // ══════════════════════════════════════════════════════════════════════
-        // PAGE LOAD
-        // ══════════════════════════════════════════════════════════════════════
+        
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Auth guard
+          
             if (Session["UserID"] == null)
             {
                 Response.Redirect("~/Login.aspx");
@@ -56,7 +54,7 @@ namespace Unleashing_Potential
                 int pid = GetProviderID();
                 if (pid == 0)
                 {
-                    // Provider profile not yet created – redirect to register page
+                 
                     Response.Redirect("~/RegisterServiceProvider.aspx");
                     return;
                 }
@@ -72,9 +70,7 @@ namespace Unleashing_Potential
             }
         }
 
-        // ══════════════════════════════════════════════════════════════════════
-        // LOOKUP PROVIDER ID for this user
-        // ══════════════════════════════════════════════════════════════════════
+        
         private int GetProviderID()
         {
             string sql = "SELECT ProviderID FROM ServiceProviders WHERE UserID = @UID";
@@ -88,9 +84,7 @@ namespace Unleashing_Potential
             }
         }
 
-        // ══════════════════════════════════════════════════════════════════════
-        // HEADER
-        // ══════════════════════════════════════════════════════════════════════
+        
         private void LoadHeader()
         {
             string sql = @"SELECT sp.Name, sp.Category, sp.Location, sp.Price, sp.PriceUnit,
@@ -158,9 +152,8 @@ namespace Unleashing_Potential
                 : string.Empty;
         }
 
-        // ══════════════════════════════════════════════════════════════════════
-        // KPI CARDS
-        // ══════════════════════════════════════════════════════════════════════
+      
+        
         private void LoadKPIs()
         {
             string sql = @"SELECT
@@ -190,7 +183,7 @@ namespace Unleashing_Potential
                         }
                     }
                 }
-                // Rating
+                
                 string rSql = "SELECT ISNULL(AVG(CAST(Rating AS DECIMAL(3,1))),0) FROM Reviews WHERE ProviderID=@PID";
                 using (SqlConnection conn = new SqlConnection(ConnStr))
                 {
@@ -203,9 +196,6 @@ namespace Unleashing_Potential
             catch { }
         }
 
-        // ══════════════════════════════════════════════════════════════════════
-        // BOOKINGS GRID
-        // ══════════════════════════════════════════════════════════════════════
         private void LoadBookings(string statusFilter)
         {
             string sql = @"SELECT b.BookingID, b.ReferenceNumber,
@@ -320,9 +310,6 @@ namespace Unleashing_Potential
             }
         }
 
-        // ══════════════════════════════════════════════════════════════════════
-        // EARNINGS TAB
-        // ══════════════════════════════════════════════════════════════════════
         private void LoadEarnings()
         {
             string sql = @"SELECT
@@ -383,9 +370,6 @@ namespace Unleashing_Potential
             catch { }
         }
 
-        // ══════════════════════════════════════════════════════════════════════
-        // REVIEWS TAB
-        // ══════════════════════════════════════════════════════════════════════
         private void LoadReviews()
         {
             string sql = @"SELECT ReviewerName, Rating, Comment, ReviewDate
@@ -407,10 +391,6 @@ namespace Unleashing_Potential
             }
             catch { }
         }
-
-        // ══════════════════════════════════════════════════════════════════════
-        // PROFILE TAB – load + save
-        // ══════════════════════════════════════════════════════════════════════
         private void LoadProfileForm()
         {
             string sql = @"SELECT Name, Category, Specialty, Price, PriceUnit,
@@ -433,7 +413,7 @@ namespace Unleashing_Potential
                         txtYears.Text = rdr["YearsExperience"].ToString();
                         txtDescription.Text = rdr["Description"].ToString();
 
-                        // Set dropdownlists
+                        
                         SetDropdown(ddlCategory, rdr["Category"].ToString());
                         SetDropdown(ddlPriceUnit, rdr["PriceUnit"].ToString());
                     }
@@ -477,7 +457,7 @@ namespace Unleashing_Potential
                     cmd.ExecuteNonQuery();
                 }
                 ShowMsg(lblProfileMsg, "Profile saved successfully.", true);
-                LoadHeader(); // Refresh header with new name/category
+                LoadHeader(); 
                 hfActiveTab.Value = ActiveTab;
             }
             catch (Exception ex)
@@ -538,9 +518,7 @@ namespace Unleashing_Potential
             return true;
         }
 
-        // ══════════════════════════════════════════════════════════════════════
-        // HELPERS
-        // ══════════════════════════════════════════════════════════════════════
+  
         private DataTable FillTable(string sql, Action<SqlCommand> addParams)
         {
             DataTable dt = new DataTable();

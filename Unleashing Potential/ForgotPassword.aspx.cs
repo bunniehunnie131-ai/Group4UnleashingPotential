@@ -10,7 +10,6 @@ namespace Unleashing_Potential
     public partial class WebForm13 : System.Web.UI.Page
     {
 
-        // Session keys
         private const string SessEmail = "FP_Email";
         private const string SessStep = "FP_Step";
 
@@ -24,7 +23,7 @@ namespace Unleashing_Potential
             }
         }
 
-        // ── STEP 1: Verify email exists ───────────────────────────────────
+      
         protected void btnStep1_Click(object sender, EventArgs e)
         {
             if (!Page.IsValid) return;
@@ -39,8 +38,7 @@ namespace Unleashing_Potential
                 return;
             }
 
-            // Always show a neutral message — avoids confirming whether an
-            // email is registered (security best practice)
+           
             if (!exists)
             {
                 ShowMessage("If that email is registered, you will be able to " +
@@ -63,13 +61,13 @@ namespace Unleashing_Potential
                 return;
             }
 
-            // Persist email and question for next step
+            
             Session[SessEmail] = email;
             lblSecurityQuestion.Text = question;
             ShowStep(2);
         }
 
-        // ── STEP 2: Validate security answer ──────────────────────────────
+        
         protected void btnStep2_Click(object sender, EventArgs e)
         {
             if (!Page.IsValid) return;
@@ -77,7 +75,6 @@ namespace Unleashing_Potential
             string email = Session[SessEmail] as string;
             if (string.IsNullOrEmpty(email)) { ResetToStep1(); return; }
 
-            // Normalise to lowercase before hashing — matches how we stored it
             string answerHash = BookingDB.HashLegacySha256(
                 txtAnswer.Text.Trim().ToLower());
 
@@ -92,22 +89,21 @@ namespace Unleashing_Potential
             if (!valid)
             {
                 ShowMessage("Incorrect answer. Please try again.", "warning");
-                // Keep the question visible; stay on step 2
                 lblSecurityQuestion.Text = BookingDB.GetSecurityQuestion(email);
                 ShowStep(2);
                 return;
             }
 
-            Session[SessStep] = "verified";   // gate for step 3
+            Session[SessStep] = "verified";  
             ShowStep(3);
         }
 
-        // ── STEP 3: Set new password ───────────────────────────────────────
+        
         protected void btnStep3_Click(object sender, EventArgs e)
         {
             if (!Page.IsValid) return;
 
-            // Make sure the user actually passed step 2
+            
             if (Session[SessStep] as string != "verified") { ResetToStep1(); return; }
 
             string email = Session[SessEmail] as string;
@@ -115,7 +111,7 @@ namespace Unleashing_Potential
 
             string newPassword = txtNewPassword.Text;
 
-            // Don't allow the password to equal the email address
+           
             if (newPassword.Equals(email, StringComparison.OrdinalIgnoreCase))
             {
                 ShowMessage("Your password cannot be the same as your email address.", "warning");
@@ -137,15 +133,15 @@ namespace Unleashing_Potential
                 BookingDB.WriteAuditLog(email, "PASSWORD_RESET",
                     "Password reset via security question for: " + email);
 
-                // Clean up session
+                
                 Session.Remove(SessEmail);
                 Session.Remove(SessStep);
 
-                // Show success then redirect after a moment
+                
                 ShowMessage("✓ Password reset successfully! Redirecting you to login…", "success");
                 pnlStep3.Visible = false;
 
-                // Client-side redirect after 2 seconds
+                
                 ScriptManager.RegisterStartupScript(this, GetType(), "redirect",
                     "setTimeout(function(){ window.location='Login.aspx'; }, 2500);", true);
             }
@@ -156,7 +152,7 @@ namespace Unleashing_Potential
             }
         }
 
-        // ── Back buttons ──────────────────────────────────────────────────
+        
         protected void btnBack1_Click(object sender, EventArgs e) => ResetToStep1();
         protected void btnBack2_Click(object sender, EventArgs e)
         {
@@ -166,7 +162,7 @@ namespace Unleashing_Potential
             ShowStep(2);
         }
 
-        // ── Helpers ───────────────────────────────────────────────────────
+        
         private void ShowStep(int step)
         {
             pnlStep1.Visible = step == 1;

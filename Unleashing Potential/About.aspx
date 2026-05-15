@@ -14,7 +14,6 @@
         --muted:      #64748b;
     }
 
-    /* ── Hero ───────────────────────────────────────────── */
     .about-hero {
         position: relative;
         background: linear-gradient(135deg, var(--sky-deeper) 0%, var(--sky-dark) 60%, #0284c7 100%);
@@ -88,7 +87,7 @@
         margin: 1.2rem 0;
     }
 
-    /* ── Stats row ──────────────────────────────────────── */
+   
     .stats-row {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -128,7 +127,7 @@
         color: var(--muted);
     }
 
-    /* ── Section titles ─────────────────────────────────── */
+    
     .section-heading {
         font-family: 'Lora', serif;
         font-size: 1.4rem;
@@ -143,7 +142,7 @@
         margin: 0 0 1.5rem;
     }
 
-    /* ── Mission & Vision cards ─────────────────────────── */
+    
     .mv-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -205,7 +204,7 @@
     .mv-card.mission p { color: var(--muted); }
     .mv-card.vision  p { color: rgba(255,255,255,0.82); }
 
-    /* ── Values ─────────────────────────────────────────── */
+   
     .values-section {
         margin-bottom: 3rem;
     }
@@ -257,7 +256,6 @@
         line-height: 1.5;
     }
 
-    /* ── Story section ──────────────────────────────────── */
     .story-section {
         background: var(--sky-pale);
         border: 1.5px solid var(--sky-light);
@@ -287,7 +285,7 @@
         z-index: 1;
     }
 
-    /* ── CTA banner ─────────────────────────────────────── */
+    
     .cta-banner {
         background: linear-gradient(135deg, var(--sky-dark), var(--sky-deeper));
         border-radius: 16px;
@@ -338,7 +336,6 @@
 
     .cta-btn.outline:hover { color: #fff; border-color: #fff; }
 
-    /* ── Responsive ─────────────────────────────────────── */
     @media (max-width: 600px) {
         .stats-row      { grid-template-columns: 1fr 1fr; }
         .mv-grid        { grid-template-columns: 1fr; }
@@ -346,8 +343,7 @@
         .about-hero     { padding: 2.5rem 1.5rem; }
     }
 </style>
-
-<%-- ── HERO ──────────────────────────────────────────────────── --%>
+ 
 <div class="about-hero">
     <div class="hero-eyebrow">KuGompo City, Eastern Cape</div>
     <h1>Connecting the <span>Townships</span> to<br />Quality Services</h1>
@@ -359,7 +355,7 @@
     </p>
 </div>
 
-<%-- ── STATS ─────────────────────────────────────────────────── --%>
+
 <div class="stats-row">
     <div class="stat-card">
         <div class="stat-number">4+</div>
@@ -375,7 +371,7 @@
     </div>
 </div>
 
-<%-- ── MISSION & VISION ────────────────────────────────────────── --%>
+
 <div class="mv-grid">
     <div class="mv-card mission">
         <div class="mv-icon">
@@ -408,7 +404,6 @@
     </div>
 </div>
 
-<%-- ── VALUES ────────────────────────────────────────────────── --%>
 <div class="values-section">
     <p class="section-heading">What We Stand For</p>
     <p class="section-sub">The principles that guide everything we do.</p>
@@ -444,7 +439,6 @@
     </div>
 </div>
 
-<%-- ── STORY ────────────────────────────────────────────────── --%>
 <div class="story-section">
     <p class="section-heading" style="margin-bottom:0.8rem;">Our Story</p>
     <p>
@@ -459,7 +453,7 @@
     </p>
 </div>
 
-<%-- ── CTA ─────────────────────────────────────────────────── --%>
+
 <div class="cta-banner">
     <h3>Ready to get started?</h3>
     <p>Join our growing community of providers and customers today.</p>

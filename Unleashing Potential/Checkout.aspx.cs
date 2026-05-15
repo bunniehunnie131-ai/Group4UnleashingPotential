@@ -44,7 +44,7 @@ namespace Unleashing_Potential
             NormalizeBasket(basket);
             Session["Basket"] = basket;
 
-            // Validate Step 1 — appointment date
+           
             if (e.CurrentStepIndex == 0)
             {
                 if (calAppointment.SelectedDate == DateTime.MinValue ||
