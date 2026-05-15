@@ -63,8 +63,20 @@ namespace Unleashing_Potential
 
             string userName = Session["UserName"].ToString();
             var reviews = new List<Review>();
+            var reviewItems = _booking.Items
+                .Where(item => item != null && item.ProviderID > 0)
+                .GroupBy(item => item.ProviderID)
+                .Select(group => group.First())
+                .ToList();
 
-            foreach (var item in _booking.Items)
+            if (reviewItems.Count == 0)
+            {
+                lblRatingErr.Text = "No providers were found for this booking.";
+                lblRatingErr.Visible = true;
+                return;
+            }
+
+            foreach (var item in reviewItems)
             {
                 reviews.Add(new Review
                 {

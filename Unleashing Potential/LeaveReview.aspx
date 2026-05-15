@@ -27,10 +27,19 @@
     .form-label { font-size:0.85rem; font-weight:600; color:#374151; display:block; margin-bottom:0.5rem; }
     .star-rating { display:flex; gap:0.5rem; margin-bottom:0.3rem; }
     .star-btn {
+        appearance:none;
+        -webkit-appearance:none;
         font-size:2rem; cursor:pointer; background:none; border:none;
         color:#e2e8f0; transition:color 0.15s, transform 0.1s; padding:0;
+        line-height:1;
     }
     .star-btn:hover, .star-btn.active { color:#f59e0b; transform:scale(1.15); }
+    .star-btn:focus { outline:none; }
+    .star-btn:focus-visible {
+        outline:2px solid var(--sky);
+        outline-offset:3px;
+        border-radius:6px;
+    }
     .rating-label { font-size:0.8rem; color:var(--muted); margin-top:0.3rem; }
     .form-textarea {
         width:100%; border:1.5px solid #e2e8f0; border-radius:10px;
@@ -51,16 +60,47 @@
         padding:2rem; text-align:center;
     }
 </style>
-<script>
-    function setRating(val) {
-        document.getElementById('hdnRating').value = val;
-        var stars = document.querySelectorAll('.star-btn');
-        stars.forEach(function(s, idx) {
-            s.classList.toggle('active', idx < val);
+<script type="text/javascript">
+    (function () {
+        var ratingFieldId = '<%= hdnRating.ClientID %>';
+        var labels = ['', 'Poor', 'Fair', 'Good', 'Very Good', 'Excellent'];
+
+        function getRatingField() {
+            return document.getElementById(ratingFieldId);
+        }
+
+        function setStarState(val) {
+            var stars = document.querySelectorAll('.star-btn');
+            for (var i = 0; i < stars.length; i++) {
+                var isActive = i < val;
+                if (isActive) {
+                    stars[i].classList.add('active');
+                } else {
+                    stars[i].classList.remove('active');
+                }
+                stars[i].setAttribute('aria-pressed', isActive ? 'true' : 'false');
+            }
+
+            var label = document.getElementById('ratingLabel');
+            if (label) {
+                label.innerText = labels[val] || 'Click a star to rate';
+            }
+        }
+
+        window.setRating = function (val) {
+            var field = getRatingField();
+            if (field) {
+                field.value = String(val);
+            }
+            setStarState(val);
+        };
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var field = getRatingField();
+            var current = field ? parseInt(field.value || '0', 10) : 0;
+            setStarState(isNaN(current) ? 0 : current);
         });
-        var labels = ['','Poor','Fair','Good','Very Good','Excellent'];
-        document.getElementById('ratingLabel').innerText = labels[val] || '';
-    }
+    })();
 </script>
 </asp:Content>
 
@@ -89,11 +129,11 @@
             <div class="form-group">
                 <label class="form-label">Your Rating *</label>
                 <div class="star-rating">
-                    <button type="button" class="star-btn" onclick="setRating(1)">★</button>
-                    <button type="button" class="star-btn" onclick="setRating(2)">★</button>
-                    <button type="button" class="star-btn" onclick="setRating(3)">★</button>
-                    <button type="button" class="star-btn" onclick="setRating(4)">★</button>
-                    <button type="button" class="star-btn" onclick="setRating(5)">★</button>
+                    <button type="button" class="star-btn" aria-label="Rate 1 star" aria-pressed="false" onclick="setRating(1)">★</button>
+                    <button type="button" class="star-btn" aria-label="Rate 2 stars" aria-pressed="false" onclick="setRating(2)">★</button>
+                    <button type="button" class="star-btn" aria-label="Rate 3 stars" aria-pressed="false" onclick="setRating(3)">★</button>
+                    <button type="button" class="star-btn" aria-label="Rate 4 stars" aria-pressed="false" onclick="setRating(4)">★</button>
+                    <button type="button" class="star-btn" aria-label="Rate 5 stars" aria-pressed="false" onclick="setRating(5)">★</button>
                 </div>
                 <div class="rating-label" id="ratingLabel">Click a star to rate</div>
                 <asp:HiddenField ID="hdnRating" runat="server" Value="0" />
