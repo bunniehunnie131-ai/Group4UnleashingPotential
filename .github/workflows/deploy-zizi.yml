@@ -21,7 +21,7 @@ jobs:
         uses: nuget/setup-nuget@v1
 
       - name: Restore packages
-        run: nuget restore "Unleashing Potential/Unleashing Potential.csproj"
+        run: nuget restore "Unleashing Potential/Unleashing Potential.csproj" -PackagesDirectory packages
 
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v1.0.2
