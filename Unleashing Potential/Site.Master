@@ -165,6 +165,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="Contact.aspx">Contact Us</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="PrivacyTerms.aspx">Privacy Policy</a>
+                    </li>
                     <li class="nav-item" id="liPromo" runat="server" visible="false">
                         <a class="nav-link" href="Promo.aspx">
                             <i class="bi bi-megaphone-fill me-1"></i>Promo

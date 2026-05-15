@@ -12,6 +12,9 @@
     <form id="form1" runat="server">
     <div>
         <h1>Mobile Master Page</h1>
+        <p style="text-align: center; margin: 0.75rem 0 1rem;">
+            <a href="PrivacyTerms.aspx">Privacy Policy</a>
+        </p>
         <asp:ContentPlaceHolder runat="server" ID="FeaturedContent" />
         <section class="content-wrapper main-content clear-fix">
             <asp:ContentPlaceHolder runat="server" ID="MainContent" />
