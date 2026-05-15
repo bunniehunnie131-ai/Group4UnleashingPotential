@@ -517,7 +517,7 @@
                         <div class="kpi-value">
                             <asp:Label ID="lblActiveProviders" runat="server" Text="0" />
                         </div>
-                        <div class="kpi-sub">Verified and live</div>
+                        <div class="kpi-sub">Active and live</div>
                     </div>
                     <div class="kpi-card">
                         <div class="kpi-icon red"><i class="bi bi-check2-circle"></i></div>

@@ -99,15 +99,19 @@ namespace Unleashing_Potential
                     conn.Open();
 
                     // Total bookings
-                    lblTotalBookings.Text = new SqlCommand(
+                    int totalBookings = Convert.ToInt32(new SqlCommand(
                         "SELECT COUNT(*) FROM Booking", conn)
-                        .ExecuteScalar().ToString();
+                        .ExecuteScalar());
 
                     // Revenue from completed bookings
-                    object rev = new SqlCommand(
-                        "SELECT COUNT(*) FROM Booking WHERE BookingStatusID IS NOT NULL", conn)
-                        .ExecuteScalar();
-                    lblRevenue.Text = Convert.ToDecimal(rev).ToString("N2");
+                    decimal completedRevenue = Convert.ToDecimal(new SqlCommand(
+                        "SELECT ISNULL(SUM(CASE WHEN b.BookingStatusID = 3 " +
+                        "THEN CAST(ISNULL(bi.UnitPrice, 0) * ISNULL(bi.Quantity, 1) AS DECIMAL(18,2)) " +
+                        "ELSE 0 END), 0) " +
+                        "FROM Booking b " +
+                        "LEFT JOIN BookingItem bi ON bi.BookingID = b.BookingID", conn)
+                        .ExecuteScalar());
+                    lblRevenue.Text = completedRevenue.ToString("N2");
 
                     // Active providers
                     lblActiveProviders.Text = new SqlCommand(
@@ -118,14 +122,14 @@ namespace Unleashing_Potential
                         .ExecuteScalar().ToString();
 
                     // Completion rate
-                    int total = Convert.ToInt32(new SqlCommand(
-                        "SELECT COUNT(*) FROM Booking", conn).ExecuteScalar());
                     int completed = Convert.ToInt32(new SqlCommand(
-                        "SELECT COUNT(*) FROM Booking WHERE BookingStatusID IS NOT NULL", conn).ExecuteScalar());
+                        "SELECT COUNT(*) FROM Booking WHERE BookingStatusID = 3", conn).ExecuteScalar());
 
-                    lblCompletionRate.Text = total > 0
-                        ? ((completed * 100) / total).ToString()
+                    lblCompletionRate.Text = totalBookings > 0
+                        ? Math.Round((completed * 100m) / totalBookings, 1).ToString("0.#")
                         : "0";
+
+                    lblTotalBookings.Text = totalBookings.ToString();
                 }
 
                 // Recent 10 bookings
