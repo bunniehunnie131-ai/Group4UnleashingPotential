@@ -36,5 +36,5 @@ jobs:
           username: ${{ secrets.SMARTERASP_FTP_USERNAME }}
           password: ${{ secrets.SMARTERASP_FTP_PASSWORD }}
           local-dir: ./Unleashing Potential/obj/Release/Package/PackageTmp/
-          server-dir: /
+          server-dir: /site1/
           dangerous-clean-slate: false
