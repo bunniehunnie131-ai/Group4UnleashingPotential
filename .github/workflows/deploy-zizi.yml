@@ -37,6 +37,23 @@ jobs:
       - name: Build and publish
         run: msbuild "Unleashing Potential/Unleashing Potential.csproj" /t:Rebuild /p:Configuration=Release /p:DeployOnBuild=true
 
+      - name: Force hosted connection string in packaged Web.config
+        shell: pwsh
+        run: |
+          $webConfig = "Unleashing Potential/obj/Release/Package/PackageTmp/Web.config"
+          if (-not (Test-Path $webConfig)) {
+            throw "Published Web.config was not generated at $webConfig"
+          }
+
+          [xml]$doc = Get-Content -Raw -LiteralPath $webConfig
+          $node = $doc.configuration.connectionStrings.add | Where-Object { $_.name -eq 'ProjectDB' }
+          if (-not $node) {
+            throw "ProjectDB connection string entry was not found in published Web.config."
+          }
+
+          $node.connectionString = "Data Source=SQL6030.site4now.net;Initial Catalog=db_ac962e_unleashdb;User Id=db_ac962e_unleashdb_admin;Password=Password.123;Encrypt=True;TrustServerCertificate=True;"
+          $doc.Save((Resolve-Path $webConfig))
+
       - name: Verify published config
         shell: pwsh
         run: |
