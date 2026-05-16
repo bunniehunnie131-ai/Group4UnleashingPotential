@@ -26,8 +26,29 @@ jobs:
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v1.0.2
 
+      - name: Clean previous publish output
+        shell: pwsh
+        run: |
+          $publishRoot = "Unleashing Potential/obj/Release"
+          if (Test-Path $publishRoot) {
+            Remove-Item -LiteralPath $publishRoot -Recurse -Force
+          }
+
       - name: Build and publish
-        run: msbuild "Unleashing Potential/Unleashing Potential.csproj" /p:Configuration=Release /p:DeployOnBuild=true
+        run: msbuild "Unleashing Potential/Unleashing Potential.csproj" /t:Rebuild /p:Configuration=Release /p:DeployOnBuild=true
+
+      - name: Verify published config
+        shell: pwsh
+        run: |
+          $webConfig = "Unleashing Potential/obj/Release/Package/PackageTmp/Web.config"
+          if (-not (Test-Path $webConfig)) {
+            throw "Published Web.config was not generated at $webConfig"
+          }
+
+          $content = Get-Content -Raw -LiteralPath $webConfig
+          if ($content -notmatch 'SQL6030\.site4now\.net' -or $content -notmatch 'db_ac962e_unleashdb') {
+            throw "Published Web.config does not contain the hosted SmarterASP connection string."
+          }
 
       - name: Deploy via FTP to SmarterASP.NET
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
